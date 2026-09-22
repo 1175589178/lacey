@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-enabled Role Evolution</title>
+  <style>
+    :root { --ink:#172044; --soft-ink:#4b5779; --muted:#7d87a2; --paper:#f5f6fc; --white:#fffefe; --line:#dfe2f2; --mint:#e9e8ff; --mint-strong:#7775d8; --coral:#db0011; --yellow:#7b61ff; --blue:#2b75d6; --violet:#7057d9; --shadow:0 24px 70px rgba(42,48,110,.13); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:radial-gradient(circle at 4% 4%,rgba(219,0,17,.10),transparent 22rem),radial-gradient(circle at 92% 8%,rgba(104,88,220,.16),transparent 25rem),radial-gradient(circle at 50% 52%,rgba(43,117,214,.08),transparent 32rem),var(--paper); font-family:Arial,Helvetica,sans-serif; }
+    button { font:inherit; }
+    .shell { width:min(1260px,calc(100% - 48px)); margin:0 auto; padding:28px 0 72px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:74px; }
+    .brand { display:flex; align-items:center; gap:10px; color:var(--ink); font-size:11px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+    .brand-mark { width:24px; height:24px; border:5px solid var(--coral); border-radius:50%; position:relative; box-shadow:0 0 18px rgba(219,0,17,.23); }
+    .brand-mark:after { content:""; position:absolute; width:6px; height:6px; right:-4px; bottom:-3px; border-radius:50%; background:var(--blue); box-shadow:0 0 12px rgba(43,117,214,.65); }
+    .top-note { color:var(--muted); font-size:11px; letter-spacing:.05em; }
+    .hero { max-width:780px; margin-bottom:50px; }
+    .eyebrow { margin:0 0 16px; color:var(--coral); font-size:11px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; }
+    h1 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:clamp(48px,7vw,86px); font-weight:400; letter-spacing:-.065em; line-height:.92; }
+    .hero-copy { max-width:590px; margin:22px 0 0; color:var(--soft-ink); font-size:15px; line-height:1.7; }
+    .flow-labels { display:grid; grid-template-columns:1fr 110px 1fr; align-items:center; gap:24px; margin:0 34px 14px; color:var(--coral); font-size:10px; font-weight:700; letter-spacing:.18em; text-align:center; text-transform:uppercase; }
+    .flow-labels span:first-child,.flow-labels span:last-child { text-align:left; }
+    .flow-labels span:first-child { color:var(--muted); }
+    .flow-labels b { font-size:18px; font-weight:400; }
+    .stage { display:grid; grid-template-columns:minmax(260px,.78fr) 110px minmax(480px,1.35fr); align-items:stretch; gap:24px; }
+    .panel { min-height:570px; border-radius:28px; box-shadow:var(--shadow); }
+    .current-panel { padding:34px 28px 28px; background:rgba(255,255,255,.84); border:1px solid var(--line); overflow:hidden; }
+    .panel-kicker { display:flex; align-items:center; justify-content:space-between; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; }
+    .panel-kicker strong { color:var(--coral); font-size:22px; font-weight:400; letter-spacing:0; }
+    .panel h2 { margin:34px 0 8px; font-family:Georgia,"Times New Roman",serif; font-size:42px; font-weight:400; letter-spacing:-.06em; line-height:.95; }
+    .panel-subtitle { margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
+    .wheel { position:relative; height:320px; margin:32px -28px 0; overflow:hidden; touch-action:pan-y; }
+    .wheel:before,.wheel:after { content:""; position:absolute; z-index:2; left:0; right:0; height:92px; pointer-events:none; }
+    .wheel:before { top:0; background:linear-gradient(var(--white),transparent); opacity:.95; }
+    .wheel:after { bottom:0; background:linear-gradient(transparent,var(--white)); opacity:.95; }
+    .wheel-list { position:absolute; left:0; right:0; top:108px; display:grid; gap:4px; padding:0 28px; transition:transform .32s cubic-bezier(.2,.85,.25,1); }
+    .current-option { position:relative; display:flex; align-items:center; width:100%; min-height:50px; padding:0 17px; border:1px solid transparent; border-radius:11px; color:var(--muted); background:transparent; text-align:left; cursor:pointer; transition:.22s ease; }
+    .current-option:before { content:""; width:5px; height:5px; margin-right:12px; border-radius:50%; background:currentColor; opacity:.55; }
+    .current-option:hover { color:var(--soft-ink); background:rgba(217,241,229,.45); }
+    .current-option.active { color:var(--ink); border-color:var(--mint-strong); background:var(--mint); box-shadow:0 8px 22px rgba(119,117,216,.20); font-weight:700; }
+    .current-option.active:before { width:8px; height:8px; margin-left:-2px; margin-right:11px; background:var(--coral); opacity:1; }
+    .wheel-hint { display:flex; align-items:center; justify-content:space-between; margin-top:18px; color:var(--muted); font-size:10px; }
+    .wheel-hint span:last-child { color:var(--coral); font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    .synthesis { display:grid; place-items:center; align-content:center; gap:18px; color:var(--coral); }
+    .synthesis-core { display:grid; place-items:center; width:90px; height:90px; border:1px solid rgba(219,0,17,.55); border-radius:50%; background:rgba(255,255,255,.62); box-shadow:0 0 34px rgba(112,87,217,.20); position:relative; }
+    .synthesis-core:before,.synthesis-core:after { content:""; position:absolute; border:1px solid rgba(112,87,217,.34); border-radius:50%; animation:pulse 2.6s infinite ease-out; }
+    .synthesis-core:before { inset:-13px; }
+    .synthesis-core:after { inset:-27px; animation-delay:.7s; }
+    .core-symbol { width:22px; height:22px; border:2px solid var(--coral); border-radius:7px; transform:rotate(45deg); position:relative; box-shadow:0 0 16px rgba(219,0,17,.4); }
+    .core-symbol:after { content:""; position:absolute; inset:5px; border:1px solid var(--blue); border-radius:2px; }
+    .synthesis-label { width:100px; color:var(--coral); font-size:10px; font-weight:700; letter-spacing:.14em; line-height:1.5; text-align:center; text-transform:uppercase; }
+    .synthesis-status { color:var(--muted); font-size:10px; text-align:center; }
+    @keyframes pulse { 0%{transform:scale(.8);opacity:.8} 75%,100%{transform:scale(1.15);opacity:0} }
+    .future-panel { position:relative; padding:34px; color:#f7f8ff; background:linear-gradient(145deg,#141a41 0%,#20225a 55%,#33236f 100%); overflow:hidden; box-shadow:0 28px 80px rgba(40,29,116,.25); }
+    .future-panel:before { content:""; position:absolute; width:360px; height:360px; right:-150px; top:-130px; border:1px solid rgba(120,151,255,.28); border-radius:50%; box-shadow:0 0 0 30px rgba(96,110,235,.07),0 0 0 62px rgba(219,0,17,.06); }
+    .future-panel:after { content:""; position:absolute; width:260px; height:260px; left:-170px; bottom:-160px; border:1px solid rgba(219,0,17,.28); border-radius:50%; }
+    .future-panel .panel-kicker { color:#b8c4ec; }
+    .future-panel .panel-kicker strong { color:#a9b5ff; }
+    .future-panel h2 { position:relative; max-width:430px; margin-bottom:12px; color:#f7fffb; font-size:clamp(38px,5vw,62px); }
+    .generated { position:relative; min-height:215px; padding:24px 0 24px 104px; border-bottom:1px solid rgba(217,241,229,.2); }
+    .role-orbit { position:absolute; left:4px; top:35px; display:grid; place-items:center; width:76px; height:76px; border:1px solid #a9b5ff; border-radius:50%; background:rgba(112,87,217,.22); box-shadow:0 0 28px rgba(112,87,217,.25); }
+    .role-orbit:before,.role-orbit:after { content:""; position:absolute; border:1px solid rgba(125,169,255,.55); border-radius:50%; }
+    .role-orbit:before { inset:-10px 7px; transform:rotate(35deg); }
+    .role-orbit:after { inset:7px -10px; transform:rotate(-35deg); }
+    .role-icon { color:#c5caff; font-size:25px; text-shadow:0 0 14px rgba(125,169,255,.8); }
+    .generated h3 { margin:0; color:var(--white); font-size:clamp(22px,3vw,34px); font-weight:400; letter-spacing:-.04em; line-height:1.05; }
+    .generated-caption { margin:10px 0 0; color:#aac8bc; font-size:12px; line-height:1.5; }
+    .detail-grid { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:24px; }
+    .detail-card { padding-left:16px; border-left:2px solid var(--mint-strong); }
+    .detail-card.scope { border-color:var(--coral); }
+    .detail-card h4 { margin:0 0 10px; color:#a9b5ff; font-size:10px; letter-spacing:.15em; text-transform:uppercase; }
+    .detail-card.scope h4 { color:#f4a18f; }
+    .detail-card p,.detail-card ul { margin:0; color:#d0e1da; font-size:13px; line-height:1.6; }
+    .detail-card ul { padding-left:16px; }
+    .detail-card li+li { margin-top:5px; }
+    .generate-state .generated h3,.generate-state .generated-caption,.generate-state .detail-grid { opacity:.15; filter:blur(5px); }
+    .generate-state .role-orbit { animation:spin 1s linear infinite; }
+    .generate-state .synthesis-status { color:var(--yellow); }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .guardrail-section { margin-top:34px; padding:28px 30px 30px; border:1px solid var(--line); border-radius:24px; background:rgba(255,255,255,.76); box-shadow:0 14px 44px rgba(42,48,110,.08); }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:20px; margin-bottom:22px; }
+    .section-head h2 { margin:0; font-family:Georgia,"Times New Roman",serif; font-size:34px; font-weight:400; letter-spacing:-.05em; }
+    .section-head p { max-width:340px; margin:0; color:var(--muted); font-size:12px; line-height:1.5; text-align:right; }
+    .guardrail-track { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; }
+    .guardrail { min-height:94px; padding:16px; border:1px solid var(--line); border-radius:13px; color:var(--soft-ink); background:var(--white); text-align:left; cursor:pointer; transition:.22s ease; }
+    .guardrail:hover,.guardrail.active,.guardrail:focus-visible { border-color:var(--coral); background:#fff3f4; transform:translateY(-4px); outline:none; box-shadow:0 10px 24px rgba(219,0,17,.10); }
+    .guardrail-number { display:block; margin-bottom:16px; color:var(--coral); font-size:10px; font-weight:700; }
+    .guardrail-name { display:block; font-size:12px; font-weight:700; line-height:1.25; }
+    .guardrail-detail { display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center; min-height:60px; margin-top:14px; padding:0 16px; border-top:1px solid var(--line); color:var(--soft-ink); font-size:13px; line-height:1.55; }
+    .guardrail-detail strong { color:var(--coral); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+    .outcomes { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+    .outcome { padding:22px 24px; border-radius:17px; background:linear-gradient(135deg,#e8e9ff,#e8f2ff); }
+    .outcome:last-child { background:linear-gradient(135deg,#fff0f1,#f0eaff); }
+    .outcome span { display:block; margin-bottom:9px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .outcome strong { color:var(--ink); font-family:Georgia,"Times New Roman",serif; font-size:20px; font-weight:400; line-height:1.25; }
+    .footer { display:flex; justify-content:space-between; gap:20px; margin-top:28px; color:var(--muted); font-size:10px; letter-spacing:.08em; text-transform:uppercase; }
+    @media (max-width:980px) { .stage{grid-template-columns:minmax(230px,.75fr) 70px minmax(390px,1.25fr);gap:14px}.future-panel,.current-panel{padding:28px 22px}.wheel{margin-left:-22px;margin-right:-22px}.wheel-list{padding-left:22px;padding-right:22px}.guardrail-track{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:720px) { .shell{width:min(100% - 28px,560px);padding-top:20px}.topbar{margin-bottom:54px}.top-note{display:none}.flow-labels{grid-template-columns:1fr auto 1fr;margin:0 12px 12px}.stage{grid-template-columns:1fr;gap:12px}.panel{min-height:auto}.current-panel{min-height:430px}.wheel{height:210px}.wheel-list{top:56px}.synthesis{grid-template-columns:auto 1fr;justify-items:start;gap:18px;min-height:72px;padding:5px 30px}.synthesis-core{width:58px;height:58px}.synthesis-label,.synthesis-status{text-align:left}.synthesis-label{width:auto}.future-panel{min-height:510px}.guardrail-track{grid-template-columns:repeat(2,1fr)}.section-head{display:block}.section-head p{margin-top:8px;text-align:left}.outcomes{grid-template-columns:1fr}.footer{display:block;line-height:1.7} }
+    @media (max-width:440px) { .shell{width:calc(100% - 24px)}h1{font-size:49px}.future-panel,.current-panel{padding:24px 18px}.wheel{margin-left:-18px;margin-right:-18px}.wheel-list{padding-left:18px;padding-right:18px}.generated{padding-left:86px}.role-orbit{width:64px;height:64px}.detail-grid{grid-template-columns:1fr}.guardrail-section{padding:22px 18px}.guardrail-track{gap:7px}.guardrail{padding:12px} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Page navigation"><div class="brand"><span class="brand-mark" aria-hidden="true"></span>AI-enabled Role Evolution</div><div class="top-note">Current state → Future force</div></nav>
+    <header class="hero"><p class="eyebrow">Reshape operating model</p><h1>Roles in motion.</h1><p class="hero-copy">Scroll through a current role. The AI core will generate its future-force counterpart, one relationship at a time.</p></header>
+    <div class="flow-labels" aria-hidden="true"><span>Current roles</span><b>›</b><span>Future force</span></div>
+    <section class="stage" aria-label="Current role to future force role generator">
+      <article class="panel current-panel"><div class="panel-kicker"><span>Current roles</span><strong id="current-index">01</strong></div><h2>Current<br />roles</h2><p class="panel-subtitle">Select or scroll to explore the starting point.</p><div class="wheel" id="role-wheel" tabindex="0" aria-label="Scrollable current roles"><div class="wheel-list" id="current-list"></div></div><div class="wheel-hint"><span>Mouse wheel / swipe</span><span>Explore ↓</span></div></article>
+      <div class="synthesis" aria-live="polite"><div class="synthesis-core"><span class="core-symbol" aria-hidden="true"></span></div><div class="synthesis-label">AI<br />synthesis</div><div class="synthesis-status" id="synthesis-status">Ready to generate</div></div>
+      <article class="panel future-panel" id="future-panel"><div class="panel-kicker"><span>Future force</span><strong id="future-index">01</strong></div><h2>Future<br />force</h2><div class="generated"><div class="role-orbit"><span class="role-icon" id="role-icon">✦</span></div><h3 id="future-title">AI requirement analyst</h3><p class="generated-caption" id="future-caption">Generated from BA</p></div><div class="detail-grid"><div class="detail-card"><h4>Purpose</h4><p id="purpose"></p></div><div class="detail-card scope"><h4>Scope</h4><ul id="scope"></ul></div></div></article>
+    </section>
+    <section class="guardrail-section" aria-label="AI-embedded Delivery Guardrails"><div class="section-head"><h2>AI-embedded<br />Delivery Guardrails</h2><p>Six checkpoints connect the current way of working to the future force. Select one to inspect its role in the chain.</p></div><div class="guardrail-track" id="guardrail-track"></div><div class="guardrail-detail"><strong id="guardrail-label">01 · Principle</strong><span id="guardrail-description">The design principle keeps AI embedded in the delivery flow, with people accountable for the outcome.</span></div></section>
+    <section class="outcomes" aria-label="Operating model outcomes"><div class="outcome"><span>Reshape Operating Model</span><strong>Simplify Process · Fewer Handoffs · Less meetings</strong></div><div class="outcome"><span>Effective Productivity Improvement</span><strong>Higher Release Speed &amp; Higher Delivery Throughput</strong></div></section>
+    <footer class="footer"><span>Continuous Decision-Making · Human + AI Collaboration</span><span>Lower Incident Escape Ratio &amp; Lower feature rollback Ratio</span></footer>
+  </main>
+  <script>
+    const roles = [
+      { current:'BA', future:'AI requirement analyst', purpose:'Convert stakeholder needs into clear, testable requirements.', scope:['Discovery','Acceptance criteria','Traceability'], icon:'✦' },
+      { current:'Scrum Master', future:'Scrum master Agent', purpose:'Support delivery cadence and expose blockers earlier.', scope:['Ceremonies','Flow metrics','Team recommendations'], icon:'◌' },
+      { current:'UX Designer', future:'AI UX Designer', purpose:'Generate accessible journeys from user evidence.', scope:['Research synthesis','Interaction options','Usability validation'], icon:'✧' },
+      { current:'Tech Lead', future:'AI-assisted Tech Lead', purpose:'Evaluate designs, risks, and engineering guardrails.', scope:['Architecture','Quality checks','Trade-off recommendations'], icon:'◇' },
+      { current:'Developer', future:'Human-AI paired engineer.', purpose:'Extend engineering capacity while keeping human judgment in the loop.', scope:['Code generation','Review support','Pairing decisions'], icon:'✣' },
+      { current:'QA', future:'Semantic layer engineer', purpose:'Make quality intent understandable across the delivery system.', scope:['Quality language','Traceability','Shared signals'], icon:'⌘' },
+      { current:'DevOps', future:'Automation test agent', purpose:'Turn delivery expectations into repeatable automated checks.', scope:['Test automation','Regression checks','Evidence'], icon:'⌁' },
+      { current:'SRE Engineer', future:'DevOps agent', purpose:'Make reliable delivery actions easier to run and observe.', scope:['Pipelines','Environment health','Operational feedback'], icon:'∞' },
+      { current:'ITSO, IT Control', future:'AI Reliability Engineer', purpose:'Assure that AI-enabled delivery remains reliable and controlled.', scope:['Reliability signals','Risk controls','Escalation'], icon:'◎' },
+      { current:'Release Engineer', future:'AI-assisted ITSO', purpose:'Bring assurance into the delivery decision at the right moment.', scope:['Controls','Evidence','Release confidence'], icon:'◈' },
+      { current:'Release Engineer', future:'Release Agent', purpose:'Coordinate release readiness with less manual handoff.', scope:['Readiness checks','Change signals','Release flow'], icon:'→' }
+    ];
+    const guardrails = [
+      ['01 · Principle','Design Principle','The design principle keeps AI embedded in the delivery flow, with people accountable for the outcome.'],
+      ['02 · Rhythm','Rule of 5','A simple rhythm for reducing complexity and keeping the next decision visible.'],
+      ['03 · Check','AI-enabled Tools & Checks','Tools and checks make quality signals available while work is still moving.'],
+      ['04 · Align','3 Amigos','The right perspectives align early around value, behaviour, and implementation.'],
+      ['05 · Specify','SDP','A shared delivery path turns intent into a consistent, traceable flow.'],
+      ['06 · Validate','BDD','Behaviour examples make expectations testable and outcomes easier to assure.']
+    ];
+    const currentList=document.querySelector('#current-list'), currentIndex=document.querySelector('#current-index'), futureIndex=document.querySelector('#future-index'), futurePanel=document.querySelector('#future-panel'), futureTitle=document.querySelector('#future-title'), futureCaption=document.querySelector('#future-caption'), purpose=document.querySelector('#purpose'), scope=document.querySelector('#scope'), icon=document.querySelector('#role-icon'), synthesisStatus=document.querySelector('#synthesis-status');
+    let selected=0, generationTimer;
+    roles.forEach((role,index)=>{ const button=document.createElement('button'); button.className='current-option'; button.type='button'; button.dataset.index=index; button.textContent=role.current; button.addEventListener('click',()=>selectRole(index)); currentList.appendChild(button); });
+    function selectRole(index){ selected=index; document.querySelectorAll('.current-option').forEach((button,buttonIndex)=>{ button.classList.toggle('active',buttonIndex===index); button.setAttribute('aria-selected',buttonIndex===index); }); currentIndex.textContent=String(index+1).padStart(2,'0'); currentList.style.transform=`translateY(${-Math.max(0,index-2)*54}px)`; generateRole(roles[index]); }
+    function generateRole(role){ window.clearTimeout(generationTimer); futurePanel.classList.add('generate-state'); synthesisStatus.textContent='Generating…'; generationTimer=window.setTimeout(()=>{ futurePanel.classList.remove('generate-state'); futureTitle.textContent=role.future; futureCaption.textContent=`Generated from ${role.current}`; purpose.textContent=role.purpose; scope.innerHTML=role.scope.map(item=>`<li>${item}</li>`).join(''); icon.textContent=role.icon; futureIndex.textContent=String(selected+1).padStart(2,'0'); synthesisStatus.textContent='Generated'; },560); }
+    const wheel=document.querySelector('#role-wheel');
+    wheel.addEventListener('wheel',event=>{ event.preventDefault(); if(Math.abs(event.deltaY)<4)return; selectRole(Math.min(roles.length-1,Math.max(0,selected+(event.deltaY>0?1:-1)))); },{passive:false});
+    let touchStart; wheel.addEventListener('touchstart',event=>{touchStart=event.touches[0].clientY},{passive:true}); wheel.addEventListener('touchend',event=>{const delta=touchStart-event.changedTouches[0].clientY;if(Math.abs(delta)>24)selectRole(Math.min(roles.length-1,Math.max(0,selected+(delta>0?1:-1))))},{passive:true}); wheel.addEventListener('keydown',event=>{if(event.key==='ArrowDown'||event.key==='ArrowRight')selectRole(Math.min(roles.length-1,selected+1));if(event.key==='ArrowUp'||event.key==='ArrowLeft')selectRole(Math.max(0,selected-1));});
+    const guardrailTrack=document.querySelector('#guardrail-track'); guardrails.forEach((item,index)=>{ const button=document.createElement('button'); button.className=`guardrail${index===0?' active':''}`; button.type='button'; button.innerHTML=`<span class="guardrail-number">${item[0]}</span><span class="guardrail-name">${item[1]}</span>`; button.addEventListener('click',()=>{document.querySelectorAll('.guardrail').forEach((node,nodeIndex)=>node.classList.toggle('active',nodeIndex===index));document.querySelector('#guardrail-label').textContent=item[0];document.querySelector('#guardrail-description').textContent=item[2];}); guardrailTrack.appendChild(button); });
+    selectRole(0);
+  </script>
+</body>
+</html>
