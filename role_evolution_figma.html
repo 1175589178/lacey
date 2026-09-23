@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-enabled Role Evolution</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#0f111a; --muted:#8f97a6; --copy:#5c6479; --bg:#f4f6fa; --line:#e8ebf2; --indigo:#6366f1; --dark:#090b11; --dark-card:#0f111a; --green:#10b981; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Geist,Arial,sans-serif; }
+    button { font:inherit; }
+    .nav { height:72px; display:flex; align-items:center; justify-content:space-between; padding:0 48px; background:#fff; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:12px; font-family:Outfit,sans-serif; font-size:16px; font-weight:700; }
+    .brand-mark { display:grid; place-items:center; width:32px; height:32px; border-radius:8px; color:#fff; background:var(--indigo); font-size:16px; }
+    .nav-links { display:flex; gap:32px; color:var(--copy); font-size:14px; }
+    .nav-links span:first-child { color:var(--indigo); font-weight:600; }
+    .bell { color:var(--copy); font-size:18px; }
+    main { padding:40px 48px 56px; }
+    .crumbs { display:flex; gap:8px; color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; }
+    .crumbs span:last-child { color:var(--indigo); }
+    h1,h2,h3,p { margin:0; }
+    h1 { margin-top:14px; font:800 44px/1 Outfit,sans-serif; }
+    .intro { display:flex; gap:16px; align-items:center; margin-top:16px; color:var(--copy); font-size:15px; }
+    .intro:before { content:""; width:3px; height:20px; background:var(--indigo); }
+    .workspace { display:grid; grid-template-columns:320px minmax(0,1fr); gap:24px; margin-top:24px; }
+    .sidebar { padding:28px; border:1px solid var(--line); border-radius:20px; background:#fff; }
+    .badges { display:flex; flex-wrap:wrap; gap:8px; }
+    .badge { padding:4px 8px; border-radius:6px; background:#f4f6fa; color:var(--copy); font-size:10px; font-weight:700; text-transform:uppercase; }
+    .badge:first-child { background:#eef0ff; color:var(--indigo); }
+    .label { margin-top:28px; color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; }
+    .role-list { display:grid; gap:4px; max-height:360px; margin-top:12px; overflow-y:auto; padding-right:4px; scroll-snap-type:y proximity; scrollbar-color:#cbd2df transparent; scrollbar-width:thin; }
+    .role-button.compact { padding-top:8px; padding-bottom:8px; }
+    .role-button { display:flex; align-items:center; justify-content:space-between; width:100%; padding:13px 12px; border:0; border-radius:12px; color:var(--muted); background:transparent; text-align:left; cursor:pointer; scroll-snap-align:center; }
+    .role-button:hover { background:#f7f8ff; color:var(--ink); }
+    .role-button.active { padding:12px 16px; border:2px solid var(--indigo); color:var(--ink); background:#fff; box-shadow:0 4px 6px rgba(99,102,241,.08); font-weight:700; }
+    .role-button.active:after { content:"⌄"; color:var(--indigo); font-size:18px; }
+    .divider { height:1px; margin:28px 0; background:var(--line); }
+    .current-role { display:grid; gap:4px; }
+    .current-role strong { font:800 20px Outfit,sans-serif; }
+    .current-role p { margin-top:12px; color:var(--copy); font-size:13px; line-height:1.5; }
+    .current-role ul { display:grid; gap:10px; margin:16px 0 0; padding:0; list-style:none; font-size:12px; font-weight:600; }
+    .current-role li:before { content:""; display:inline-block; width:6px; height:6px; margin-right:8px; border-radius:50%; background:var(--indigo); }
+    .future { position:relative; min-height:694px; overflow:hidden; padding:56px 44px 70px; color:#f7faff; background:var(--dark); }
+    .future:before,.future:after { content:""; position:absolute; border-radius:50%; pointer-events:none; }
+    .future:before { width:420px; height:420px; left:-210px; top:80px; background:radial-gradient(circle,rgba(16,185,129,.12),transparent 67%); }
+    .future:after { width:500px; height:500px; right:-260px; bottom:-250px; background:radial-gradient(circle,rgba(99,102,241,.16),transparent 68%); }
+    .future-head,.agent-card { position:relative; z-index:1; }
+    .future-crumb { color:var(--muted); font-size:8px; font-weight:700; text-transform:uppercase; }
+    .future-crumb span { color:var(--indigo); }
+    .future h2 { margin-top:10px; font:800 31px/1 Outfit,sans-serif; }
+    .future-sub { display:flex; gap:11px; align-items:center; max-width:720px; margin-top:12px; color:var(--muted); font-size:11px; line-height:1.5; }
+    .future-sub:before { content:""; width:2px; height:17px; flex:0 0 auto; background:var(--indigo); }
+    .agent-card { margin-top:84px; padding:25px; border:1px solid var(--accent,var(--indigo)); border-radius:16px; background:var(--dark-card); box-shadow:0 18px 44px rgba(16,185,129,.08); }
+    .portrait-holder { position:absolute; top:-50px; right:-12px; width:104px; height:104px; padding:5px; border:1px solid var(--accent,var(--indigo)); border-radius:50%; background:#1d1d2a; box-shadow:0 0 26px var(--glow,rgba(99,102,241,.38)); animation:avatar-float 4.8s ease-in-out infinite; }
+    .portrait-holder:before { content:""; position:absolute; inset:-14px; border:1px dashed var(--accent,var(--indigo)); border-radius:50%; opacity:.8; animation:avatar-orbit 9s linear infinite; }
+    .portrait-holder:after { content:""; position:absolute; inset:-6px; border:1px solid var(--accent,var(--indigo)); border-radius:50%; opacity:.28; animation:avatar-pulse 2.8s ease-out infinite; }
+    .portrait { position:relative; z-index:1; width:100%; height:100%; border-radius:50%; object-fit:cover; animation:portrait-breathe 4.8s ease-in-out infinite; }
+    .status { position:absolute; z-index:2; right:0; bottom:0; width:11px; height:11px; border:2px solid var(--dark-card); border-radius:50%; background:var(--green); animation:status-pulse 2s ease-in-out infinite; }
+    @keyframes avatar-float { 0%,100% { transform:translateY(0) rotate(-1deg); } 50% { transform:translateY(-6px) rotate(1deg); } }
+    @keyframes avatar-orbit { to { transform:rotate(360deg); } }
+    @keyframes avatar-pulse { 0% { transform:scale(.92); opacity:.38; } 75%,100% { transform:scale(1.18); opacity:0; } }
+    @keyframes portrait-breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.035); } }
+    @keyframes status-pulse { 0%,100% { box-shadow:0 0 0 0 rgba(16,185,129,.5); } 50% { box-shadow:0 0 0 5px rgba(16,185,129,0); } }
+    .agent-badge { display:inline-block; padding:4px 7px; border-radius:4px; color:var(--accent,var(--indigo)); background:rgba(99,102,241,.10); font-size:7px; font-weight:700; text-transform:uppercase; }
+    .agent-card h3 { margin-top:11px; font:800 18px Outfit,sans-serif; }
+    .evolved { margin-top:4px; color:var(--muted); font-size:9px; }
+    .specs { display:grid; gap:8px; margin-top:20px; padding-top:20px; border-top:1px solid #222533; }
+    .spec { display:flex; gap:11px; align-items:center; padding:9px; border-radius:6px; background:rgba(255,255,255,.015); color:var(--muted); font-size:9px; line-height:1.4; }
+    .spec b { width:56px; padding:3px 5px; border-radius:3px; color:var(--accent,var(--indigo)); background:rgba(99,102,241,.08); font-size:7px; text-align:center; text-transform:uppercase; }
+    .kpi-title { margin-top:20px; color:var(--copy); font-size:8px; font-weight:700; text-transform:uppercase; }
+    .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:11px; margin-top:7px; }
+    .kpi strong { display:block; color:var(--accent,var(--indigo)); font:800 17px Outfit,sans-serif; }
+    .kpi span { color:var(--muted); font-size:8px; }
+    .outcomes { display:grid; grid-template-columns:1.15fr .85fr; gap:24px; margin-top:40px; }
+    .outcome { padding:28px 32px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .outcome h3 { font:800 18px Outfit,sans-serif; }
+    .outcome > p { margin-top:4px; color:var(--copy); font-size:11px; }
+    .steps { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:24px; padding:18px; border:1px solid var(--line); border-radius:12px; background:#f8faff; }
+    .step { min-height:120px; padding:12px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    .step small { color:var(--indigo); font-weight:700; }
+    .step strong { display:block; margin-top:14px; font-size:12px; }
+    .step p { margin-top:8px; color:var(--copy); font-size:11px; line-height:1.4; }
+    .stat-pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:24px; }
+    .stat { padding:16px; border:1px solid var(--line); border-radius:12px; background:#f8faff; }
+    .stat strong { display:block; font-size:12px; }
+    .stat p { margin-top:8px; color:var(--copy); font-size:11px; line-height:1.4; }
+    .impact { margin-top:16px; padding:16px; border:1px solid var(--line); border-radius:12px; background:#f8faff; }
+    .impact-head { display:flex; justify-content:space-between; color:var(--copy); font-size:11px; font-weight:700; }
+    .impact-grid { display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:center; margin-top:12px; }
+    .impact-box { padding:12px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--copy); font-size:11px; line-height:1.7; }
+    .impact-box strong { display:block; color:var(--ink); }
+    .impact-arrow { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; color:var(--green); background:#e1faf2; }
+    .future-role-map { position:relative; z-index:1; display:grid; grid-template-columns:1fr 1fr; gap:8px 28px; margin-top:28px; }
+    .future-role { color:#aeb5c6; font-size:11px; }
+    .future-role.active { color:#fff; }
+    .future-role small { display:block; margin-bottom:2px; color:var(--accent,var(--indigo)); font-size:8px; text-transform:uppercase; }
+    .overview { margin-top:16px; padding:24px 32px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .overview h3 { text-align:center; font:800 16px Outfit,sans-serif; }
+    .overview table { width:100%; margin-top:16px; border-collapse:collapse; color:var(--copy); font-size:11px; }
+    .overview th,.overview td { padding:10px 8px; border-top:1px solid var(--line); text-align:left; vertical-align:top; }
+    .overview th { color:var(--ink); font-size:10px; }
+    .overview td:first-child { color:var(--ink); font-weight:700; }
+    .guardrails { margin-top:24px; padding:24px 32px 20px; border:1px solid var(--line); border-radius:14px; background:#fff; }
+    .guardrails h2 { text-align:center; font:800 16px Outfit,sans-serif; }
+    .guardrail-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+    .guardrail { min-height:58px; padding:14px 10px; border:1px solid #cbd2df; border-radius:10px; color:var(--ink); background:#fff; font-size:11px; font-weight:700; cursor:pointer; }
+    .guardrail:hover,.guardrail.active { border-color:var(--indigo); color:var(--indigo); background:#f7f7ff; box-shadow:0 4px 10px rgba(99,102,241,.08); }
+    .guardrail-detail { min-height:32px; margin:14px 0 0; color:var(--copy); font-size:11px; text-align:center; }
+    @media (max-width:900px) { .nav { padding:0 24px; }.nav-links { display:none; } main { padding:32px 24px; }.workspace,.outcomes { grid-template-columns:1fr; }.sidebar { order:1; }.future { min-height:620px; }.agent-card { margin-top:70px; }.steps { grid-template-columns:repeat(2,1fr); }.overview { overflow:auto; } }
+    @media (max-width:560px) { main { padding:28px 14px; } h1 { font-size:36px; }.nav { padding:0 14px; }.future { padding:34px 22px 48px; }.future h2 { font-size:27px; }.agent-card { margin-top:76px; }.steps,.stat-pair,.impact-grid { grid-template-columns:1fr; }.impact-arrow { margin:auto; transform:rotate(90deg); }.outcome { padding:22px; }.future-role-map { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="nav"><div class="brand"><span class="brand-mark">⌁</span>AI-enabled Role Evolution</div><nav class="nav-links"><span>Role Architecture</span><span>Talent Force Map</span><span>Operating Playbook</span></nav><span class="bell">♧</span></header>
+  <main>
+    <div class="crumbs"><span>Enterprise Strategy</span><b>›</b><span>Role Evolution</span></div>
+    <h1>Role evolution</h1>
+    <p class="intro">AI redistributes work between people and technology while humans retain ultimate accountability.</p>
+    <section class="workspace">
+      <aside class="sidebar">
+        <div class="badges"><span class="badge">AI</span><span class="badge">Talent</span><span class="badge">Strategy</span><span class="badge">Tech</span></div>
+        <div class="label">Current roles</div><div class="role-list" id="role-list" tabindex="0" aria-label="Scrollable current roles"></div>
+        <div class="divider"></div>
+        <div class="current-role"><span class="label" style="margin:0;color:var(--indigo)">Current role</span><strong id="current-title">Business Analyst</strong><p id="current-copy">Discovery, acceptance criteria, traceability, and human evaluation.</p><ul><li>Human accountability</li><li>AI-embedded delivery</li></ul></div>
+      </aside>
+      <article class="future" id="future-panel">
+        <div class="future-head"><p class="future-crumb">Operating Playbook　›　<span>Future Force Agents</span></p><h2>Future Force Architecture</h2><p class="future-sub">Enterprise roles evolved for the AI era. Autonomous agents handle production delivery at scale while humans maintain strategic governance and ultimate accountability.</p></div>
+        <div class="agent-card"><div class="portrait-holder"><img class="portrait" id="portrait" src="assets/role-evolution/analyst.png" alt="AI role avatar" /><span class="status"></span></div><span class="agent-badge" id="agent-badge">Future Agent 01</span><h3 id="future-title">AI Requirement Analyst</h3><p class="evolved" id="evolved">Evolved from Business Analyst.</p><div class="specs"><div class="spec"><b>Scope</b><span id="scope">Discovery, automated user stories, traceability matrix, acceptance criteria.</span></div><div class="spec"><b>Account</b><span id="account">Translate raw stakeholder goals into highly precise technical prompts and model test boundaries.</span></div></div><div class="kpi-title">KPI Benchmarks</div><div class="kpis"><div class="kpi"><strong id="kpi-one">10x</strong><span>Drafting Speed</span></div><div class="kpi"><strong id="kpi-two">98%</strong><span>Traceability</span></div><div class="kpi"><strong id="kpi-three">&lt; 1h</strong><span>Scope Alignment</span></div></div></div>
+      </article>
+    </section>
+    <section class="guardrails" aria-labelledby="guardrails-title"><h2 id="guardrails-title">AI-embedded Delivery Guardrails</h2><div class="guardrail-grid" id="guardrail-grid"></div><p class="guardrail-detail" id="guardrail-detail">The design principle keeps AI embedded in the delivery flow, with people accountable for the outcome.</p></section>
+    <section class="outcomes"><article class="outcome"><h3>✣　Reshape Operating Model</h3><p>A visual path from process simplification to continuous value delivery.</p><div class="steps"><div class="step"><small>01</small><strong>Simplify Process</strong><p>Remove redundant steps and unnecessary waiting.</p></div><div class="step"><small>02</small><strong>Fewer Handoffs</strong><p>Reduce handoffs to improve speed and reliability.</p></div><div class="step"><small>03</small><strong>Less Backlog</strong><p>Shrink backlog and increase delivery predictability.</p></div><div class="step"><small>04</small><strong>Continuous Valuing</strong><p>Continuously align delivery with business value.</p></div><div class="step"><small>05</small><strong>Human + AI</strong><p>Combine human judgment with AI execution.</p></div></div></article><article class="outcome"><h3>◎　Effective Productivity Improvement</h3><p>A visual snapshot of faster, more reliable delivery.</p><div class="stat-pair"><div class="stat"><strong>Higher Release Speed</strong><p>Faster releases with stronger deployment stability.</p></div><div class="stat"><strong>Lower Incident/Escape Ratio</strong><p>Fewer escaped incidents with automated recovery.</p></div></div><div class="impact"><div class="impact-head"><span>Impact view</span><span>Before vs. after</span></div><div class="impact-grid"><div class="impact-box"><strong>Before</strong>● Slow delivery<br />● High incident rate</div><div class="impact-arrow">✓</div><div class="impact-box"><strong>After</strong><span style="color:var(--green)">● Fast delivery<br />● Stable operations</span></div></div></div></article></section>
+    <section class="overview"><h3>Future Force Agent Overview</h3><table><thead><tr><th>Agent</th><th>Purpose</th><th>Scope</th></tr></thead><tbody id="overview-body"></tbody></table></section>
+  </main>
+  <script>
+    const roles = [
+      { current:'BA', future:'AI requirement analyst', copy:'Convert stakeholder needs into clear, testable requirements.', scope:'Discovery, acceptance criteria, traceability, and human evaluation.', account:'Convert stakeholder needs into clear, testable requirements.', accent:'#6366f1', avatar:'assets/role-evolution/analyst.png', kpi:['10x','98%','< 1h'] },
+      { current:'Scrum Master', future:'Scrum master Agent', copy:'Support delivery cadence and expose blockers earlier.', scope:'Ceremonies, flow metrics, and team recommendations.', account:'Keep the next delivery decision visible and actionable.', accent:'#06b6d4', avatar:'', kpi:['6x','32%','1d'] },
+      { current:'UX Designer', future:'AI UX Designer', copy:'Generate accessible journeys from user evidence.', scope:'Research synthesis, interaction options, and usability validation.', account:'Synthesize user evidence into accessible design options.', accent:'#f59e0b', avatar:'', kpi:['8x','94%','2h'] },
+      { current:'Tech Lead', future:'AI-assisted Tech Lead', copy:'Evaluate designs, risks, and engineering guardrails.', scope:'Architecture, quality checks, and trade-off recommendations.', account:'Evaluate designs, risks, and engineering guardrails.', accent:'#8b5cf6', avatar:'', kpi:['5x','91%','4h'] },
+      { current:'Developer', future:'Human-AI paired engineer', copy:'Extend engineering capacity while keeping human judgment in the loop.', scope:'Code generation, review support, and pairing decisions.', account:'Combine human judgment with AI execution.', accent:'#0ea5e9', avatar:'', kpi:['4x','88%','1h'] },
+      { current:'QA', future:'Semantic layer engineer', copy:'Make quality intent understandable across the delivery system.', scope:'Quality language, traceability, and shared signals.', account:'Turn acceptance intent into shared quality signals.', accent:'#10b981', avatar:'', kpi:['8x','96%','2h'] },
+      { current:'DevOps', future:'Automation test agent', copy:'Turn delivery expectations into repeatable automated checks.', scope:'Test automation, regression checks, and evidence.', account:'Turn delivery expectations into repeatable automated checks.', accent:'#14b8a6', avatar:'', kpi:['12x','0ms','99%'] },
+      { current:'SRE Engineer', future:'DevOps agent', copy:'Make reliable delivery actions easier to run and observe.', scope:'Pipelines, environment health, and operational feedback.', account:'Make reliable delivery actions easier to run and observe.', accent:'#10b981', avatar:'assets/role-evolution/portrait.jpeg', kpi:['15x','0ms','99.99%'] },
+      { current:'ITSO, IT Control', future:'AI Reliability Engineer', copy:'Assure that AI-enabled delivery remains reliable and controlled.', scope:'Reliability signals, risk controls, and escalation.', account:'Assure reliable and controlled AI-enabled delivery.', accent:'#6366f1', avatar:'', kpi:['3x','99%','1h'] },
+      { current:'Release Engineer', future:'AI-assisted ITSO', copy:'Bring assurance into the delivery decision at the right moment.', scope:'Controls, evidence, and release confidence.', account:'Bring assurance into the delivery decision at the right moment.', accent:'#f97316', avatar:'', kpi:['6x','97%','30m'] },
+      { current:'Release Engineer', future:'Release Agent', copy:'Coordinate release readiness with less manual handoff.', scope:'Readiness checks, change signals, and release flow.', account:'Coordinate release readiness with less manual handoff.', accent:'#ec4899', avatar:'', kpi:['12x','0ms','99%'] }
+    ];
+    const list=document.querySelector('#role-list');
+    roles.forEach((role,index)=>{ const button=document.createElement('button'); button.className='role-button compact'; button.type='button'; button.dataset.index=index; button.textContent=role.current; button.addEventListener('click',()=>selectRole(index)); list.appendChild(button); });
+    document.querySelector('#overview-body').innerHTML=roles.map(role=>`<tr><td>${role.future}</td><td>${role.copy}</td><td>${role.scope}</td></tr>`).join('');
+    const guardrails=[
+      ['Design Principle','The design principle keeps AI embedded in the delivery flow, with people accountable for the outcome.'],
+      ['Rule of 5','Keep the delivery rhythm simple: make the next decision visible and limit unnecessary complexity.'],
+      ['AI-enabled Tools & Checks','Use tools and checks to surface quality signals while work is still moving.'],
+      ['3 Amigos','Align value, behaviour, and implementation early with the right perspectives in the room.'],
+      ['SDP','A shared delivery path turns intent into a consistent, traceable flow.'],
+      ['BDD','Behaviour examples make expectations testable and outcomes easier to assure.']
+    ];
+    const guardrailGrid=document.querySelector('#guardrail-grid'); guardrails.forEach((item,index)=>{ const button=document.createElement('button'); button.className=`guardrail${index===0?' active':''}`; button.type='button'; button.textContent=item[0]; button.addEventListener('click',()=>{ document.querySelectorAll('.guardrail').forEach((node,nodeIndex)=>node.classList.toggle('active',nodeIndex===index)); document.querySelector('#guardrail-detail').textContent=item[1]; }); guardrailGrid.appendChild(button); });
+    function selectRole(index){ selectedRoleIndex=index; const role=roles[index]; document.querySelectorAll('.role-button').forEach((button,i)=>{ button.classList.toggle('active',i===index); button.setAttribute('aria-selected',i===index); }); document.querySelector('.role-button[data-index="'+index+'"]')?.scrollIntoView({block:'nearest',behavior:'smooth'}); document.querySelector('#current-title').textContent=role.current; document.querySelector('#current-copy').textContent=role.copy; document.querySelector('#future-title').textContent=role.future; document.querySelector('#evolved').textContent=`Evolved from ${role.current}.`; document.querySelector('#scope').textContent=role.scope; document.querySelector('#account').textContent=role.account; const portrait=document.querySelector('#portrait'); portrait.src=role.avatar; portrait.style.visibility=role.avatar?'visible':'hidden'; document.querySelector('.portrait-holder').style.visibility=role.avatar?'visible':'hidden'; document.querySelector('#agent-badge').textContent=`Future Agent ${String(index+1).padStart(2,'0')} · Active`; document.querySelector('#kpi-one').textContent=role.kpi[0]; document.querySelector('#kpi-two').textContent=role.kpi[1]; document.querySelector('#kpi-three').textContent=role.kpi[2]; document.querySelector('#future-panel').style.setProperty('--accent',role.accent); document.querySelector('#future-panel').style.setProperty('--glow',`${role.accent}66`); }
+    let selectedRoleIndex=1;
+    let roleTouchStart=0;
+    list.addEventListener('wheel',event=>{ event.preventDefault(); if(Math.abs(event.deltaY)<8)return; selectRole(Math.min(roles.length-1,Math.max(0,selectedRoleIndex+(event.deltaY>0?1:-1)))); },{passive:false});
+    list.addEventListener('touchstart',event=>{ roleTouchStart=event.touches[0].clientY; },{passive:true});
+    list.addEventListener('touchend',event=>{ const delta=roleTouchStart-event.changedTouches[0].clientY; if(Math.abs(delta)>24)selectRole(Math.min(roles.length-1,Math.max(0,selectedRoleIndex+(delta>0?1:-1)))); },{passive:true});
+    list.addEventListener('keydown',event=>{ if(event.key==='ArrowDown'||event.key==='ArrowRight'){ event.preventDefault(); selectRole(Math.min(roles.length-1,selectedRoleIndex+1)); } if(event.key==='ArrowUp'||event.key==='ArrowLeft'){ event.preventDefault(); selectRole(Math.max(0,selectedRoleIndex-1)); } });
+    selectRole(1);
+  </script>
+</body>
+</html>
