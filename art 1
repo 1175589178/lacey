@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI-enabled Role Evolution — HSBC</title>
+<style>
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+:root{
+  --red:#DB0011;
+  --red-d:#A5000D;
+  --white:#FFFFFF;
+  --g1:#F7F7F7;
+  --g2:#EFEFEF;
+  --line:#E3E3E3;
+  --line2:#D8D8D8;
+  --ink:#1A1A1A;
+  --ink2:#5C5C5C;
+  --muted:#8A8A8A;
+  --green:#0F7A3D;
+  --font:-apple-system,"Segoe UI","Helvetica Neue",Arial,"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+
+/* ============================================================
+   2. BASE / STAGE
+   ============================================================ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#E8E8E8;font-family:var(--font);color:var(--ink)}
+#viewport{
+  position:absolute;top:50%;left:50%;
+  width:1920px;height:1080px;
+  transform-origin:center center;
+}
+.stage{
+  width:100%;height:100%;background:var(--white);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.toprule{flex:0 0 4px;background:var(--red)}
+
+/* ============================================================
+   3. HEADER
+   ============================================================ */
+.hdr{
+  flex:0 0 62px;display:flex;align-items:center;gap:14px;
+  padding:0 22px;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:11px}
+.wordmark{font-size:19px;font-weight:700;letter-spacing:2.6px;color:var(--ink)}
+.hdr .vrule{width:1px;height:34px;background:var(--line2);margin:0 4px}
+.hdr-title{font-size:19px;font-weight:600;letter-spacing:.2px;line-height:1.1}
+.hdr-sub{font-size:9.5px;color:var(--ink2);letter-spacing:1.6px;text-transform:uppercase;margin-top:3px;font-weight:600}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:18px}
+
+.tag-internal{
+  font-size:9.5px;letter-spacing:1.6px;font-weight:700;color:var(--red);
+  border:1px solid var(--red);padding:3px 7px;white-space:nowrap;
+}
+.seg{display:flex;border:1px solid var(--line2)}
+.seg button{
+  font-family:inherit;font-size:10.5px;letter-spacing:.6px;font-weight:600;
+  padding:5px 11px;background:var(--white);color:var(--ink2);
+  border:0;cursor:pointer;transition:background .12s,color .12s;
+}
+.seg button+button{border-left:1px solid var(--line2)}
+.seg button.on{background:var(--red);color:#fff}
+.seg button:hover:not(.on){background:var(--g2)}
+
+/* minimap nav */
+.mini{position:relative;display:flex;padding-top:0}
+.mini::before{
+  content:"";position:absolute;left:30px;right:30px;top:5px;height:1px;background:var(--line2);
+}
+.mini button{
+  position:relative;z-index:1;width:70px;background:none;border:0;cursor:pointer;
+  font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:6px;padding:0;
+}
+.mini .dot{
+  width:11px;height:11px;border-radius:50%;background:#fff;
+  border:1px solid var(--line2);transition:background .12s,border-color .12s;
+}
+.mini .lbl{font-size:9px;line-height:1.15;letter-spacing:.2px;color:var(--ink2);text-align:center}
+.mini button.on .dot{background:var(--red);border-color:var(--red)}
+.mini button.on .lbl{color:var(--red);font-weight:700}
+.mini button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.mini button:hover .dot{border-color:var(--red)}
+
+/* ============================================================
+   4. VIEWS
+   ============================================================ */
+#views{flex:1 1 auto;min-height:0;position:relative;overflow:hidden}
+.view{
+  position:absolute;inset:0;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.view.on{opacity:1;transform:none;pointer-events:auto}
+
+/* shared */
+.eyebrow{
+  font-size:9.5px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;color:var(--muted);
+}
+.shead{
+  font-size:12.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding-bottom:6px;border-bottom:2px solid var(--red);margin-bottom:9px;
+}
+.ssub{font-size:10.5px;color:var(--muted);letter-spacing:.2px;margin:-5px 0 10px}
+
+/* ============================================================
+   5. OVERVIEW
+   ============================================================ */
+.ov{
+  height:100%;display:grid;grid-template-rows:minmax(0,1fr) auto auto;
+  gap:10px;padding:12px 22px 0;
+}
+.hero{display:grid;grid-template-columns:1.06fr 1fr 1fr;min-height:0}
+.hero>section{
+  min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  padding:0 20px;border-right:1px solid var(--line);
+}
+.hero>section:first-child{padding-left:0}
+.hero>section:last-child{border-right:0;padding-right:0}
+
+/* --- column 1 --- */
+.grp{margin-bottom:13px}
+.grp-h{
+  font-size:9.5px;letter-spacing:1.5px;font-weight:700;color:var(--ink2);
+  text-transform:uppercase;padding-bottom:4px;border-bottom:1px solid var(--line2);margin-bottom:6px;
+}
+.rrow{
+  display:flex;align-items:center;gap:8px;width:calc(100% + 14px);
+  margin:0 -7px;padding:5px 7px;background:none;border:1px solid transparent;
+  font-family:inherit;text-align:left;cursor:pointer;
+  transition:border-color .12s,background .12s;
+}
+.rrow:hover{border-color:var(--red);background:#FFF6F7}
+.rrow:focus-visible{outline:2px solid var(--red);outline-offset:1px}
+.chip-cur{
+  font-size:10.5px;color:var(--ink2);background:var(--g1);
+  border:1px solid var(--line2);padding:2px 7px;white-space:nowrap;
+}
+.ar{flex:0 0 auto}
+.futs{display:flex;flex-direction:column;gap:3px;min-width:0}
+.fut{display:flex;align-items:center;flex-wrap:wrap}
+.chip-fut{font-size:11.5px;font-weight:700;color:var(--ink);letter-spacing:.1px}
+.mt{
+  font-size:7.5px;letter-spacing:1px;font-weight:700;color:var(--red);
+  border:1px solid var(--red);padding:1px 4px;margin-left:6px;white-space:nowrap;
+}
+.mt.grey{color:var(--ink2);border-color:var(--line2);letter-spacing:.6px}
+
+/* --- column 2 --- */
+.quote{
+  font-size:27px;line-height:1.1;font-weight:700;letter-spacing:-.4px;
+  color:var(--red);margin:2px 0 8px;
+}
+.quote-sub{font-size:10.5px;line-height:1.5;color:var(--ink2);margin-bottom:16px}
+.omrow{margin-bottom:11px;padding-left:10px;border-left:2px solid var(--line2)}
+.omrow .k{font-size:9px;letter-spacing:1.4px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.omrow .v{font-size:11.5px;line-height:1.42;color:var(--ink);margin-top:3px}
+
+/* --- column 3 --- */
+.mrow{padding:7px 0;border-bottom:1px solid var(--line)}
+.mrow .n{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase}
+.mrow .d{font-size:9.5px;line-height:1.42;color:var(--ink2);margin-top:3px}
+.epistrip{display:flex;border:1px solid var(--line2);margin-top:9px}
+.epistrip div{
+  flex:1;padding:6px 8px;font-size:9.5px;line-height:1.3;
+  border-right:1px solid var(--line2);
+}
+.epistrip div:last-child{border-right:0}
+.epistrip .em{display:block;font-size:11px;font-weight:700;margin-bottom:2px}
+.epistrip .pos .em{color:var(--green)}
+.epistrip .nul .em{color:var(--ink2)}
+.epistrip .neg .em{color:var(--red)}
+.caution{
+  border:1px solid var(--red);background:#FFF8F8;padding:8px 10px;
+  font-size:9.5px;line-height:1.45;color:var(--ink);margin-top:9px;
+}
+
+/* --- guardrails band --- */
+.guard{
+  display:flex;border-top:2px solid var(--red);border-bottom:1px solid var(--line);
+  background:var(--g1);
+}
+.guard-h{
+  width:186px;flex:0 0 186px;padding:11px 14px;border-right:1px solid var(--line2);
+  font-size:10px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;
+  display:flex;align-items:center;line-height:1.3;
+}
+.guard-cells{flex:1;display:grid;grid-template-columns:repeat(6,1fr)}
+.guard-cells span{
+  padding:11px 14px;font-size:11.5px;font-weight:600;
+  border-right:1px solid var(--line2);display:flex;align-items:center;line-height:1.3;
+}
+.guard-cells span:last-child{border-right:0}
+
+/* --- bottom band --- */
+.bottom{
+  display:grid;grid-template-columns:1fr 76px 1fr;
+  border-top:1px solid var(--line);padding-top:12px;
+}
+.panel{border:1px solid var(--line2);padding:12px 14px;background:var(--white)}
+.panel h3{
+  font-size:11.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;
+  padding-bottom:6px;border-bottom:2px solid var(--red);margin-bottom:11px;
+}
+.pill{
+  display:flex;align-items:center;gap:9px;
+  border:1px solid var(--line2);border-left:3px solid var(--red);
+  background:var(--g1);padding:7px 11px;margin-bottom:6px;
+  font-size:11.5px;font-weight:600;line-height:1.3;
+}
+.pill:last-child{margin-bottom:0}
+.panel.big .pill{padding:20px 12px;font-size:12.5px;margin-bottom:8px}
+.arrowbig{display:flex;align-items:center;justify-content:center}
+
+/* --- footer --- */
+.ftr{
+  flex:0 0 30px;display:flex;align-items:center;gap:14px;
+  padding:0 22px;border-top:1px solid var(--line);
+  font-size:10px;color:var(--muted);letter-spacing:.2px;
+}
+.ftr .r{margin-left:auto}
+
+/* ============================================================
+   6. DETAIL VIEW
+   ============================================================ */
+.det{height:100%;display:flex;flex-direction:column;padding:12px 22px 0}
+.det-head{
+  display:flex;align-items:flex-end;gap:16px;
+  padding-bottom:9px;border-bottom:2px solid var(--red);margin-bottom:12px;
+}
+.det-head .grp-eyebrow{
+  font-size:9.5px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;
+  color:var(--red);
+}
+.det-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:4px}
+.det-title .cur{font-size:16px;color:var(--ink2);font-weight:600}
+.det-title .fut{font-size:22px;font-weight:700;letter-spacing:-.2px;color:var(--ink)}
+.det-title .fut+.fut{margin-left:2px}
+.det-head-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.autobadge{border:1px solid var(--red);padding:6px 11px;text-align:right;min-width:172px}
+.autobadge .k{font-size:8.5px;letter-spacing:1.3px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.autobadge .v{font-size:17px;font-weight:700;color:var(--red);line-height:1.15;margin-top:1px}
+.autobadge .s{font-size:9px;color:var(--ink2);margin-top:2px}
+.btn-back{
+  font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.6px;
+  background:var(--white);border:1px solid var(--line2);padding:8px 12px;
+  cursor:pointer;display:flex;align-items:center;gap:7px;color:var(--ink);
+  transition:border-color .12s,color .12s;
+}
+.btn-back:hover{border-color:var(--red);color:var(--red)}
+.btn-back:focus-visible{outline:2px solid var(--red);outline-offset:1px}
+
+.det-grid{flex:1;min-height:0;display:grid;grid-template-columns:58fr 42fr}
+.det-grid>div{min-height:0;overflow:hidden}
+.det-grid>div:first-child{padding-right:22px;border-right:1px solid var(--line)}
+.det-grid>div:last-child{padding-left:22px}
+
+.blk{margin-bottom:14px}
+.blk h4{
+  font-size:10.5px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;
+  padding-bottom:5px;border-bottom:2px solid var(--red);margin-bottom:9px;
+}
+.blk .sub-note{font-size:10px;line-height:1.45;color:var(--ink2);margin-bottom:8px}
+.direction{
+  border-left:3px solid var(--red);background:#FFF8F8;
+  padding:7px 11px;font-size:10.5px;line-height:1.45;margin-bottom:13px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{
+  font-size:10.5px;border:1px solid var(--line2);background:var(--g1);
+  padding:4px 9px;line-height:1.25;
+}
+.sub-title{
+  font-size:11px;font-weight:700;letter-spacing:.4px;margin:0 0 5px;
+}
+.sub-title .mt{margin-left:6px}
+.blk ul{list-style:none}
+.blk li{
+  position:relative;padding-left:13px;font-size:11px;line-height:1.4;margin-bottom:5px;
+}
+.blk li::before{content:"";position:absolute;left:0;top:6px;width:5px;height:5px;background:var(--red)}
+.epi-i{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+.epi-i .dir{flex:0 0 16px;padding-top:2px}
+.epi-i .nm{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.epi-i .nt{font-size:9.5px;color:var(--ink2);line-height:1.4;margin-top:2px}
+.autofig{display:flex;align-items:baseline;gap:12px}
+.autofig .val{font-size:34px;font-weight:700;color:var(--red);letter-spacing:-1px;line-height:1}
+.autofig .st{
+  font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  border:1px solid var(--red);color:var(--red);padding:3px 7px;
+}
+.autofig .st.grey{border-color:var(--line2);color:var(--ink2)}
+.auto-note{font-size:9.5px;line-height:1.45;color:var(--ink2);margin-top:8px}
+.eq-note{
+  border:1px solid var(--red);background:#FFF8F8;padding:8px 10px;
+  font-size:9.5px;line-height:1.45;margin-top:10px;
+}
+
+/* ============================================================
+   7. AGENT TABLE VIEW
+   ============================================================ */
+.agv{height:100%;display:flex;flex-direction:column;padding:12px 22px 0}
+.agv-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:10px}
+.agv-head h2{font-size:16px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  padding-bottom:5px;border-bottom:2px solid var(--red)}
+.agv-head .cnt{margin-left:auto;font-size:10px;color:var(--muted);letter-spacing:1px}
+.banner{
+  border-left:3px solid var(--red);background:var(--g1);
+  padding:9px 13px;font-size:11px;line-height:1.45;margin-bottom:11px;
+}
+.tblscroll{flex:1;min-height:0;overflow-y:auto;border:1px solid var(--line2)}
+table{width:100%;border-collapse:collapse}
+thead th{
+  position:sticky;top:0;z-index:2;
+  background:var(--ink);color:#fff;
+  font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;
+  text-align:left;padding:10px 12px;
+}
+tbody td{
+  padding:9px 12px;font-size:11px;line-height:1.4;vertical-align:top;
+  border-bottom:1px solid var(--line);
+}
+tbody td:first-child{border-left:3px solid var(--red);font-weight:700}
+tbody tr:nth-child(even){background:var(--g1)}
+tbody tr:hover{background:#FFF6F7}
+td .gtag{
+  display:inline-block;font-size:9px;letter-spacing:.8px;font-weight:700;
+  border:1px solid var(--line2);background:#fff;padding:2px 6px;text-transform:uppercase;
+}
+
+/* ============================================================
+   8. FLOW VIEW
+   ============================================================ */
+.flv{height:100%;display:flex;flex-direction:column;padding:12px 22px 0}
+.flv-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:14px}
+.flv-head h2{font-size:16px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+  padding-bottom:5px;border-bottom:2px solid var(--red)}
+.flow{display:grid;grid-template-columns:repeat(6,1fr);gap:30px;margin-bottom:14px}
+.fnode{
+  position:relative;border:1px solid var(--line2);background:#fff;
+  padding:12px;display:flex;flex-direction:column;min-height:298px;
+}
+.fnode::after{
+  content:"";position:absolute;top:44px;right:-30px;width:30px;height:2px;background:var(--red);
+}
+.fnode::before{
+  content:"";position:absolute;top:40px;right:-30px;width:0;height:0;
+  border-left:7px solid var(--red);border-top:4px solid transparent;border-bottom:4px solid transparent;
+}
+.fnode:last-child::after,.fnode:last-child::before{display:none}
+.fidx{
+  width:22px;height:22px;background:var(--red);color:#fff;
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
+  margin-bottom:9px;
+}
+.ft{font-size:12px;font-weight:700;line-height:1.3;margin-bottom:10px}
+.fmeta{margin-top:auto;border-top:1px solid var(--line);padding-top:6px;margin-bottom:6px}
+.fmeta:last-child{margin-bottom:0}
+.fmeta .fk{font-size:8.5px;letter-spacing:1.2px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.fmeta .fv{font-size:9.5px;line-height:1.38;color:var(--ink2);margin-top:2px}
+.fmeta .fv.hot{color:var(--red);font-weight:700}
+.defs{display:grid;grid-template-columns:repeat(5,1fr);border-top:2px solid var(--red);
+  border-bottom:1px solid var(--line);background:var(--g1);margin-bottom:12px}
+.defs div{padding:10px 13px;border-right:1px solid var(--line2)}
+.defs div:last-child{border-right:0}
+.defs .dk{font-size:9.5px;letter-spacing:1.2px;font-weight:700;text-transform:uppercase;margin-bottom:5px}
+.defs .dv{font-size:10px;line-height:1.42;color:var(--ink2)}
+.callout{border:1px solid var(--red);padding:11px 14px}
+.callout h4{
+  font-size:10px;letter-spacing:1.4px;font-weight:700;text-transform:uppercase;
+  color:var(--red);margin-bottom:7px;
+}
+.callout li{
+  position:relative;padding-left:13px;font-size:10.5px;line-height:1.45;margin-bottom:5px;color:var(--ink);
+}
+.callout li:last-child{margin-bottom:0}
+.callout li::before{content:"";position:absolute;left:0;top:6px;width:5px;height:5px;background:var(--red)}
+.callout ul{list-style:none}
+
+/* ============================================================
+   9. EPI & NOTES VIEW
+   ============================================================ */
+.epv{height:100%;display:grid;grid-template-columns:1fr 1fr;
+  gap:0;padding:12px 22px 0}
+.epv>div:first-child{padding-right:24px;border-right:1px solid var(--line);min-height:0;overflow:hidden}
+.epv>div:last-child{padding-left:24px;min-height:0;overflow:hidden}
+.epv h2{
+  font-size:14px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+  padding-bottom:6px;border-bottom:2px solid var(--red);margin-bottom:11px;
+}
+.ecard{border:1px solid var(--line2);border-left:3px solid var(--red);padding:10px 13px;margin-bottom:9px}
+.ecard .n{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.ecard .d{font-size:10px;line-height:1.45;color:var(--ink2);margin-top:4px}
+.olist{list-style:none}
+.olist li{
+  position:relative;padding-left:14px;font-size:11px;line-height:1.5;margin-bottom:9px;
+}
+.olist li::before{content:"";position:absolute;left:0;top:6px;width:6px;height:6px;background:var(--red)}
+.closing{
+  border:1px solid var(--line2);background:var(--g1);padding:12px 14px;
+  font-size:11.5px;line-height:1.5;font-weight:600;margin-top:4px;
+}
+
+/* ============================================================
+   10. PRINT
+   ============================================================ */
+@media print{
+  html,body{overflow:visible;height:auto;background:#fff}
+  #viewport{position:static;transform:none !important;width:1920px;height:auto}
+  .stage{height:auto;display:block;overflow:visible}
+  #views{height:auto;overflow:visible}
+  .view{
+    position:static;opacity:1 !important;transform:none !important;
+    pointer-events:auto;height:1080px;page-break-after:always;
+  }
+  .mini,.seg{display:none}
+  .tblscroll{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div class="stage">
+    <div class="toprule"></div>
+    <header class="hdr" id="hdr"></header>
+    <main id="views"></main>
+    <footer class="ftr" id="ftr"></footer>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ============================================================
+   A. i18n DICTIONARY  (single source for every visible string)
+   ============================================================ */
+const B = (en, zh) => ({ en: en, zh: zh });
+let LANG = "en";
+const L = (o) => (o && o[LANG] !== undefined) ? o[LANG] : (o && o.en) || "";
+
+const AGENT_TEAM = B("AGENT TEAM", "AGENT TEAM");
+const NEW_TAG    = B("NEW", "NEW");
+const XDOMAIN    = B("cross-domain · Delivery", "跨域 · Delivery");
+const GOVTAG     = B("governance · control", "治理 · 控制");
+
+const UI = {
+  appTitle: B("AI-enabled Role Evolution", "AI 驱动的角色演进"),
+  appSub:   B("Automated · Augmented · Assured", "自动化 · 增强 · 可验证"),
+  internal: B("INTERNAL", "内部"),
+
+  nav: {
+    overview: B("Overview", "总览"),
+    agents:   B("Agent Overview", "Agent 总览"),
+    flow:     B("Engineering Flow", "工程流程"),
+    epi:      B("EPI & Notes", "EPI 与说明")
+  },
+
+  /* ---- overview column 1 ---- */
+  col1Title: B("Role Evolution", "角色演进"),
+  col1Sub:   B("Current role → Future role / Agent team", "当前角色 → 未来角色 / Agent 团队"),
+
+  /* ---- overview column 2 ---- */
+  col2Title: B("Working Model Change", "工作模式变化"),
+  quote:     B("Less meeting. More decision-making.", "更少开会，更多决策。"),
+  quoteSub:  B(
+    "Information sync and clarification are completed early; meetings focus on key trade-offs and final decisions.",
+    "信息同步与澄清提前完成；会议只聚焦关键取舍与最终决策。"),
+  kCollab:   B("Collaboration", "协作方式"),
+  kAlloc:    B("Work allocation", "工作分配"),
+  kDecide:   B("Decision ownership", "决策归属"),
+  kMgmt:     B("Management focus", "管理重心"),
+  vCollab:   B(
+    "From meeting-based information sync → agents prepare information continuously; questions clarified asynchronously",
+    "从依赖会议的信息同步 → Agent 持续准备信息；问题异步澄清"),
+  vAlloc:    B(
+    "From manual, item-by-item execution → agents execute repeatable work; people handle judgement and exceptions",
+    "从逐项手工执行 → Agent 执行可重复工作；人处理判断与例外"),
+  vDecide:   B(
+    "AI provides options, evidence and recommendations; people retain priority, risk acceptance and final approval",
+    "AI 提供选项、证据与建议；人保留优先级、风险接受与最终批准"),
+  vMgmt:     B(
+    "From chasing tasks and attending meetings → managing delivery flow, quality, risk and outcomes",
+    "从催任务、参加会议 → 管理交付流、质量、风险与结果"),
+
+  /* ---- overview column 3 ---- */
+  col3Title: B("Effectiveness Validation", "有效性验证"),
+  col3Sub:   B("EPI — productivity improvement vs baseline", "EPI — 相对基线的生产率提升"),
+
+  metricsX: {
+    release: {
+      name: B("Release Speed", "发布速度"),
+      note: B("Define whether frequency or duration; avoid overlap with lead time to deploy — to be defined",
+              "需明确取频率还是时长；避免与 lead time to deploy 重叠 — 待定义")
+    },
+    stories: {
+      name: B("Stories Delivered per Sprint", "每 Sprint 交付故事数"),
+      note: B("Count only stories meeting acceptance and completion criteria; control for story-splitting granularity — to be defined",
+              "仅统计满足验收与完成标准的故事；需控制故事拆分粒度 — 待定义")
+    },
+    incident: {
+      name: B("Production Incident Escape Rate", "生产事故逃逸率"),
+      note: B("Define the escape event, the denominator and severity — to be defined",
+              "需定义逃逸事件、分母与严重度 — 待定义")
+    },
+    lead: {
+      name: B("Lead Time to Deploy / Change Lead Time", "Lead Time to Deploy / Change Lead Time"),
+      note: B("Define the start point through to production deployment; keep consistent with DORA — to be defined",
+              "需定义起点至生产部署的区间；与 DORA 口径保持一致 — 待定义")
+    }
+  },
+
+  epiPos: B("Positive vs baseline", "优于基线"),
+  epiNil: B("At baseline", "与基线持平"),
+  epiNeg: B("Added burden — adjust", "增加负担 — 需调整"),
+
+  caution: B(
+    "Evaluation framework to be defined — formula, weights and baseline are not yet agreed. Weigh AI tool cost plus review and rework effort, not output speed alone.",
+    "评估框架待定义 — 公式、权重与基线尚未达成一致。需计入 AI 工具成本与评审返工投入，不能只看产出速度。"),
+
+  /* ---- guardrails band ---- */
+  guardTitle: B("AI-embedded Delivery Guardrails", "AI 内嵌的交付护栏"),
+  guard: [
+    B("Design Principle", "设计原则"),
+    B("Rule of 5", "Rule of 5"),
+    B("3 Amigos", "3 Amigos"),
+    B("AI-enabled Tools & Checks", "AI 工具与检查"),
+    B("SDD", "SDD"),
+    B("BDD", "BDD")
+  ],
+
+  /* ---- bottom band ---- */
+  leftPanel:  B("Reshape Operating Model", "重塑运营模式"),
+  rightPanel: B("Effective Productivity Improvement", "有效的生产率提升"),
+  leftPills: [
+    B("Simplify Process", "简化流程"),
+    B("Fewer Handoffs", "减少交接"),
+    B("Less meetings", "更少会议"),
+    B("Continuous Decision-Making", "持续决策"),
+    B("Human + AI Collaboration", "人机协作")
+  ],
+  rightPills: [
+    B("Higher Release Speed & Higher Delivery Throughput", "更高的发布速度与交付吞吐"),
+    B("Lower Incident Escape Ratio & Lower Feature Rollback Ratio", "更低的事故逃逸率与特性回滚率")
+  ],
+
+  /* ---- footer ---- */
+  foot1: B("Source: Tun & Jane original framework  |  Layout and logic to be re-checked against the original before sign-off",
+           "来源：Tun & Jane 原始框架  |  排版与逻辑需在签署前对照原稿复核"),
+  foot2: B("Prepared for Anna — preview draft", "为 Anna 准备 — 预览草稿"),
+
+  /* ---- detail view ---- */
+  back:        B("Back to overview", "返回总览"),
+  dAgents:     B("Agent team — what the work decomposes into", "Agent 团队 — 工作如何拆解"),
+  dHuman:      B("Human decision responsibility retained", "人保留的决策责任"),
+  dOM:         B("Reshape Operating Model (this role)", "重塑运营模式（本角色）"),
+  dEPI:        B("Effective Productivity Improvement (this role)", "有效的生产率提升（本角色）"),
+  dAuto:       B("Automation ratio", "自动化比例"),
+  eqNote: B(
+    "TASK AUTOMATION RATE ≠ EFFORT SAVING ≠ JOB CHANGE — these three are different concepts and must not be treated as equivalent.",
+    "TASK AUTOMATION RATE ≠ EFFORT SAVING ≠ JOB CHANGE —— 三者是不同概念，不可等同看待。"),
+  stTarget:  B("Target assumption", "目标假设"),
+  stTbd:     B("To be assessed", "待评估"),
+  stControl: B("Not automatable — human control", "不可自动化 — 人为控制"),
+  teamFlag:  B("Future state is an Agent Team — the sub-agents below carry the work.",
+               "未来形态为 Agent 团队，下列子 Agent 承担工作。"),
+
+  /* ---- agent table view ---- */
+  agTitle: B("Future Force Agent Overview", "未来形态 Agent 总览"),
+  agBanner: B(
+    "This is the future-force agent overview; per-role sub-tasks are design proposals, not a list confirmed in the meeting.",
+    "这是未来形态的 Agent 总览；各角色的子任务属于设计提案，并非会议上已确认的清单。"),
+  thAgent:   B("Agent", "Agent"),
+  thGroup:   B("Group", "分组"),
+  thPurpose: B("Purpose", "目的"),
+  thScope:   B("Scope", "范围"),
+
+  /* ---- flow view ---- */
+  flowTitle: B("Engineering Flow — SDD + BDD + Semantic Layer", "工程流程 — SDD + BDD + Semantic Layer"),
+  fAuto:     B("Automation ratio", "自动化比例"),
+  fCtrl:     B("Human control point", "人控点"),
+  fTbd:      B("To be assessed", "待评估"),
+  defs: [
+    { k: B("Spec-driven Development", "Spec-driven Development"),
+      v: B("Define Feature Proposal, Architecture, API endpoint spec and Tasks as Markdown specs first, then let AI implement",
+           "先将 Feature Proposal、Architecture、API endpoint spec 与 Tasks 定义为 Markdown Spec，再交由 AI 实现") },
+    { k: B("Traceability", "可追溯性"),
+      v: B("Link requirement ↔ spec ↔ task ↔ code ↔ test; manage spec changes together with code changes",
+           "串联 需求 ↔ Spec ↔ 任务 ↔ 代码 ↔ 测试；Spec 变更与代码变更一并管理") },
+    { k: B("BDD", "BDD"),
+      v: B("Given / When / Then to make business behaviour and acceptance criteria explicit, reducing AI misreading of business intent",
+           "用 Given / When / Then 明确业务行为与验收标准，降低 AI 对业务意图的误读") },
+    { k: B("Semantic Layer Engineer", "Semantic Layer Engineer"),
+      v: B("Owns business terminology, rules, constraints and their consistency so AI has an explicit business understanding",
+           "负责业务术语、规则、约束及其一致性，使 AI 对业务有明确理解") },
+    { k: B("Human-AI Pair Developer", "Human-AI Pair Developer"),
+      v: B("Implements from spec with AI; owns code comprehension, review, integration and engineering quality",
+           "与 AI 一起按 Spec 实现；负责代码理解、评审、集成与工程质量") }
+  ],
+  corrTitle: B("Terminology corrections / to confirm", "术语更正 / 待确认"),
+  corr: [
+    B("Spec-driven Development is abbreviated SDD — the transcript used \"SSD\"; align with Tun before the formal version.",
+      "Spec-driven Development 的缩写是 SDD —— 记录稿中使用了 “SSD”；正式版本前需与 Tun 对齐。"),
+    B("BDD = Behavior-driven Development, not \"Business Definition Document\".",
+      "BDD = Behavior-driven Development，不是 “Business Definition Document”。"),
+    B("\"Web coding\" in context is most likely \"vibe coding\" — to confirm.",
+      "上下文中的 “Web coding” 很可能是 “vibe coding” —— 待确认。")
+  ],
+
+  /* ---- EPI view ---- */
+  epiTitle:   B("EPI Evaluation Framework", "EPI 评估框架"),
+  epiBanner:  B("Framework to be defined — no agreed formula, weights or baseline.",
+                "框架待定义 —— 公式、权重与基线均未确认。"),
+  notesTitle: B("Open items to confirm", "待确认事项"),
+  openItems: [
+    B("The \"40% actually represents about 90%\" phrasing from the notes is unclear — confirm with Tun and do NOT adopt it as a conversion rule.",
+      "记录中 “40% 实际上代表约 90%” 的表述含义不清 —— 需与 Tun 确认，且不要把它当作换算规则采用。"),
+    B("The 95% figure is a target assumption, not a measurement.",
+      "95% 这一数字是目标假设，不是实测结果。"),
+    B("Task automation rate, effort saving and job-change are three different things and must not be equated.",
+      "任务自动化率、工作量节省与岗位变化是三件不同的事，不可等同。"),
+    B("Tun & Jane's original diagram remains the alignment basis; the layout and logic must be re-checked against it.",
+      "Tun & Jane 的原始图仍是对齐基准；排版与逻辑必须对照原图复核。")
+  ],
+  closing: B(
+    "Anna should be able to answer three questions in one screen: whose work has changed, how the team now operates, and what proves the change is worth it.",
+    "Anna 应能在一屏之内回答三个问题：谁的工作发生了变化、团队如今如何运作、以及什么能证明这一变化值得。")
+};
+
+/* ============================================================
+   B. GROUPS
+   ============================================================ */
+const GROUPS = {
+  biz: B("Business & Experience", "业务与体验"),
+  eng: B("Engineering & Quality", "工程与质量"),
+  ops: B("Delivery & Operations", "交付与运营")
+};
+
+/* ============================================================
+   C. ROLE CONTENT (all translatable text lives in UI.roles)
+   ============================================================ */
+UI.roles = {
+  ba: {
+    direction: B("Stated target direction: a standalone BA role may not be retained long term; execution work is carried by the agent team.",
+                 "明确的目标方向：独立的 BA 角色长期可能不再保留；执行类工作由 Agent 团队承担。"),
+    sub: [{
+      title: null,
+      note: B("Future state is an Agent Team — the sub-agents below carry the work.",
+              "未来形态为 Agent 团队，下列子 Agent 承担工作。"),
+      agents: [B("Requirement capture","需求捕获"), B("Requirement clarification","需求澄清"),
+               B("Story breakdown","故事拆分"), B("Acceptance criteria","验收标准"),
+               B("Requirement traceability","需求追溯")]
+    }],
+    human: [B("Business intent","业务意图"), B("Scope trade-offs","范围取舍"),
+            B("Prioritisation","优先级排序"), B("Acceptance of business outcomes","业务结果验收")],
+    om: {
+      collaboration: B("Agents continuously consolidate requirement inputs and raise clarifying questions asynchronously",
+                       "Agent 持续汇总需求输入，异步提出澄清问题"),
+      allocation: B("Agents run the repeatable analysis; humans handle judgement and exceptions",
+                    "Agent 执行可重复分析；人处理判断与例外"),
+      decision: B("AI supplies options and evidence; humans keep priority and final approval",
+                  "AI 提供选项与证据；人保留优先级与最终批准"),
+      mgmt: B("Manage the delivery flow and outcomes rather than the task list",
+              "管理交付流与结果，而非任务清单")
+    },
+    epi: [
+      { k: "stories", d: "up", note: B("More stories complete per sprint once analysis is continuously available.",
+                                       "分析持续可用后，每 Sprint 完成的故事更多。") },
+      { k: "lead", d: "down", note: B("Less waiting for clarification between discovery and build.",
+                                      "从需求发现到开发的等待减少。") }
+    ],
+    auto: { value: B("~95%","~95%"), status: "target",
+            note: B("Applies to requirement analysis only — Tun's stated target assumption, NOT a measured result.",
+                    "仅适用于需求分析 —— Tun 提出的目标假设，并非实测结果。") }
+  },
+
+  ux: {
+    sub: [{
+      title: null, note: null,
+      agents: [B("User insight synthesis","用户洞察综合"), B("Journey analysis","旅程分析"),
+               B("UI option generation","UI 方案生成"), B("Accessibility checks","无障碍检查")]
+    }],
+    human: [B("Experience judgement","体验判断"), B("Brand and design ownership","品牌与设计所有权"),
+            B("Final design decisions","最终设计决策")],
+    om: {
+      collaboration: B("Agents synthesize research and produce option sets before reviews",
+                       "Agent 在评审前完成研究综合与方案集"),
+      allocation: B("Agents generate and check variants; humans choose and refine",
+                    "Agent 生成与检查方案变体；人做选择与打磨"),
+      decision: B("Designers own the final experience decision",
+                  "设计师拥有最终体验决策权"),
+      mgmt: B("Manage experience quality and consistency, not screen count",
+              "管理体验质量与一致性，而非页面数量")
+    },
+    epi: [
+      { k: "release", d: "up", note: B("Fewer design round trips.","设计返工轮次减少。") },
+      { k: "incident", d: "down", note: B("Accessibility and usability issues are caught earlier.",
+                                          "无障碍与可用性问题更早暴露。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  arch: {
+    direction: B("Newly positioned role, cross-cutting Business & Experience with Engineering & Quality — previously missing from the map.",
+                 "新增定位的角色，横跨业务与体验、工程与质量两个分组 —— 此前未在图中体现。"),
+    sub: [{
+      title: null, note: null,
+      agents: [B("Architecture option generation","架构方案生成"), B("Risk and trade-off analysis","风险与取舍分析"),
+               B("Engineering guardrail definition","工程护栏定义"), B("ADR drafting","ADR 起草")]
+    }],
+    human: [B("Architecture decisions","架构决策"), B("Risk acceptance","风险接受"),
+            B("Standards","标准")],
+    om: {
+      collaboration: B("Agents keep architecture context, constraints and ADR drafts current",
+                       "Agent 持续维护架构上下文、约束与 ADR 草稿"),
+      allocation: B("Agents enumerate options and analyse trade-offs; humans decide",
+                    "Agent 枚举方案并分析取舍；人做决策"),
+      decision: B("Architects own the decision and the risk acceptance",
+                  "架构师拥有决策与风险接受"),
+      mgmt: B("Manage architectural integrity and standards across teams",
+              "跨团队管理架构完整性与标准")
+    },
+    epi: [
+      { k: "incident", d: "down", note: B("Architectural risks surface before build.","架构风险在开发前暴露。") },
+      { k: "rollback", d: "down", note: B("Fewer feature rollbacks from design-level gaps.",
+                                          "因设计层缺口导致的特性回滚更少。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  tl: {
+    sub: [{
+      title: null, note: null,
+      agents: [B("Design evaluation","设计评估"), B("Quality and engineering guardrails","质量与工程护栏"),
+               B("Trade-off recommendations","取舍建议"), B("Review orchestration","评审编排")]
+    }],
+    human: [B("Humans approve decisions","由人批准决策"), B("Technical risk and standards","技术风险与标准")],
+    om: {
+      collaboration: B("Agents prepare design reviews with evidence and open questions",
+                       "Agent 带证据与待决问题准备设计评审"),
+      allocation: B("Agents run checks and summarize trade-offs; humans decide",
+                    "Agent 运行检查并汇总取舍；人做决策"),
+      decision: B("Tech Leads own technical decisions and risk",
+                  "Tech Lead 拥有技术决策与风险"),
+      mgmt: B("Manage engineering quality and flow, not status chasing",
+              "管理工程质量与流动，而非追进度")
+    },
+    epi: [
+      { k: "incident", d: "down", note: B("Design and guardrail gaps are caught in review.",
+                                          "设计与护栏缺口在评审中被拦截。") },
+      { k: "rollback", d: "down", note: B("Fewer late rollbacks from unmanaged trade-offs.",
+                                          "因取舍失管导致的后期回滚更少。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  dev: {
+    sub: [
+      {
+        title: B("Semantic Layer Engineer","Semantic Layer Engineer"),
+        note: B("Owns business terminology, rules and constraints and their consistency so AI has an unambiguous business understanding.",
+                "负责业务术语、规则、约束及其一致性，使 AI 对业务有明确无歧义的理解。"),
+        agents: [B("Business glossary","业务术语表"), B("Semantic models and measures","语义模型与指标"),
+                 B("Metadata","元数据"), B("Lineage","血缘"), B("Consistency checks","一致性检查")]
+      },
+      {
+        title: B("Human-AI Pair Developer","Human-AI Pair Developer"),
+        note: B("Implements from spec with AI; owns code comprehension, review, integration and engineering quality.",
+                "与 AI 一起按 Spec 实现；负责代码理解、评审、集成与工程质量。"),
+        agents: [B("Implementation from spec","按 Spec 实现"), B("Code review","代码评审"),
+                 B("Unit tests","单元测试"), B("Documentation consistency checks","文档一致性检查")]
+      }
+    ],
+    human: [B("Understand and own the code","理解并拥有代码"), B("Review","评审"),
+            B("Integrate","集成"), B("Own release quality","负责发布质量")],
+    om: {
+      collaboration: B("Spec and semantic definitions carry context; questions are resolved in the spec, not in meetings",
+                       "Spec 与语义定义承载上下文；问题在 Spec 中解决，而不是在会议里"),
+      allocation: B("Agents implement the repeatable parts; humans own review and integration",
+                    "Agent 实现可重复部分；人负责评审与集成"),
+      decision: B("Engineers own the code and the release quality decision",
+                  "工程师拥有代码与发布质量决策"),
+      mgmt: B("Manage spec quality and flow, not line counts",
+              "管理 Spec 质量与流动，而非代码行数")
+    },
+    epi: [
+      { k: "release", d: "up", note: B("Higher release speed driven by spec-first implementation.",
+                                       "Spec 先行带来的更高发布速度。") },
+      { k: "stories", d: "up", note: B("Higher delivery throughput per sprint.",
+                                       "每 Sprint 交付吞吐更高。") },
+      { k: "rollback", d: "down", note: B("Fewer feature rollbacks through semantic consistency.",
+                                          "语义一致性带来的更少特性回滚。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  qa: {
+    sub: [{
+      title: null,
+      note: B("Expanded from a single test agent into a team covering test DESIGN, EXECUTION, DEFECT ANALYSIS and QUALITY EVIDENCE.",
+              "由单一测试 Agent 扩展为覆盖测试设计、执行、缺陷分析与质量证据的团队。"),
+      agents: [B("Test scenario generation","测试场景生成"), B("Regression execution","回归执行"),
+               B("Defect analysis","缺陷分析"), B("Quality evidence packaging","质量证据打包")]
+    }],
+    human: [B("Risk-based test strategy","基于风险的测试策略"),
+            B("Release quality sign-off","发布质量签署")],
+    om: {
+      collaboration: B("Agents publish coverage and evidence continuously; humans set the risk focus",
+                       "Agent 持续发布覆盖与证据；人设定风险重点"),
+      allocation: B("Agents execute and analyse; humans own strategy and sign-off",
+                    "Agent 执行与分析；人负责策略与签署"),
+      decision: B("QA owns the release quality recommendation; business owns acceptance",
+                  "QA 拥有发布质量建议；业务拥有验收"),
+      mgmt: B("Manage risk coverage and evidence, not test counts",
+              "管理风险覆盖与证据，而非用例数量")
+    },
+    epi: [
+      { k: "incident", d: "down", note: B("Analysis and evidence reduce escapes to production.",
+                                          "分析与证据降低逃逸到生产的缺陷。") },
+      { k: "stories", d: "up", note: B("Less manual regression time per sprint.",
+                                       "每 Sprint 的手工回归占用减少。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  devops: {
+    sub: [{
+      title: null, note: null,
+      agents: [B("CI/CD","CI/CD"), B("Configuration","配置管理"),
+               B("Environment and deployment workflows","环境与部署流程"),
+               B("Platform controls","平台管控")]
+    }],
+    human: [B("Platform standards","平台标准"), B("Risk","风险"), B("Exceptions","例外")],
+    om: {
+      collaboration: B("Pipeline state and environment facts are continuously visible",
+                       "流水线状态与环境事实持续可见"),
+      allocation: B("Agents run repeatable delivery workflows; humans handle exceptions",
+                    "Agent 执行可重复交付流程；人处理例外"),
+      decision: B("Platform owners own standards and exception approval",
+                  "平台负责人拥有标准与例外审批"),
+      mgmt: B("Manage platform reliability and standards",
+              "管理平台可靠性与标准")
+    },
+    epi: [
+      { k: "release", d: "up", note: B("More frequent, lower-risk releases.","更频繁、更低风险的发布。") },
+      { k: "incident", d: "down", note: B("Fewer environment-caused incidents.","环境导致的故障更少。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  sre: {
+    sub: [{
+      title: null, note: null,
+      agents: [B("Telemetry","遥测"), B("SLO management","SLO 管理"),
+               B("Incident analysis","事故分析"), B("Capacity and reliability analysis","容量与可靠性分析")]
+    }],
+    human: [B("Reliability targets","可靠性目标"), B("Incident command","事故指挥"),
+            B("Risk acceptance","风险接受")],
+    om: {
+      collaboration: B("Agents assemble incident timelines and evidence automatically",
+                       "Agent 自动汇总事故时间线与证据"),
+      allocation: B("Agents analyse and recommend; humans command and accept risk",
+                    "Agent 分析与建议；人指挥并接受风险"),
+      decision: B("SRE owns reliability targets and incident decisions",
+                  "SRE 拥有可靠性目标与事故决策"),
+      mgmt: B("Manage reliability outcomes, not alert volume",
+              "管理可靠性结果，而非告警数量")
+    },
+    epi: [
+      { k: "incident", d: "down", note: B("Faster detection and analysis shorten impact.",
+                                          "更快的发现与分析缩短影响时间。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  sm: {
+    sub: [{
+      title: null,
+      note: B("This is the clearest case of \"Less meeting. More decision-making.\" — information sync and clarification happen before the meeting, the meeting decides.",
+              "这是 “更少开会、更多决策” 最典型的场景 —— 信息同步与澄清在会前完成，会议只做决策。"),
+      agents: [B("Ceremonies","仪式活动"), B("Flow metrics","流动指标"),
+               B("Blocker exposure","阻塞暴露"), B("Recommendations","建议")]
+    }],
+    human: [B("Teams retain decisions","团队保留决策权"), B("Coach","教练"),
+            B("Remove impediments","清除障碍"), B("Own team health","负责团队健康度")],
+    om: {
+      collaboration: B("Agents prepare flow facts and blockers before each ceremony",
+                       "Agent 在每次仪式前准备流动事实与阻塞"),
+      allocation: B("Agents prepare and track; humans coach and decide",
+                    "Agent 准备与跟踪；人做教练与决策"),
+      decision: B("Teams own decisions; the Scrum Master owns the process",
+                  "团队拥有决策；Scrum Master 拥有流程"),
+      mgmt: B("Manage flow and team health, not attendance",
+              "管理流动与团队健康度，而非出勤")
+    },
+    epi: [
+      { k: "stories", d: "up", note: B("More decision time per ceremony.","每次仪式的决策时间更多。") },
+      { k: "lead", d: "down", note: B("Blockers surface earlier, shortening lead time.",
+                                      "阻塞更早暴露，缩短前置时间。") }
+    ],
+    auto: { value: B("—","—"), status: "tbd", note: null }
+  },
+
+  rel: {
+    sub: [{
+      title: null,
+      note: B("Future state is an Agent
