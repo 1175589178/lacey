@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI-enabled Role Evolution | HSBC</title>
+<style>
+/* ===== 1. TOKENS ===== */
+:root{
+  --red:#DB0011; --red-dk:#A5000D; --red-soft:#FDECEE; --red-line:#F3C3C8;
+  --ink:#111214; --ink2:#54595F; --ink3:#8B9198;
+  --bg:#F4F4F6; --card:#FFFFFF; --line:#E6E7EA; --line2:#D9DBDF;
+  --ok:#0B6B45; --ok-soft:#E9F4EE; --warn:#8A5A00; --warn-soft:#FBF3E4;
+  --r-lg:18px; --r:14px; --r-sm:10px; --r-pill:999px;
+  --sh:0 1px 2px rgba(17,18,20,.04), 0 8px 24px rgba(17,18,20,.06);
+  --sh-2:0 2px 6px rgba(17,18,20,.06), 0 18px 44px rgba(17,18,20,.10);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --f:-apple-system,"Segoe UI","Helvetica Neue",Arial,"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#E8E8EB}
+body{font-family:var(--f);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.4}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:6px}
+.stage{position:absolute;top:50%;left:50%;width:1920px;height:1080px;background:var(--bg);
+  transform:translate(-50%,-50%) scale(1);transform-origin:center center;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.28)}
+
+/* ===== 2. MOTION ===== */
+@keyframes fx-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fx-pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes fx-slide{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+@keyframes fx-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fx-fade{from{opacity:0}to{opacity:1}}
+.view .a-up,.view .a-pop,.view .a-slide{opacity:0}
+.view.on .a-up{animation:fx-up .5s var(--ease) both;animation-delay:var(--d,0ms)}
+.view.on .a-pop{animation:fx-pop .42s var(--ease) both;animation-delay:var(--d,0ms)}
+.view.on .a-slide{animation:fx-slide .42s var(--ease) both;animation-delay:var(--d,0ms)}
+.rrow .conn i{transform:scaleX(0);transform-origin:left}
+.view.on .rrow .conn i{animation:fx-grow .55s var(--ease) both;animation-delay:var(--d,0ms)}
+.rrow .conn b{opacity:0}
+.view.on .rrow .conn b{animation:fx-fade .3s ease both;animation-delay:calc(var(--d,0ms) + 330ms)}
+.rrow .futwrap{opacity:0}
+.view.on .rrow .futwrap{animation:fx-pop .38s var(--ease) both;animation-delay:calc(var(--d,0ms) + 300ms)}
+.rrow .dots{opacity:0}
+.view.on .rrow .dots{animation:fx-fade .4s ease both;animation-delay:calc(var(--d,0ms) + 420ms)}
+.arrowline{transform:scaleX(0);transform-origin:left}
+.view.on .arrowline{animation:fx-grow .55s var(--ease) both;animation-delay:.62s}
+.arrowhead{opacity:0}
+.view.on .arrowhead{animation:fx-fade .4s ease both;animation-delay:.98s}
+
+/* ===== 3. HEADER ===== */
+.redbar{height:5px;background:var(--red);flex:0 0 auto}
+.head{display:flex;align-items:center;gap:22px;padding:13px 26px 12px;background:#fff;
+  border-bottom:1px solid var(--line);flex:0 0 auto}
+.brand{display:flex;align-items:center;gap:10px}
+.wordmark{font-size:19px;font-weight:800;letter-spacing:.11em}
+.tblock{flex:1;min-width:0}
+.tblock h1{margin:0;font-size:29px;font-weight:700;letter-spacing:-.022em;line-height:1.15}
+.sub{margin:3px 0 0;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+.tagint{font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red);
+  border:1px solid var(--red-line);background:var(--red-soft);padding:5px 11px;border-radius:var(--r-pill);flex:0 0 auto}
+.nav{display:flex;gap:4px;background:#F1F1F4;padding:4px;border-radius:var(--r-pill);flex:0 0 auto}
+.nav button{padding:7px 15px;font-size:12px;font-weight:700;color:var(--ink2);border-radius:var(--r-pill);
+  transition:background .18s var(--ease),color .18s var(--ease),box-shadow .18s var(--ease)}
+.nav button:hover{color:var(--ink)}
+.nav button.on{background:var(--red);color:#fff;box-shadow:0 3px 10px rgba(219,0,17,.28)}
+.nav .num{opacity:.55;margin-right:5px;font-size:10px}
+
+/* ===== 4. VIEW FRAME ===== */
+main{position:relative;flex:1 1 auto;min-height:0;min-width:0}
+.view{position:absolute;inset:0;display:flex;flex-direction:column;gap:14px;padding:16px 26px 0;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .26s var(--ease),transform .26s var(--ease)}
+.view.on{opacity:1;transform:none;pointer-events:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh)}
+.cardhead{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;padding:14px 20px 12px;
+  border-bottom:1px solid var(--line)}
+.eyebrow{display:block;font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+h2{margin:0;font-size:17px;font-weight:700;letter-spacing:-.012em}
+.psub{display:block;margin-top:3px;font-size:11.5px;color:var(--ink3)}
+.note{font-size:11px;color:var(--ink3);line-height:1.45}
+
+/* ===== 5. OVERVIEW ===== */
+.ovgrid{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1fr 700px;gap:16px}
+.mapcard{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end;max-width:640px}
+.legend .lt{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink3)}
+.legend .li{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--ink2)}
+.mcolhead{display:grid;grid-template-columns:200px 1fr 424px 132px;gap:0;padding:9px 20px 7px;
+  font-size:9px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--ink3)}
+.rmap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:6px;padding:0 20px 16px}
+.gband{display:flex;align-items:center;gap:11px;padding:2px 0 0;flex:0 0 auto}
+.gchip{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--red);
+  background:var(--red-soft);border:1px solid var(--red-line);padding:4px 12px;border-radius:var(--r-pill);white-space:nowrap}
+.gband i{flex:1;height:0;border-top:1px solid var(--line2)}
+.gcount{font-size:10px;color:var(--ink3);white-space:nowrap}
+.rrow{display:grid;grid-template-columns:200px 1fr 424px 132px;align-items:center;flex:1 1 auto;min-height:56px;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:0 14px 0 14px;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease),transform .18s var(--ease)}
+.rrow:hover{border-color:var(--red);box-shadow:var(--sh-2);transform:translateY(-2px)}
+.cur{justify-self:start;background:#F1F1F4;border-radius:var(--r-pill);padding:6px 14px;
+  font-size:13px;font-weight:700;color:var(--ink2);white-space:nowrap;transition:background .18s var(--ease),color .18s var(--ease)}
+.rrow:hover .cur{background:var(--red-soft);color:var(--red-dk)}
+.conn{display:flex;align-items:center;padding-right:14px}
+.conn i{flex:1;height:0;border-top:2px dashed var(--red-line)}
+.conn b{width:0;height:0;border-left:8px solid var(--red);border-top:5px solid transparent;border-bottom:5px solid transparent}
+.futwrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fut{background:var(--red-soft);border:1px solid var(--red-line);border-left:4px solid var(--red);
+  color:var(--ink);padding:6px 13px;border-radius:var(--r-sm);font-size:13.5px;font-weight:700;
+  letter-spacing:-.008em;white-space:nowrap;line-height:1.25}
+.mtag{font-size:8.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  padding:3px 8px;border-radius:var(--r-pill);border:1px solid var(--line2);color:var(--ink3);
+  background:#fff;white-space:nowrap}
+.mtag.red{border-color:var(--red-line);color:var(--red);background:var(--red-soft)}
+.mtag.dark{border-color:#C9CCD1;color:var(--ink2);background:#F1F1F4}
+.dots{display:flex;gap:5px;justify-content:flex-start}
+.dot{width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:7.5px;font-weight:800;border:1px solid var(--line2);color:var(--ink3);background:#fff}
+.dot.core{background:var(--red);border-color:var(--red);color:#fff}
+.dot.sup{border-color:var(--red-line);color:var(--red-dk);background:var(--red-soft)}
+.dot.na{color:#A3A9B1;background:#F1F1F4;border-color:#DDDFE3}
+.ovright{display:flex;flex-direction:column;gap:16px;min-height:0}
+.ovright .card{padding:15px 20px 17px;display:flex;flex-direction:column}
+#panelEPI{justify-content:space-between}
+.phead{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.pnum{flex:0 0 auto;width:30px;height:30px;border-radius:var(--r-pill);background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;letter-spacing:.04em}
+.pills{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pillb{border:1px solid var(--line2);background:#fff;padding:11px 9px;border-radius:var(--r-pill);
+  display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;line-height:1.3;font-weight:700;color:var(--ink);
+  transition:border-color .18s var(--ease),background .18s var(--ease),transform .18s var(--ease)}
+.pillb:hover{border-color:var(--red);background:var(--red-soft);transform:translateY(-1px)}
+.quote{margin-top:auto;padding-top:13px}
+.quote b{display:block;font-size:19px;font-weight:800;color:var(--red);letter-spacing:-.02em}
+.quote span{display:block;margin-top:4px;font-size:11.5px;color:var(--ink2)}
+.benefits{display:flex;flex-direction:column;gap:9px}
+.benefit{display:flex;gap:11px;align-items:flex-start;background:#F8F8FA;border:1px solid var(--line);
+  border-radius:var(--r);padding:14px 15px;transition:border-color .18s var(--ease),background .18s var(--ease)}
+.benefit:hover{border-color:var(--red-line);background:var(--red-soft)}
+.benefit .bd{flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:var(--red);margin-top:5px}
+.benefit span{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.35}
+.divider{display:flex;align-items:center;gap:11px;margin:15px 0 11px}
+.divider span{font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);white-space:nowrap}
+.divider i{flex:1;height:0;border-top:1px solid var(--line2)}
+.metrics{display:flex;flex-direction:column;gap:7px}
+.mrow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;
+  border:1px solid var(--line);border-radius:var(--r-sm);padding:12px 14px}
+.mrow b{font-size:12.5px;font-weight:700}
+.chipst{font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;
+  border-radius:var(--r-pill);background:#FBF6EC;color:#8A6A20;border:1px solid #EFE0C2;white-space:nowrap}
+.scale{display:flex;gap:7px;margin-top:11px}
+.scale span{flex:1;text-align:center;font-size:11px;font-weight:700;padding:11px 6px;border-radius:var(--r-sm);
+  border:1px solid var(--line2);background:#fff;white-space:nowrap}
+.scale .up{background:var(--ok-soft);border-color:#BFDCCB;color:var(--ok)}
+.scale .eq{background:#F5F5F7;color:var(--ink2)}
+.scale .dn{background:var(--red-soft);border-color:var(--red-line);color:var(--red-dk)}
+.caution{margin:12px 0 0;font-size:10.5px;color:var(--ink3);line-height:1.45;
+  border-left:3px solid var(--red-line);padding-left:10px}
+
+/* ===== 6. AI EMBED MATRIX ===== */
+.mxwrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:14px}
+.banner{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);
+  border-left:4px solid var(--red);border-radius:var(--r);padding:11px 16px;font-size:12px;color:var(--ink2);box-shadow:var(--sh)}
+.banner b{color:var(--ink)}
+table.mx{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px}
+table.mx th,table.mx td{padding:0 12px}
+table.mx thead th{background:#1A1B1E;color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.11em;
+  text-transform:uppercase;text-align:center;padding:12px 8px;vertical-align:bottom;line-height:1.35}
+table.mx thead th:first-child{text-align:left;border-radius:var(--r) 0 0 0;width:236px}
+table.mx thead th:nth-child(2){width:150px}
+table.mx thead th:last-child{border-radius:0 var(--r) 0 0}
+table.mx tbody td{border-bottom:1px solid var(--line);text-align:center;height:58px;background:#fff}
+table.mx tbody tr:last-child td{border-bottom:0}
+table.mx tbody td:first-child{text-align:left;font-weight:700;font-size:13px}
+table.mx tbody td:nth-child(2){text-align:left}
+table.mx tr.gsep td{background:#F7F7F9;height:38px;vertical-align:middle}
+table.mx tr.gsep td:first-child{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+table.mx tbody tr.r:hover td{background:#FCFCFD}
+table.mx tbody tr.r:hover td:first-child{color:var(--red-dk)}
+.cell{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;
+  font-size:11px;font-weight:800}
+.cell.C{background:var(--red);color:#fff}
+.cell.S{border:1.5px solid var(--red-line);color:var(--red-dk);background:var(--red-soft)}
+.cell.N{border:1px solid #DDDFE3;color:#A3A9B1;background:#F1F1F4;font-weight:800;font-size:14px}
+.legendbar{display:flex;align-items:center;gap:20px;padding:12px 20px;border-top:1px solid var(--line);
+  background:#fff;border-radius:0 0 var(--r-lg) var(--r-lg);flex:0 0 auto}
+.legendbar .li{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2)}
+.mxtablecard{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh)}
+.mxscroll{flex:1 1 auto;min-height:0;overflow:auto}
+.mxscroll::-webkit-scrollbar{width:10px}
+.mxscroll::-webkit-scrollbar-thumb{background:#CFCFD4;border-radius:99px}
+
+/* ===== 7. AGENT TABLE ===== */
+.agwrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:14px;justify-content:center}
+.agcard{flex:0 0 auto;display:flex;flex-direction:column;overflow:hidden;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh)}
+.agscroll{flex:1 1 auto;min-height:0;overflow-y:auto}
+.agscroll::-webkit-scrollbar{width:10px}
+.agscroll::-webkit-scrollbar-thumb{background:#CFCFD4;border-radius:99px}
+table.ag{border-collapse:separate;border-spacing:0;width:100%;font-size:12.5px}
+table.ag thead th{position:sticky;top:0;z-index:2;background:#1A1B1E;color:#fff;font-size:9.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;text-align:left;padding:15px 18px}
+table.ag tbody td{padding:18px 18px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink2);line-height:1.5;font-size:13px}
+table.ag tbody tr{transition:background .16s var(--ease)}
+table.ag tbody tr:hover{background:#FCF7F7}
+table.ag tbody td:first-child{width:240px;font-weight:700;color:var(--ink);font-size:13.5px}
+table.ag tbody td:nth-child(2){width:170px}
+table.ag tbody td:nth-child(3){width:34%}
+.gpill{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  padding:4px 10px;border-radius:var(--r-pill);background:#F1F1F4;color:var(--ink2);border:1px solid var(--line2);white-space:nowrap}
+.gpill.biz{background:var(--red-soft);color:var(--red-dk);border-color:var(--red-line)}
+.gpill.eng{background:#EEF2F6;color:#33506B;border-color:#D3DEE8}
+.gpill.del{background:var(--ok-soft);color:var(--ok);border-color:#C4DFD1}
+
+/* ===== 8. FLOW ===== */
+.flwrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;gap:15px;justify-content:center}
+.flowgrid{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:206px;gap:14px}
+.fnode{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:17px 19px;
+  display:flex;flex-direction:column;justify-content:flex-start;box-shadow:var(--sh);position:relative;
+  transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.fnode:hover{border-color:var(--red-line);box-shadow:var(--sh-2)}
+.fnode .ni{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;
+  border-radius:var(--r-pill);background:var(--red);color:#fff;font-size:12px;font-weight:800}
+.fnode b{display:block;font-size:17.5px;font-weight:700;margin:12px 0 0;line-height:1.3;letter-spacing:-.014em}
+.ftags{margin-top:auto}
+.fnode .ftag{border-top:1px solid var(--line);padding-top:9px;margin-top:10px}
+.ftl{display:block;font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--ink3)}
+.ftv{display:block;margin-top:3px;font-size:12.5px;color:var(--ink2);line-height:1.45}
+.assume{color:var(--red);font-weight:800}
+.farw,.fard{position:absolute;width:24px;height:24px;border-radius:50%;background:#fff;
+  border:1.5px solid var(--red-line);display:flex;align-items:center;justify-content:center;z-index:3;
+  font-size:13px;font-weight:800;color:var(--red);box-shadow:0 3px 8px rgba(17,18,20,.10)}
+.farw{right:-13px;top:50%;transform:translateY(-50%)}
+.fard{bottom:-13px;left:50%;transform:translateX(-50%)}
+.defs{flex:0 0 auto;display:grid;grid-template-columns:repeat(5,1fr);background:#fff;
+  border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh)}
+.def{padding:17px 19px;border-right:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-start}
+.def:last-child{border-right:0}
+.def b{display:block;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--red);margin-bottom:8px}
+.def span{font-size:12.5px;color:var(--ink2);line-height:1.55}
+.callout{flex:0 0 auto;background:#fff;border:1px solid var(--red-line);border-radius:var(--r);
+  padding:15px 19px;box-shadow:var(--sh)}
+.callout ul{margin:8px 0 0;padding-left:18px}
+.callout li{font-size:11.5px;color:var(--ink2);margin-bottom:5px;line-height:1.4}
+.callout li:last-child{margin-bottom:0}
+
+/* ===== 9. ROLE DETAIL ===== */
+.dethead{flex:0 0 auto;display:flex;align-items:center;gap:20px}
+.dethead .titles{flex:1;min-width:0}
+.dethead h2{font-size:28px;margin-top:3px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;letter-spacing:-.025em}
+.dethead .to{color:var(--red);font-weight:700}
+.dethead .fn{color:var(--red-dk)}
+.detauto{flex:0 0 auto;text-align:right;background:#fff;border:1px solid var(--line);border-radius:var(--r);
+  padding:10px 16px;box-shadow:var(--sh)}
+.detauto .av{font-size:22px;font-weight:800;color:var(--red);letter-spacing:-.02em}
+.detauto .mtag{margin-left:7px}
+.backbtn{flex:0 0 auto;font-size:12px;font-weight:700;color:var(--red-dk);background:#fff;
+  border:1px solid var(--red-line);border-radius:var(--r-pill);padding:9px 16px;
+  transition:background .18s var(--ease),box-shadow .18s var(--ease),transform .18s var(--ease)}
+.backbtn:hover{background:var(--red-soft);box-shadow:var(--sh);transform:translateX(-2px)}
+.detbody{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:1.32fr 1fr;gap:16px}
+.detbody .sec{flex:1 1 auto;min-height:fit-content;display:flex;flex-direction:column;justify-content:center}
+.detbody .sec>h3{flex:0 0 auto}
+.colin{min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.colin::-webkit-scrollbar{width:10px}
+.colin::-webkit-scrollbar-thumb{background:#CFCFD4;border-radius:99px}
+.sec{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 18px;
+  box-shadow:var(--sh);transition:border-color .18s var(--ease),box-shadow .18s var(--ease)}
+.sec:hover{border-color:var(--line2);box-shadow:var(--sh-2)}
+.sec>h3{margin:0 0 11px;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--red)}
+.sec.pale{background:#FAFAFB}
+.chipset{display:flex;flex-wrap:wrap;gap:7px}
+.acchip{background:#F6F6F8;border:1px solid var(--line);border-radius:var(--r-pill);
+  padding:6px 13px;font-size:12px;color:var(--ink2)}
+.blk+.blk{margin-top:12px;border-top:1px solid var(--line);padding-top:11px}
+.blkh{display:inline-block;font-size:12.5px;font-weight:800;color:var(--ink);background:var(--red-soft);
+  border:1px solid var(--red-line);border-left:4px solid var(--red);border-radius:var(--r-sm);padding:5px 12px}
+.blk .chipset{margin-top:9px}
+.ul{margin:0;padding-left:0;list-style:none}
+.ul li{position:relative;font-size:12.5px;color:var(--ink2);margin-bottom:8px;padding-left:20px;line-height:1.45}
+.ul li:last-child{margin-bottom:0}
+.ul li:before{content:"";position:absolute;left:2px;top:7px;width:7px;height:7px;border-radius:50%;
+  background:var(--red);opacity:.75}
+.kv{margin:0}
+.kvr{display:grid;grid-template-columns:132px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid #F0F0F2}
+.kvr:last-child{border-bottom:0}
+.kvr dt{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);padding-top:3px}
+.kvr dd{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.45}
+.dirbox{border-left:4px solid var(--red);background:var(--red-soft);border-radius:var(--r-sm);
+  padding:11px 15px;font-size:12.5px;color:var(--ink);line-height:1.45}
+.epilist{display:flex;flex-direction:column;gap:8px}
+.epirow{display:flex;align-items:center;gap:11px;background:#fff;border:1px solid var(--line);
+  border-left:4px solid var(--ok);border-radius:var(--r-sm);padding:10px 13px}
+.epirow.dn{border-left-color:var(--red)}
+.epirow .ar{font-size:16px;font-weight:800;color:var(--ok);line-height:1}
+.epirow.dn .ar{color:var(--red)}
+.epirow .mn{font-size:12.5px;font-weight:700;color:var(--ink)}
+.epirow .ms{font-size:11px;color:var(--ink3);margin-left:auto;text-align:right}
+.readlist{display:flex;flex-direction:column;gap:6px}
+.readlist span{font-size:11.5px;font-weight:700;padding:7px 12px;border-radius:var(--r-pill);border:1px solid var(--line2)}
+.readlist .up{background:var(--ok-soft);border-color:#BFDCCB;color:var(--ok)}
+.readlist .eq{background:#F5F5F7;color:var(--ink2)}
+.readlist .dn{background:var(--red-soft);border-color:var(--red-line);color:var(--red-dk)}
+.neq{margin-top:12px;background:#FFF7F7;border:1px dashed var(--red-line);border-radius:var(--r-sm);
+  padding:11px 14px;font-size:11.5px;color:var(--ink2);line-height:1.45}
+.neq b{color:var(--ink)}
+.embedlist{display:flex;flex-direction:column;gap:7px}
+.embedrow{display:flex;align-items:center;gap:11px;font-size:12.5px;color:var(--ink2)}
+
+/* ===== 10. FOOTER + PRINT ===== */
+.foot{flex:0 0 auto;height:34px;display:flex;align-items:center;justify-content:space-between;
+  gap:20px;padding:0 26px;font-size:10.5px;color:var(--ink3);border-top:1px solid var(--line);
+  background:#fff;letter-spacing:.01em}
+@media (prefers-reduced-motion: reduce){
+  .view,.view *{animation:none!important;transition:none!important;opacity:1!important;transform:none!important}
+}
+@media print{
+  html,body{overflow:visible;background:#fff;height:auto}
+  .stage{position:static;transform:none!important;width:1920px;height:auto;box-shadow:none}
+  .view{position:static;opacity:1!important;transform:none!important;pointer-events:auto;
+    page-break-after:always;padding-bottom:16px}
+  .view:not(.on){display:flex!important}
+  .nav{display:none}
+  .mxscroll,.agscroll,.colin{overflow:visible!important}
+  .mxwrap,.agwrap,.flwrap,.detbody{height:auto}
+  .view *{animation:none!important;opacity:1!important;transform:none!important}
+}
+
+
+/* ===== 11. VIEW HEADER ===== */
+.vhead{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:22px;padding:0 2px}
+.vhead h2{font-size:25px;letter-spacing:-.022em}
+.vhead .r{font-size:11.5px;color:var(--ink3);text-align:right;max-width:760px;line-height:1.45}
+.vhead .r b{color:var(--ink2)}
+
+
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="redbar"></div>
+
+  <header class="head">
+    <div class="brand">
+      <svg width="38" height="23" viewBox="0 0 40 24" aria-hidden="true">
+        <polygon points="0,0 0,24 18,12" fill="#DB0011"></polygon>
+        <polygon points="40,0 40,24 22,12" fill="#DB0011"></polygon>
+      </svg>
+      <span class="wordmark">HSBC</span>
+    </div>
+    <div class="tblock">
+      <h1>AI-enabled Role Evolution</h1>
+      <p class="sub">Automated &middot; Augmented &middot; Assured</p>
+    </div>
+    <span class="tagint">Internal</span>
+    <nav class="nav" id="nav" aria-label="Report views">
+      <button type="button" class="on" data-view="overview"><span class="num">01</span>Overview</button>
+      <button type="button" data-view="matrix"><span class="num">02</span>AI Embed</button>
+      <button type="button" data-view="agent"><span class="num">03</span>Agents</button>
+      <button type="button" data-view="flow"><span class="num">04</span>Flow</button>
+    </nav>
+  </header>
+
+  <main id="views">
+    <!-- ================= VIEW 1 : OVERVIEW ================= -->
+    <section class="view on" id="v-overview" aria-label="Overview">
+      <div class="ovgrid">
+        <div class="card mapcard">
+          <div class="cardhead">
+            <div>
+              <span class="eyebrow">Role Evolution</span>
+              <h2>Current role &nbsp;&rarr;&nbsp; Future role / Agent team</h2>
+            </div>
+            <div class="legend">
+              <span class="lt">AI embed key</span>
+              <span class="li"><span class="dot core">1</span> Design principle</span>
+              <span class="li"><span class="dot core">2</span> Rule of 5</span>
+              <span class="li"><span class="dot core">3</span> 3 Amigos</span>
+              <span class="li"><span class="dot core">4</span> AI tools &amp; checks</span>
+              <span class="li"><span class="dot core">5</span> SDD</span>
+              <span class="li"><span class="dot core">6</span> BDD</span>
+              <span class="li" style="border-left:1px solid #D9DBDF;padding-left:14px;color:#8B9198">
+                <span class="dot core">&#9679;</span> core
+                <span class="dot sup">&#9675;</span> support
+                <span class="dot na">&#8211;</span> n/a</span>
+            </div>
+          </div>
+          <div class="mcolhead">
+            <span>Current Roles</span><span></span><span>Future Force</span>
+            <span>AI embed 1&ndash;6</span>
+          </div>
+          <div class="rmap" id="rmap"></div>
+        </div>
+
+        <div class="ovright">
+          <div class="card a-up" style="--d:80ms;flex:0 0 auto">
+            <div class="phead">
+              <span class="pnum">01</span>
+              <div><h2>Reshape Operating Model</h2>
+                <span class="psub">How work is organised once agents take the repeatable part</span></div>
+            </div>
+            <div class="pills" id="pillsOM"></div>
+            <div class="quote">
+              <b>Less meeting. More decision-making.</b>
+              <span>Information sync and clarification happen before the meeting; the meeting decides.</span>
+            </div>
+          </div>
+
+          <div class="card a-up" id="panelEPI" style="--d:180ms;flex:1 1 auto;min-height:0">
+            <div class="phead">
+              <span class="pnum">02</span>
+              <div><h2>Effective Productivity Improvement</h2>
+                <span class="psub">Measured through effectiveness validation &mdash; EPI</span></div>
+            </div>
+            <div class="benefits" id="benefits"></div>
+            <div class="divider"><span>Effectiveness validation &mdash; EPI</span><i></i></div>
+            <div class="metrics" id="metrics"></div>
+            <div class="scale" id="scale"></div>
+            <p class="caution" id="caution"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ================= VIEW 2 : AI EMBED MATRIX ================= -->
+    <section class="view" id="v-matrix" aria-label="AI embed matrix">
+      <div class="mxwrap">
+        <div class="vhead a-up">
+          <div>
+            <span class="eyebrow">AI embed</span>
+            <h2>Each role carries a different set of embedded controls</h2>
+          </div>
+          <div class="r">The six guardrails are not applied uniformly. This is the full role-to-control correspondence on one page &mdash; <b>design proposal, to be confirmed with Tun</b>.</div>
+        </div>
+        <div class="mxtablecard a-up" style="--d:110ms">
+          <div class="mxscroll">
+            <table class="mx" id="mxtable"><thead></thead><tbody></tbody></table>
+          </div>
+          <div class="legendbar" id="mxlegend"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3 : AGENT OVERVIEW ================= -->
+    <section class="view" id="v-agent" aria-label="Agent overview">
+      <div class="agwrap">
+        <div class="vhead a-up">
+          <div>
+            <span class="eyebrow">Future force</span>
+            <h2>Agent overview</h2>
+          </div>
+          <div class="r">Original table retained in its own wording; the <b>Group</b> column is added in this edition. Per-role sub-agents are design proposals, not a list confirmed in the meeting.</div>
+        </div>
+        <div class="agcard a-up" style="--d:110ms">
+          <div class="agscroll">
+            <table class="ag" id="agtable"><thead></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4 : ENGINEERING FLOW ================= -->
+    <section class="view" id="v-flow" aria-label="Engineering flow">
+      <div class="flwrap">
+        <div class="vhead a-up">
+          <div>
+            <span class="eyebrow">Engineering flow</span>
+            <h2>From business intent to human release decision</h2>
+          </div>
+          <div class="r">Six stages, each annotated with an automation ratio and its human control point. Only the requirement stage carries a figure, and it is a <b>target assumption</b>.</div>
+        </div>
+        <div class="flowgrid a-up" style="--d:120ms" id="flowrow"></div>
+        <div class="defs a-up" style="--d:240ms" id="defs"></div>
+        <div class="callout a-up" style="--d:340ms">
+          <span class="eyebrow">Terminology corrections / to confirm</span>
+          <ul id="terms"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5 : ROLE DETAIL ================= -->
+    <section class="view" id="v-detail" aria-label="Role detail">
+      <div class="dethead">
+        <button type="button" class="backbtn" id="backBtn">&larr; Back to overview</button>
+        <div class="titles">
+          <span class="eyebrow" id="dtGroup"></span>
+          <h2><span id="dtCur"></span><span class="to">&rarr;</span><span class="fn" id="dtFut"></span><span id="dtTag"></span></h2>
+        </div>
+        <div class="detauto" id="dtAuto"></div>
+      </div>
+      <div class="detbody">
+        <div class="colin" id="dtLeft"></div>
+        <div class="colin" id="dtRight"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Source: Tun &amp; Jane original framework &mdash; layout and logic to be re-checked against the original diagram before sign-off</span>
+    <span>Prepared for Anna &mdash; preview draft</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================
+   1. STAGE SCALING
+   ========================================================= */
+var stage=document.getElementById('stage');
+function fitStage(){
+  var w=window.innerWidth||document.documentElement.clientWidth||1920;
+  var h=window.innerHeight||document.documentElement.clientHeight||1080;
+  if(!(w>0))w=1920; if(!(h>0))h=1080;
+  var s=Math.min(w/1920,h/1080);
+  if(!isFinite(s)||s<=0)s=1;
+  s=Math.max(0.2,Math.min(s,1.8));
+  stage.style.transform='translate(-50%,-50%) scale('+s+')';
+}
+window.addEventListener('resize',fitStage);
+if(window.ResizeObserver){try{new ResizeObserver(fitStage).observe(document.documentElement);}catch(e){}}
+
+/* =========================================================
+   2. GUARDRAILS (the six AI-embed controls)
+   C = core to the role, S = supporting, N = not applicable
+   ========================================================= */
+var GUARD=[
+ {id:'dp',   n:'Design Principle',        d:'Guardrails agreed before AI is embedded'},
+ {id:'r5',   n:'Rule of 5',               d:'Bounded change and review discipline'},
+ {id:'am',   n:'3 Amigos',                d:'Business, dev and test align before build'},
+ {id:'tools',n:'AI-enabled Tools &amp; Checks', d:'Automated gates inside the pipeline'},
+ {id:'sdd',  n:'SDD',                     d:'Spec first, then AI implements'},
+ {id:'bdd',  n:'BDD',                     d:'Given / When / Then as acceptance'}
+];
+
+/* =========================================================
+   3. ROLES  (embed = 6 chars: DesignPrinciple, RuleOf5,
+      3Amigos, Tools, SDD, BDD  ->  C core / S support / N n-a)
+   ========================================================= */
+var ROLES=[
+{id:'ba',g:'biz',embed:'C-NCSCC',tags:[{t:'Agent team',k:'red'}],
+ cur:'BA',fut:'BA Agent Team',
+ agents:['Requirement capture','Requirement clarification','Story breakdown','Acceptance criteria','Requirement traceability'],
+ human:['Business intent and scope trade-offs','Prioritisation','Acceptance of business outcomes'],
+ om:{c:'Agents continuously consolidate requirement inputs and raise clarifying questions asynchronously; humans step in on exceptions.',
+     a:'Repeatable analysis is executed by the agent team; humans handle judgement and exceptions.',
+     d:'AI supplies options and evidence; humans keep priority and final approval.',
+     f:'Manage delivery flow and outcome, not the task list.'},
+ epi:[['stories','up','Agent team lifts throughput'],['lead','down','Less waiting on requirement clarity']],
+ auto:{fig:'~95%',st:'target',note:'Requirement analysis. Stated by Tun as a target assumption, not a measured result. All other stages: to be assessed.'},
+ dir:'Target direction: a standalone BA role may not be retained long term; the execution work is carried by the agent team.'},
+
+{id:'ux',g:'biz',embed:'CSCSSC',tags:[],
+ cur:'UX Designer',fut:'AI UX Designer',
+ agents:['User insight synthesis','Journey analysis','UI option generation','Accessibility checks'],
+ human:['Experience judgement','Brand and design ownership','Final design decisions'],
+ om:{c:'Agents assemble user evidence and options; designers review and decide.',
+     a:'Research synthesis and option generation automated; design calls stay human.',
+     d:'AI proposes journeys and UI options; the designer owns the final design.',
+     f:'Manage experience outcomes, not design production volume.'},
+ epi:[['release','up','Fewer design round trips'],['incident','down','Fewer usability defects escaping']],
+ auto:{fig:'',st:'tbd'}},
+
+{id:'arch',g:'biz',embed:'CCSSCS',tags:[{t:'New',k:'red'},{t:'cross-cut · Eng & Quality',k:''}],
+ cur:'Architect',fut:'AI-assisted Architect',
+ agents:['Architecture option generation','Risk and trade-off analysis','Engineering guardrail definition','ADR drafting'],
+ human:['Architecture decisions','Risk acceptance','Standards'],
+ om:{c:'Agents prepare options and trade-offs before the review; architects decide in the review.',
+     a:'Option and impact analysis automated; decisions and standards stay human.',
+     d:'AI recommends options; the architect accepts risk and sets standards.',
+     f:'Manage architecture risk and guardrails, not document volume.'},
+ epi:[['incident','down','Earlier trade-off visibility'],['rollback','down','Fewer architectural reworks']],
+ auto:{fig:'',st:'tbd'},
+ dir:'Positioned explicitly in Business & Experience, cross-cutting Engineering & Quality — this role was missing from the previous version.'},
+
+{id:'tl',g:'eng',embed:'CCCCCC',tags:[],
+ cur:'Tech Lead',fut:'AI-assisted Tech Lead',
+ agents:['Design evaluation','Quality and engineering guardrails','Trade-off recommendations','Review orchestration'],
+ human:['Approval of decisions','Technical risk','Standards'],
+ om:{c:'Agents pre-review designs and surface risks; leads decide in the review.',
+     a:'First-pass evaluation automated; approval stays human.',
+     d:'AI gives trade-off options; the lead owns the technical call.',
+     f:'Manage quality, risk and engineering standards.'},
+ epi:[['incident','down','Risks surfaced before build'],['rollback','down','Fewer rejected changes']],
+ auto:{fig:'',st:'tbd'}},
+
+{id:'dev',g:'eng',embed:'SCCCCC',pair:true,tags:[],
+ cur:'Developer',fut:'Semantic Layer Engineer',fut2:'Human-AI Pair Developer',
+ blocks:['Semantic Layer Engineer','Human-AI Pair Developer'],
+ blockitems:[['Business glossary','Semantic models and measures','Metadata','Lineage','Consistency checks'],
+             ['Implementation from spec','Code review','Unit tests','Documentation consistency checks']],
+ human:['Understand and own the code','Review and integration','Release quality'],
+ om:{c:'Developers work from versioned specs alongside AI pairs; review is continuous, not a meeting.',
+     a:'Implementation, unit tests and documentation checks automated; judgement and integration stay human.',
+     d:'AI proposes implementations; the engineer owns comprehension and release.',
+     f:'Manage engineering quality and semantic consistency, not lines of code.'},
+ epi:[['release','up','Spec-to-build is faster'],['stories','up','Higher delivery throughput'],['rollback','down','Fewer failed changes']],
+ auto:{fig:'',st:'tbd'},
+ dir:'One current role, two future roles: the semantic layer is governed, the implementation is paired with AI. Not a single AI-augmented developer.'},
+
+{id:'qa',g:'eng',embed:'SSCCSC',tags:[{t:'Agent team',k:'red'}],
+ cur:'QA',fut:'QA Agent Team',
+ agents:['Test scenario generation','Regression execution','Defect analysis','Quality evidence packaging'],
+ human:['Risk-based test strategy','Release quality sign-off'],
+ om:{c:'Agents run the regression loop continuously and report evidence; QA reviews and escalates.',
+     a:'Scenario generation and execution automated; strategy and sign-off stay human.',
+     d:'AI supplies coverage and evidence; QA owns the quality call.',
+     f:'Manage quality risk and evidence quality, not test case count.'},
+ epi:[['incident','down','Detection moves upstream'],['stories','up','Less manual regression effort']],
+ auto:{fig:'',st:'tbd'},
+ dir:'Expanded from a single automation test agent into a team covering test design, execution, defect analysis and quality evidence.'},
+
+{id:'devops',g:'eng',embed:'CSNCSN',tags:[{t:'cross-domain · Delivery',k:''}],
+ cur:'DevOps',fut:'DevOps Agent',
+ agents:['CI/CD','Configuration','Environment and deployment workflows','Platform controls'],
+ human:['Platform standards','Risk','Exceptions'],
+ om:{c:'Agents keep pipelines and environments aligned; engineers handle exceptions.',
+     a:'Repeatable delivery work automated; platform standards stay human.',
+     d:'AI proposes changes; engineers approve platform risk.',
+     f:'Manage platform reliability and flow, not ticket handling.'},
+ epi:[['release','up','Repeatable, faster pipelines'],['incident','down','Fewer configuration escapes']],
+ auto:{fig:'',st:'tbd'}},
+
+{id:'sre',g:'eng',embed:'CSSCNN',tags:[],
+ cur:'SRE Engineer',fut:'AI Reliability Engineer',
+ agents:['Telemetry','SLO management','Incident analysis','Capacity and reliability analysis'],
+ human:['Reliability targets','Incident command','Risk acceptance'],
+ om:{c:'Agents watch telemetry and summarise incidents; engineers command and decide.',
+     a:'Detection, correlation and analysis automated; command stays human.',
+     d:'AI recommends remediation; the engineer accepts availability risk.',
+     f:'Manage reliability outcomes and error budget, not alert volume.'},
+ epi:[['incident','down','Faster detection and analysis']],
+ auto:{fig:'',st:'tbd'}},
+
+{id:'sm',g:'del',embed:'SNSSNS',tags:[{t:'Agent team',k:'red'}],
+ cur:'Scrum Master',fut:'Scrum Master Agent',
+ agents:['Ceremonies','Flow metrics','Blocker exposure','Recommendations'],
+ human:['Teams retain decisions','Coaching','Removing impediments','Team health'],
+ om:{c:'Agents surface flow data and blockers before the ceremony; the ceremony decides.',
+     a:'Facilitation logistics and metric assembly automated; coaching stays human.',
+     d:'AI exposes blockers and options; the team owns the decision.',
+     f:'Manage flow and team health, not ceremony attendance.'},
+ epi:[['stories','up','Less time lost to blockers'],['lead','down','Shorter waiting time in flow']],
+ auto:{fig:'',st:'tbd'},
+ dir:'The clearest case of Less meeting. More decision-making — sync and clarification happen before the meeting; the meeting decides.'},
+
+{id:'release',g:'del',embed:'CCSCSS',tags:[{t:'Agent team',k:'red'}],
+ cur:'Release Engineer',fut:'Release Agent',
+ agents:['Release readiness checks','Dependency mapping','Scheduling','Checklists','Deployment coordination'],
+ human:['Release approval','Risk acceptance','Scheduling trade-offs'],
+ om:{c:'Agents assemble readiness evidence; engineers run the go/no-go.',
+     a:'Checklist and dependency work automated; approval stays human.',
+     d:'AI gives release evidence; the engineer owns the release call.',
+     f:'Manage release risk and cadence, not coordination effort.'},
+ epi:[['release','up','Faster, more frequent releases'],['incident','down','Fewer release escapes']],
+ auto:{fig:'',st:'tbd'}},
+
+{id:'itso',g:'del',embed:'CCNSSN',tags:[{t:'governance · control',k:''}],
+ cur:'ITSO / IT Control',fut:'AI-assisted ITSO',
+ agents:['Service readiness assessment','Risk and control assessment','Control points over automated flows','Exception handling','Approval routing'],
+ human:['Accountable owners retain approval','Risk acceptance','Policy exceptions explicitly retained by a person'],
+ om:{c:'Agents prepare control evidence on the automated flows; accountable owners approve.',
+     a:'Assessment and evidence work automated; control and approval are not.',
+     d:'AI evidences compliance; approval stays with the accountable owner.',
+     f:'Manage control effectiveness and exceptions, not paperwork.'},
+ epi:[['incident','down','Controls visible on automated flows'],['rollback','down','Fewer uncontrolled changes']],
+ auto:{fig:'Not automatable',st:'none',note:'Control and approval points are explicitly NOT automatable. The control, exception and approval relationship with automated flows is this role\u2019s whole point.'},
+ dir:'ITSO is not duplicated as a new role; what was missing is its control, exception and approval relationship with automated flows.'}
+];
+var GROUP={biz:'Business & Experience',eng:'Engineering & Quality',del:'Delivery & Operations'};
+var GMETRIC={rollback:'Feature rollback ratio'};
+
+/* =========================================================
+   4. OPERATING MODEL / BENEFITS / EPI
+   ========================================================= */
+var PILLS=['Simplify Process','Fewer Handoffs','Less meetings','Continuous Decision-Making','Human + AI Collaboration'];
+var BENEFITS=['Higher Release Speed & Higher Delivery Throughput','Lower Incident Escape Ratio & Lower Feature Rollback Ratio'];
+var EPI=[
+ {id:'release',n:'Release speed',d:'Frequency or duration — to be defined'},
+ {id:'stories',n:'Stories delivered per sprint',d:'Acceptance-based counting — to be defined'},
+ {id:'incident',n:'Production incident escape rate',d:'Event, denominator, severity — to be defined'},
+ {id:'lead',n:'Lead time to deploy / Change lead time',d:'Aligned to DORA — to be defined'}
+];
+var SCALE=[['up','EPI &gt; 1 &nbsp;positive vs baseline'],['eq','EPI = 1 &nbsp;at baseline'],['dn','EPI &lt; 1 &nbsp;added burden']];
+var CAUTION='Framework to be defined — no agreed formula, weights or baseline. Weigh AI tool cost plus review and rework effort, not output speed alone. Secondary indicator tracked alongside EPI: feature rollback ratio.';
+
+/* =========================================================
+   5. AGENT TABLE / FLOW / TERMS / NOTES
+   ========================================================= */
+var AGENTS=[
+ {g:'biz',a:'AI requirement analyst',p:'Convert stakeholder needs into clear, testable requirements.',s:'Discovery, acceptance criteria, traceability, and human escalation.'},
+ {g:'del',a:'Scrum master Agent',p:'Support delivery cadence and expose blockers.',s:'Ceremonies, flow metrics, and recommendations; teams retain decisions.'},
+ {g:'biz',a:'AI UX Designer',p:'Generate accessible journeys and synthesize user evidence.',s:'Research, interaction options, and usability validation under designer oversight.'},
+ {g:'eng',a:'AI-assisted Tech Lead',p:'Evaluate designs, risks, and engineering guardrails.',s:'Architecture, quality, and trade-off recommendations; humans approve decisions.'},
+ {g:'eng',a:'Human-AI paired engineer',p:'Accelerate implementation, integration, and documentation.',s:'Coding and review support; engineers retain release ownership.'},
+ {g:'eng',a:'Semantic layer engineer',p:'Maintain consistent, governed business meaning.',s:'Semantic models, measures, metadata, and lineage.'},
+ {g:'eng',a:'Automation test agent',p:'Expand automated, risk-based quality assurance.',s:'Test generation, regression, execution, and quality evidence.'},
+ {g:'eng',a:'DevOps agent',p:'Automate repeatable delivery and environment workflows.',s:'CI/CD, configuration, deployment, and platform controls.'},
+ {g:'eng',a:'AI Reliability Engineer',p:'Detect operational risks and recommend remediation.',s:'Telemetry, SLOs, incidents, capacity, and reliability analysis.'},
+ {g:'del',a:'AI-assisted ITSO',p:'Assess service readiness, risk, and controls.',s:'Governance recommendations; accountable owners retain approval.'},
+ {g:'del',a:'Release Agent',p:'Coordinate safe, evidence-based releases.',s:'Readiness, dependencies, scheduling, checklists, and deployment coordination.'}
+];
+var FLOW=[
+ {n:'1',l:'Business intent',tag:'~95% — target assumption',h:'Stated by Tun as a target, not a measured result'},
+ {n:'2',l:'Business semantics & BDD scenarios',tag:'To be assessed',h:'Terminology and rule ownership'},
+ {n:'3',l:'Versioned spec documents',tag:'To be assessed',h:'Approval of spec changes'},
+ {n:'4',l:'AI-generated code',tag:'To be assessed',h:'Review and integration'},
+ {n:'5',l:'Test validation',tag:'To be assessed',h:'Risk-based test strategy'},
+ {n:'6',l:'Human decision & release',tag:'To be assessed',h:'Risk acceptance, policy exceptions and final release approval explicitly retained by people'}
+];
+var DEFS=[
+ ['Spec-driven Development','Define Feature Proposal, Architecture, API endpoint spec and Tasks as Markdown specs first, then let AI implement.'],
+ ['Traceability','Link requirement \u2194 spec \u2194 task \u2194 code \u2194 test; manage spec changes together with code changes.'],
+ ['BDD','Given / When / Then makes business behaviour and acceptance criteria explicit, reducing AI misreading of intent.'],
+ ['Semantic Layer Engineer','Owns business terminology, rules, constraints and their consistency so AI has an explicit business understanding.'],
+ ['Human-AI Pair Developer','Implements from spec with AI; owns code comprehension, review, integration and engineering quality.']
+];
+var TERMS=[
+ 'Spec-driven Development is abbreviated SDD — the transcript used "SSD"; align with Tun before the formal version.',
+ 'BDD = Behavior-driven Development, not "Business Definition Document".',
+ '"Web coding" in context is most likely "vibe coding" — to confirm.'
+];
+
+/* =========================================================
+   6. RENDER
+   ========================================================= */
+function el(id){ return document.getElementById(id); }
+function esc(s){ return String(s); }
+function lm(id){ for(var i=0;i<EPI.length;i++){ if(EPI[i].id===id) return EPI[i].n; } return GMETRIC[id]||id; }
+function emLevel(r,i){ return (r.embed||'NNNNNN').charAt(i); }
+function emWord(c){ return c==='C'?'Core':(c==='S'?'Supporting':'Not applicable'); }
+
+function renderMap(){
+  var h='',prev='';
+  ROLES.forEach(function(r,idx){
+    if(r.g!==prev){
+      var cnt=ROLES.filter(function(x){return x.g===r.g;}).length;
+      h+='<div class="gband"><span class="gchip">'+GROUP[r.g]+'</span><span class="gcount">'+cnt+' roles</span><i></i></div>';
+      prev=r.g;
+    }
+    var fut = r.pair
+      ? '<span class="futwrap"><span class="fut">'+r.fut+'</span><span class="fut">'+r.fut2+'</span></span>'
+      : '<span class="futwrap"><span class="fut">'+r.fut+'</span>'+
+        (r.tags||[]).map(function(t){ return '<span class="mtag '+(t.k||'')+'">'+t.t+'</span>'; }).join('')+'</span>';
+    var dots='<span class="dots">';
+    for(var i=0;i<6;i++){
+      var c=emLevel(r,i);
+      dots+='<span class="dot '+(c==='C'?'core':(c==='S'?'sup':'na'))+'" title="'+GUARD[i].n.replace(/&amp;/g,'&')+' — '+emWord(c)+'">'+(i+1)+'</span>';
+    }
+    dots+='</span>';
+    h+='<button type="button" class="rrow" data-role="'+r.id+'" style="--d:'+(idx*55+60)+'ms" '+
+       'aria-label="'+r.cur+' to '+(r.pair?r.fut+' and '+r.fut2:r.fut)+' — open detail">'+
+       '<span class="cur">'+r.cur+'</span>'+
+       '<span class="conn"><i></i><b></b></span>'+fut+dots+'</button>';
+  });
+  el('rmap').innerHTML=h;
+}
+
+function renderOverviewRight(){
+  el('pillsOM').innerHTML=PILLS.map(function(p){ return '<span class="pillb">'+p+'</span>'; }).join('');
+  el('benefits').innerHTML=BENEFITS.map(function(b,i){
+    return '<div class="benefit a-slide" style="--d:'+(240+i*90)+'ms"><span class="bd"></span><span>'+b+'</span></div>';
+  }).join('');
+  el('metrics').innerHTML=EPI.map(function(m,i){
+    return '<div class="mrow a-slide" style="--d:'+(420+i*70)+'ms"><b>'+m.n+'</b>'+
+           '<span class="chipst">To be defined</span></div>';
+  }).join('');
+  el('scale').innerHTML=SCALE.map(function(s,i){
+    return '<span class="'+s[0]+' a-pop" style="--d:'+(700+i*80)+'ms">'+s[1]+'</span>';
+  }).join('');
+  el('caution').textContent=CAUTION;
+}
+
+function renderMatrix(){
+  var th='<tr><th>Role</th><th>Group</th>'+
+    GUARD.map(function(g){ return '<th>'+g.n+'</th>'; }).join('')+'</tr>';
+  el('mxtable').tHead.innerHTML=th;
+  var tb='',prev='';
+  ROLES.forEach(function(r){
+    if(r.g!==prev){ tb+='<tr class="gsep"><td colspan="8">'+GROUP[r.g]+'</td></tr>'; prev=r.g; }
+    var cells='';
+    for(var i=0;i<6;i++){
+      var c=emLevel(r,i);
+      cells+='<td title="'+GUARD[i].n.replace(/&amp;/g,'&')+' — '+emWord(c)+'">'+
+             '<span class="cell '+c+'">'+(c==='C'?'\u25CF':(c==='S'?'\u25CB':'\u2013'))+'</span></td>';
+    }
+    tb+='<tr class="r" data-role="'+r.id+'" style="cursor:pointer">'+
+        '<td>'+r.cur+'<span style="display:block;font-size:11px;color:#8B9198;font-weight:500;margin-top:3px">'+
+        '\u2192 '+r.fut+(r.pair?' + '+r.fut2:'')+'</span></td>'+
+        '<td><span class="gpill '+(r.g==='biz'?'biz':(r.g==='eng'?'eng':'del'))+'">'+GROUP[r.g].split(' ')[0]+'</span></td>'+
+        cells+'</tr>';
+  });
+  el('mxtable').tBodies[0].innerHTML=tb;
+  el('mxlegend').innerHTML=
+    '<span class="li"><span class="cell C" style="width:20px;height:20px;font-size:9px">\u25CF</span> Core to the role</span>'+
+    '<span class="li"><span class="cell S" style="width:20px;height:20px;font-size:9px">\u25CB</span> Supporting</span>'+
+    '<span class="li"><span class="cell N" style="width:20px;height:20px;font-size:9px">\u2013</span> Not applicable</span>'+
+    '<span class="li" style="margin-left:auto;color:#8B9198">Mapping is a design proposal \u2014 to be confirmed with Tun. Click any row for the role detail.</span>';
+}
+
+function renderAgents(){
+  el('agtable').tHead.innerHTML='<tr><th>Agent</th><th>Group</th><th>Purpose</th><th>Scope</th></tr>';
+  el('agtable').tBodies[0].innerHTML=AGENTS.map(function(a){
+    return '<tr><td>'+a.a+'</td>'+
+      '<td><span class="gpill '+(a.g==='biz'?'biz':(a.g==='eng'?'eng':'del'))+'">'+GROUP[a.g]+'</span></td>'+
+      '<td>'+a.p+'</td><td>'+a.s+'</td></tr>';
+  }).join('');
+}
+
+function renderFlow(){
+  el('flowrow').innerHTML=FLOW.map(function(f,i){
+    var val = f.n==='1' ? '<span class="assume">'+f.tag+'</span>' : f.tag;
+    var hl  = f.n==='1' ? 'Basis' : 'Human control point';
+    var conn = (i===2) ? '<span class="fard">\u2304</span>'
+             : (i===5) ? '' : '<span class="farw">\u203A</span>';
+    return '<div class="fnode">'+conn+
+      '<span class="ni">'+f.n+'</span><b>'+f.l+'</b>'+
+      '<div class="ftags">'+
+        '<div class="ftag"><span class="ftl">Automation ratio</span><span class="ftv">'+val+'</span></div>'+
+        '<div class="ftag"><span class="ftl">'+hl+'</span><span class="ftv">'+f.h+'</span></div>'+
+      '</div></div>';
+  }).join('');
+  el('defs').innerHTML=DEFS.map(function(d){
+    return '<div class="def"><b>'+d[0]+'</b><span>'+d[1]+'</span></div>';
+  }).join('');
+  el('terms').innerHTML=TERMS.map(function(t){ return '<li>'+t+'</li>'; }).join('');
+}
+
+/* ---------- role detail ---------- */
+function showDetail(id){
+  var r=null; ROLES.forEach(function(x){ if(x.id===id) r=x; });
+  if(!r) return;
+  el('dtGroup').textContent=GROUP[r.g];
+  el('dtCur').textContent=r.cur;
+  el('dtFut').textContent=r.pair?(r.fut+'  +  '+r.fut2):r.fut;
+  el('dtTag').innerHTML=(r.tags||[]).map(function(t){ return '<span class="mtag '+(t.k||'')+'">'+t.t+'</span>'; }).join('');
+
+  var st=r.auto.st;
+  var badge;
+  if(st==='tbd'){ badge='<span class="av" style="color:#8B9198;font-size:16px">To be assessed</span>'; }
+  else if(st==='none'){ badge='<span class="av" style="color:#111214;font-size:16px">Not automatable</span><span class="mtag dark">Human retained</span>'; }
+  else { badge='<span class="av">'+r.auto.fig+'</span><span class="mtag red">Target assumption</span>'; }
+  el('dtAuto').innerHTML='<span class="eyebrow" style="text-align:right">Automation ratio</span>'+badge;
+
+  /* left column */
+  var L='';
+  if(r.dir){ L+='<div class="sec pale"><h3>Direction of travel</h3><div class="dirbox">'+r.dir+'</div></div>'; }
+  L+='<div class="sec"><h3>Agent team &mdash; what the work decomposes into</h3>';
+  if(r.blocks){
+    r.blocks.forEach(function(b,i){
+      L+='<div class="blk"><span class="blkh">'+b+'</span><div class="chipset">'+
+         (r.blockitems[i]||[]).map(function(it){ return '<span class="acchip">'+it+'</span>'; }).join('')+
+         '</div></div>';
+    });
+  } else {
+    L+='<div class="chipset">'+(r.agents||[]).map(function(a){ return '<span class="acchip">'+a+'</span>'; }).join('')+'</div>';
+  }
+  L+='</div>';
+  L+='<div class="sec"><h3>Human decision responsibility retained</h3><ul class="ul">'+
+     r.human.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ul></div>';
+  L+='<div class="sec pale"><h3>Reshape Operating Model (this role)</h3><dl class="kv">'+
+     [['Collaboration',r.om.c],['Work allocation',r.om.a],['Decision ownership',r.om.d],['Management focus',r.om.f]]
+       .map(function(kv){ return '<div class="kvr"><dt>'+kv[0]+'</dt><dd>'+kv[1]+'</dd></div>'; }).join('')+
+     '</dl><div class="dirbox" style="margin-top:12px">Less meeting. More decision-making. '+
+     '<span style="color:#54595F">Information sync and clarification happen before the meeting; the meeting decides.</span></div></div>';
+  el('dtLeft').innerHTML=L;
+
+  /* right column */
+  var R='<div class="sec"><h3>Effective Productivity Improvement (this role)</h3><div class="epilist">';
+  r.epi.forEach(function(e){
+    var up=(e[1]==='up');
+    R+='<div class="epirow'+(up?'':' dn')+'"><span class="ar">'+(up?'\u2191':'\u2193')+'</span>'+
+       '<span class="mn">'+lm(e[0])+'</span><span class="ms">'+e[2]+'</span></div>';
+  });
+  R+='</div><div class="readlist" style="margin-top:12px">'+
+     SCALE.map(function(s){ return '<span class="'+s[0]+'">'+s[1]+'</span>'; }).join('')+
+     '</div></div>';
+
+  R+='<div class="sec"><h3>AI embed for this role</h3><div class="embedlist">';
+  for(var i=0;i<6;i++){
+    var c=emLevel(r,i);
+    R+='<div class="embedrow"><span class="cell '+c+'" style="width:22px;height:22px;font-size:10px">'+
+       (c==='C'?'\u25CF':(c==='S'?'\u25CB':'\u2013'))+'</span>'+
+       '<span style="flex:1">'+GUARD[i].n+'</span>'+
+       '<span style="font-size:11px;color:'+(c==='N'?'#C2C6CB':'#54595F')+'">'+emWord(c)+'</span></div>';
+  }
+  R+='</div></div>';
+
+  R+='<div class="sec pale"><h3>Automation ratio</h3>'+
+     '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'+
+     (st==='tbd'?'<span style="font-size:19px;font-weight:800;color:#8B9198">To be assessed</span>'
+                :'<span style="font-size:24px;font-weight:800;color:'+(st==='none'?'#111214':'#DB0011')+'">'+r.auto.fig+'</span>'+
+                 '<span class="mtag '+(st==='none'?'dark':'red')+'">'+(st==='none'?'Not automatable':'Target assumption')+'</span>')+
+     '</div>'+(r.auto.note?'<p class="note" style="margin:10px 0 0">'+r.auto.note+'</p>':'')+
+     '<div class="neq"><b>Task automation rate \u2260 effort saving \u2260 job change.</b> '+
+     'Three different measures, never to be treated as equivalent.</div></div>';
+  el('dtRight').innerHTML=R;
+
+  showView('detail');
+  el('dtLeft').scrollTop=0; el('dtRight').scrollTop=0;
+}
+
+/* =========================================================
+   7. NAVIGATION + INIT
+   ========================================================= */
+function showView(name){
+  var ids={overview:'v-overview',matrix:'v-matrix',agent:'v-agent',flow:'v-flow',detail:'v-detail'};
+  Object.keys(ids).forEach(function(k){
+    var n=el(ids[k]);
+    if(!n) return;
+    if(k===name){ n.classList.remove('on'); void n.offsetWidth; n.classList.add('on'); }
+    else { n.classList.remove('on'); }
+  });
+  var bs=document.querySelectorAll('#nav button');
+  for(var i=0;i<bs.length;i++){ bs[i].classList.toggle('on',bs[i].getAttribute('data-view')===name); }
+}
+function bind(){
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var row=t.closest?t.closest('.rrow'):null;
+    if(row){ showDetail(row.getAttribute('data-role')); return; }
+    var mrow=t.closest?t.closest('tr[data-role]'):null;
+    if(mrow){ showDetail(mrow.getAttribute('data-role')); return; }
+    var nb=t.closest?t.closest('#nav button'):null;
+    if(nb){ showView(nb.getAttribute('data-view')); return; }
+    if(t.closest&&t.closest('#backBtn')){ showView('overview'); }
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){ showView('overview'); }
+    if(e.key==='Enter'&&document.activeElement&&document.activeElement.classList.contains('rrow')){
+      showDetail(document.activeElement.getAttribute('data-role'));
+    }
+  });
+}
+function boot(){
+  renderMap(); renderOverviewRight(); renderMatrix(); renderAgents(); renderFlow();
+  bind(); showView('overview');
+}
+function fallback(err){
+  var m=String((err&&err.message)||err);
+  el('rmap').innerHTML='<div style="padding:14px;font-size:12px;color:#A5000D">Render error: '+m+'</div>';
+}
+try{ boot(); }catch(err){ fallback(err); }
+})();
+</script>
+</body>
+</html>
+
