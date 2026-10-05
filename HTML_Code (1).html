@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APEX · Insight Hub — Jun–Aug 2026</title>
+<style>
+  :root{
+    --red:#DB0011;
+    --ink:#111111;
+    --mid:#666666;
+    --soft:#8a8f96;
+    --line:#eeeeee;
+    --line2:#e3e6ea;
+    --bg:#ffffff;
+    --grey-bg:#f7f8f9;
+    --navy:#1B2A4A;
+    --teal:#0F766E;
+    --amber:#B45309;
+    --slate:#4B5563;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);font-size:15px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{margin:0;font-weight:600;letter-spacing:-.02em}
+  p{margin:0}
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- NAV ---------- */
+  .nav{
+    position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(1.4) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1280px;margin:0 auto;padding:0 24px;height:60px;
+    display:flex;align-items:center;gap:28px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:13px;letter-spacing:.02em;white-space:nowrap}
+  .brand .mark{
+    width:10px;height:10px;background:var(--red);transform:rotate(45deg);
+    display:inline-block;flex:none;
+  }
+  .brand span.sub{color:var(--soft);font-weight:400}
+  .nav-links{display:flex;gap:2px;overflow:auto;flex:1;scrollbar-width:none}
+  .nav-links::-webkit-scrollbar{display:none}
+  .nav-links a{
+    font-size:12.5px;color:var(--mid);padding:7px 10px;border-radius:3px;
+    white-space:nowrap;transition:color .15s,background .15s;
+  }
+  .nav-links a:hover{color:var(--ink);background:var(--grey-bg)}
+  .nav-links a.active{color:var(--red);font-weight:600}
+  .nav-right{display:flex;align-items:center;gap:10px;white-space:nowrap}
+  .chip{
+    font-family:var(--mono);font-size:11px;color:var(--mid);
+    border:1px solid var(--line2);border-radius:999px;padding:5px 11px;
+  }
+  .btn{
+    font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.02em;
+    background:var(--red);color:#fff;border:1px solid var(--red);
+    padding:7px 14px;border-radius:3px;cursor:pointer;transition:opacity .15s;
+  }
+  .btn:hover{opacity:.86}
+  .btn.ghost{background:#fff;color:var(--mid);border-color:var(--line2)}
+  .btn.ghost:hover{color:var(--ink);border-color:#c9ced4;opacity:1}
+
+  /* ---------- LAYOUT ---------- */
+  main{max-width:1280px;margin:0 auto;padding:0 24px}
+  section{padding:78px 0 10px;scroll-margin-top:74px;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:none}
+  .kicker{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--red);margin-bottom:14px;
+  }
+  .h2{font-size:34px;line-height:1.15;letter-spacing:-.03em;max-width:760px}
+  .sub{color:var(--mid);font-size:15px;max-width:720px;margin-top:14px}
+
+  /* ---------- GRAPH ---------- */
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 18px}
+  .lg{
+    display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.08em;
+    text-transform:uppercase;font-family:var(--mono);color:var(--mid);
+    border:1px solid var(--line2);padding:5px 10px;border-radius:2px;background:#fff;
+  }
+  .lg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+  .graph-wrap{
+    position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;
+    background:#fff;min-height:640px;
+  }
+  #graphSvg{display:block;width:100%;height:auto;touch-action:manipulation}
+  .edge{stroke:#ced4da;stroke-width:1.15;fill:none;transition:opacity .18s,stroke .18s}
+  .edge.dash{stroke-dasharray:5 4;stroke:#b9c0c8}
+  .node{cursor:pointer;transition:opacity .18s}
+  .node rect,.node circle{transition:stroke-width .15s,filter .15s}
+  .node:focus{outline:none}
+  .node:focus rect,.node:focus circle{stroke-width:2.4}
+  #graphSvg.dim .edge{opacity:.10}
+  #graphSvg.dim .edge.hl{opacity:1;stroke:var(--red);stroke-width:1.7}
+  #graphSvg.dim .node{opacity:.16}
+  #graphSvg.dim .node.hl{opacity:1}
+  #graphSvg.dim .node.hl rect,#graphSvg.dim .node.hl circle{stroke-width:2;filter:drop-shadow(0 2px 5px rgba(17,17,17,.10))}
+  .graph-foot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:14px}
+  .caption{font-family:var(--mono);font-size:11px;color:var(--soft);letter-spacing:.02em}
+
+  /* ---------- PANEL ---------- */
+  .panel{
+    position:fixed;top:0;right:0;bottom:0;width:340px;background:#fff;z-index:90;
+    border-left:1px solid var(--line);box-shadow:-14px 0 34px rgba(17,17,17,.07);
+    transform:translateX(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;
+  }
+  .panel.open{transform:translateX(0)}
+  .panel-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+    padding:20px 20px 14px;border-bottom:1px solid var(--line);
+  }
+  .panel-tag{
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:#fff;padding:3px 7px;border-radius:2px;display:inline-block;margin-bottom:10px;
+  }
+  .panel-title{font-size:17px;line-height:1.3;letter-spacing:-.01em}
+  .panel-close{
+    background:none;border:1px solid var(--line2);border-radius:3px;width:26px;height:26px;
+    color:var(--mid);cursor:pointer;font-size:14px;line-height:1;flex:none;
+  }
+  .panel-close:hover{color:var(--ink);border-color:#c9ced4}
+  .panel-body{padding:18px 20px;overflow-y:auto;flex:1}
+  .panel-label{
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--soft);margin:0 0 9px;
+  }
+  .facts{margin:0 0 22px;padding:0;list-style:none}
+  .facts li{
+    font-size:12.5px;color:var(--ink);padding:6px 0 6px 14px;border-bottom:1px solid var(--line);
+    position:relative;
+  }
+  .facts li:before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;background:var(--red)}
+  .conn{margin:0 0 22px;padding:0;list-style:none}
+  .conn li{margin-bottom:7px}
+  .conn button{
+    width:100%;text-align:left;background:#fff;border:1px solid var(--line2);border-radius:3px;
+    padding:8px 10px;cursor:pointer;font-family:var(--sans);transition:border-color .15s,background .15s;
+  }
+  .conn button:hover{border-color:var(--red);background:#fffafa}
+  .conn .cname{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .conn .cname i{width:7px;height:7px;border-radius:2px;flex:none}
+  .conn .crel{font-size:11px;color:var(--mid);line-height:1.4;margin-top:3px;display:block}
+  .conn .crel.hyp{color:var(--red)}
+  .meaning{
+    font-size:12.5px;color:var(--mid);border-left:2px solid var(--red);padding-left:11px;
+    margin-bottom:22px;font-style:italic;
+  }
+  .panel-foot{padding:16px 20px;border-top:1px solid var(--line)}
+  .panel-foot .btn{width:100%;text-align:center;padding:10px}
+
+  /* ---------- CHAIN ---------- */
+  .chain{
+    display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);
+    border-radius:4px;overflow:hidden;margin-top:26px;background:#fff;
+  }
+  .step{padding:18px 16px 20px;border-right:1px solid var(--line);position:relative}
+  .step:last-child{border-right:none;background:#fffbfb}
+  .stepn{
+    font-family:var(--mono);font-size:10px;color:var(--soft);display:block;letter-spacing:.1em;
+  }
+  .stepl{
+    font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--navy);display:block;margin:4px 0 10px;font-weight:600;
+  }
+  .step:last-child .stepl{color:var(--red)}
+  .step p{font-size:12.5px;color:var(--mid);line-height:1.5}
+  .step:first-child p,.step:last-child p{color:var(--ink)}
+
+  /* ---------- GENERIC BLOCKS ---------- */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:30px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+  .card{border:1px solid var(--line);border-radius:4px;padding:20px;background:#fff}
+  .card h3{font-size:14px;letter-spacing:-.01em;margin-bottom:4px}
+  .card .meta{font-family:var(--mono);font-size:11px;color:var(--soft);margin-bottom:14px;display:block}
+  .rowline{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+  .rowline:last-child{border-bottom:none}
+  .rowline b{font-family:var(--mono);font-weight:600;color:var(--ink)}
+  .rowline span{color:var(--mid)}
+  .note{
+    margin-top:22px;font-size:12.5px;color:var(--mid);padding:13px 16px;
+    background:var(--grey-bg);border-left:2px solid var(--line2);border-radius:0 3px 3px 0;
+  }
+  .note.red{border-left-color:var(--red);color:#8c1a24;background:#fff7f7}
+
+  /* ---------- FUNNEL ---------- */
+  .funnel{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:30px;border:1px solid var(--line);border-radius:4px}
+  .fstep{padding:22px 20px;border-right:1px solid var(--line)}
+  .fstep:last-child{border-right:none}
+  .fstep .fig{font-family:var(--mono);font-size:29px;font-weight:600;letter-spacing:-.03em;line-height:1}
+  .fstep .lbl{font-size:12.5px;color:var(--mid);margin-top:9px}
+  .fstep .goal{font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.08em;margin-top:10px;text-transform:uppercase}
+  .fbar{
+    display:flex;align-items:center;gap:14px;margin-top:16px;padding:13px 18px;
+    border:1px dashed var(--line2);border-radius:4px;font-size:12.5px;color:var(--mid);
+  }
+  .fbar b{font-family:var(--mono);color:var(--ink)}
+
+  /* ---------- PATHS ---------- */
+  .pathcard{border:1px solid var(--line);border-radius:4px;padding:20px;background:#fff}
+  .pathcard .ptitle{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft)}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 14px}
+  .fnode{
+    border:1px solid var(--line2);border-radius:3px;padding:8px 11px;font-size:11.5px;
+    background:#fff;line-height:1.35;
+  }
+  .fnode b{font-family:var(--mono);font-size:13px;display:block;font-weight:600}
+  .fnode.red{border-color:#f3c3c8;background:#fff7f7}
+  .fnode.red b{color:var(--red)}
+  .arrow{color:#c3c9d0;font-size:13px}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:24px;font-size:12.5px}
+  th{
+    text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--soft);font-weight:500;padding:0 14px 11px 0;border-bottom:1px solid var(--line2);
+  }
+  td{padding:14px 14px 14px 0;border-bottom:1px solid var(--line);vertical-align:top;color:var(--mid)}
+  td.wf{color:var(--ink);font-weight:600}
+  td.num{font-family:var(--mono);color:var(--ink)}
+  .tag{
+    display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+    text-transform:uppercase;padding:3px 7px;border-radius:2px;white-space:nowrap;
+  }
+  .tag.protect{background:#eef7f5;color:#0F766E}
+  .tag.fix{background:#eef7f5;color:#0F766E;border:1px dashed #0F766E}
+  .tag.improve{background:#fdf4e7;color:var(--amber)}
+  .tag.research{background:#fdecee;color:var(--red)}
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+
+  /* ---------- FRICTION ---------- */
+  .band{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:4px;margin-top:30px}
+  .bcell{padding:20px;border-right:1px solid var(--line)}
+  .bcell:last-child{border-right:none}
+  .bcell .n{font-family:var(--mono);font-size:25px;font-weight:600;letter-spacing:-.03em}
+  .bcell .t{font-size:12px;color:var(--mid);margin-top:8px}
+  .bcell.hot .n{color:var(--red)}
+  .conc{margin-top:0}
+  .conc li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+  .conc li:last-child{border-bottom:none}
+  .conc b{font-family:var(--mono);font-size:14px}
+
+  /* ---------- DEPARTMENTS ---------- */
+  .dotchart{margin-top:32px;border:1px solid var(--line);border-radius:4px;padding:26px 22px 18px;background:#fff}
+  .dc-row{display:grid;grid-template-columns:250px 1fr 110px;gap:18px;align-items:center;padding:11px 0}
+  .dc-label{font-size:12.5px;color:var(--ink)}
+  .dc-label small{display:block;color:var(--soft);font-family:var(--mono);font-size:10px;margin-top:2px}
+  .dc-track{position:relative;height:26px;border-bottom:1px solid var(--line2)}
+  .dc-ref{
+    position:absolute;top:-6px;bottom:-6px;left:53.9%;border-left:1px dashed var(--red);
+  }
+  .dc-ref span{
+    position:absolute;top:-22px;left:4px;font-family:var(--mono);font-size:9.5px;color:var(--red);
+    letter-spacing:.06em;white-space:nowrap;
+  }
+  .dc-dot{
+    position:absolute;top:50%;width:12px;height:12px;border-radius:50%;background:var(--amber);
+    transform:translate(-50%,-50%);transition:transform .18s;
+  }
+  .dc-row:hover .dc-dot{transform:translate(-50%,-50%) scale(1.35)}
+  .dc-val{font-family:var(--mono);font-size:12.5px;text-align:right;color:var(--ink)}
+  .dc-val small{display:block;color:var(--soft);font-size:10px}
+
+  /* ---------- LOOP ---------- */
+  .loop{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:2px solid var(--ink);margin-top:30px}
+  .loopitem{padding:18px 16px 20px 0;border-right:1px solid var(--line);position:relative}
+  .loopitem:last-child{border-right:none}
+  .loopitem .ln{font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.1em;display:block;margin-bottom:8px}
+  .loopitem h4{font-size:13px;margin-bottom:5px}
+  .loopitem p{font-size:11.5px;color:var(--mid);line-height:1.45}
+
+  /* ---------- ACTIONS ---------- */
+  .progressbar{
+    display:flex;align-items:center;gap:16px;margin-top:26px;padding:16px 18px;
+    border:1px solid var(--line);border-radius:4px;background:var(--grey-bg);
+  }
+  .progressbar .ptext{font-family:var(--mono);font-size:11px;color:var(--mid);white-space:nowrap}
+  .progressbar .ptext b{color:var(--red)}
+  .track{flex:1;height:4px;background:#e3e6ea;border-radius:2px;overflow:hidden}
+  .track i{display:block;height:100%;width:0;background:var(--red);transition:width .3s ease}
+  .action-card{border:1px solid var(--line);border-radius:4px;padding:20px;background:#fff}
+  .ac-head{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:4px}
+  .ac-code{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:#fff;background:var(--ink);padding:3px 6px;border-radius:2px}
+  .ac-head h4{font-size:14px}
+  .ac-owner{font-family:var(--mono);font-size:10px;color:var(--soft);margin-left:auto}
+  .tasks{list-style:none;margin:14px 0 0;padding:0}
+  .tasks li{border-bottom:1px solid var(--line)}
+  .tasks li:last-child{border-bottom:none}
+  .tasks label{display:flex;gap:10px;align-items:flex-start;padding:9px 0;cursor:pointer;font-size:12.5px;color:var(--mid);transition:color .15s}
+  .tasks label:hover{color:var(--ink)}
+  .tasks input{
+    appearance:none;-webkit-appearance:none;width:15px;height:15px;flex:none;margin-top:2px;
+    border:1px solid #c9ced4;border-radius:2px;background:#fff;cursor:pointer;position:relative;
+  }
+  .tasks input:checked{background:var(--red);border-color:var(--red)}
+  .tasks input:checked:after{
+    content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;
+    border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);
+  }
+  .tasks input:checked + span{color:var(--soft);text-decoration:line-through}
+  .ac-progress{display:flex;align-items:center;gap:10px;margin-top:14px}
+  .ac-progress .t{flex:1;height:3px;background:#eef0f2;border-radius:2px;overflow:hidden}
+  .ac-progress .t i{display:block;height:100%;width:0;background:var(--navy);transition:width .3s ease}
+  .ac-progress .num{font-family:var(--mono);font-size:10.5px;color:var(--mid)}
+  .carry{margin-top:26px;font-size:12.5px;color:var(--mid);font-style:italic}
+
+  /* ---------- DATA MAP ---------- */
+  .module{border:1px solid var(--line);border-radius:4px;padding:18px;background:#fff}
+  .module h4{font-size:13px;margin-bottom:6px}
+  .module p{font-size:12px;color:var(--mid);min-height:34px}
+  .module .mn{
+    font-family:var(--mono);font-size:10px;color:var(--soft);display:block;margin-top:12px;
+    padding-top:10px;border-top:1px solid var(--line);letter-spacing:.03em;
+  }
+  .module .mn b{color:var(--red);font-weight:600}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    max-width:1280px;margin:0 auto;padding:44px 24px 60px;
+    border-top:1px solid var(--line);margin-top:70px;
+  }
+  footer p{font-family:var(--mono);font-size:11px;color:var(--soft);letter-spacing:.02em}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:1040px){
+    .chain{grid-template-columns:repeat(2,1fr)}
+    .step{border-bottom:1px solid var(--line)}
+    .grid3,.grid4{grid-template-columns:repeat(2,1fr)}
+    .band{grid-template-columns:repeat(2,1fr)}
+    .loop{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:760px){
+    .nav-links{display:none}
+    .h2{font-size:26px}
+    .grid2,.grid3,.grid4,.band,.chain,.funnel,.loop{grid-template-columns:1fr}
+    .fstep,.bcell,.step,.loopitem{border-right:none;border-bottom:1px solid var(--line)}
+    .dc-row{grid-template-columns:1fr;gap:4px}
+    .dc-val{text-align:left}
+    .panel{width:100%}
+    td:nth-child(4),th:nth-child(4){display:none}
+  }
+
+  @media print{
+    .nav,.panel{display:none !important}
+    body{font-size:11px}
+    section{page-break-inside:avoid;padding:26px 0 6px}
+    .graph-wrap{min-height:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="mark"></span>APEX <span class="sub">· INSIGHT HUB</span></div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#graph" class="active">Graph</a>
+      <a href="#plot">The Plot</a>
+      <a href="#return">Return</a>
+      <a href="#access">Access</a>
+      <a href="#value">Value</a>
+      <a href="#friction">Friction</a>
+      <a href="#departments">Departments</a>
+      <a href="#actions">Actions</a>
+      <a href="#datamap">Data Map</a>
+    </nav>
+    <div class="nav-right">
+      <span class="chip">Jun–Aug 2026 · UTC+08:00</span>
+      <button class="btn" id="exportBtn">Export plan</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1. GRAPH ============ -->
+<section id="graph">
+  <div class="kicker">Jun–Aug 2026 · Baseline report v1</div>
+  <h1 class="h2">Every signal, connected.</h1>
+  <p class="sub">Click any node to see what it connects to and jump to its insight. Dashed edges are unverified hypotheses the next report must test.</p>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="graph-wrap">
+    <svg id="graphSvg" role="img" aria-label="Insight node graph connecting core metrics, workflows, user segments, friction signals and data modules"></svg>
+  </div>
+
+  <div class="graph-foot">
+    <p class="caption">45 nodes · every edge is either an observed relation or a marked hypothesis. Dashed = must be tested with next window's data.</p>
+    <button class="btn ghost" id="resetBtn">Reset selection</button>
+  </div>
+</section>
+
+<!-- ============ 2. THE PLOT ============ -->
+<section id="plot">
+  <div class="kicker">00 · The Plot</div>
+  <h2 class="h2">Growth is up. Retention is the tension.</h2>
+  <p class="sub">Reach grew +9.2% (469 → 512 active users). Adjacent-window return was 55.0% against an 80% goal. Reporting windows: 12 Jul–12 Aug · 13 Jul–12 Aug · equal 31-day windows.</p>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Report period</h3>
+      <span class="meta">Coverage</span>
+      <div class="rowline"><span>Period</span><b>Jun–Aug 2026</b></div>
+      <div class="rowline"><span>Duration</span><b>2 months</b></div>
+      <div class="rowline"><span>Comparison windows</span><b>31 days each</b></div>
+      <div class="rowline"><span>Timezone</span><b>UTC+08:00</b></div>
+    </div>
+    <div class="card">
+      <h3>Headline movement</h3>
+      <span class="meta">Reach vs habit</span>
+      <div class="rowline"><span>Active users, July</span><b>469</b></div>
+      <div class="rowline"><span>Active users, August</span><b>512</b></div>
+      <div class="rowline"><span>Adjacent-window return</span><b>55.0%</b></div>
+      <div class="rowline"><span>Gap to goal</span><b style="color:#DB0011">25 pts</b></div>
+    </div>
+  </div>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>469 → 512 actives (+43); 55.0% return; 53.9% multi-day use.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>Multi-day users sit above overall return — depth tracks return better than reach.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>Habit-forming workflows drive return; one-off visitors drive growth.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Register this report as the baseline (see Actions).</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>Return ≥ 60% next window confirms direction; below 55% means friction first.</p></div>
+  </div>
+</section>
+
+<!-- ============ 3. RETURN ============ -->
+<section id="return">
+  <div class="kicker">01 · Return</div>
+  <h2 class="h2">Are users coming back?</h2>
+  <p class="sub">The adjacency window compares the same group of users across two equal 31-day windows.</p>
+
+  <div class="funnel">
+    <div class="fstep"><div class="fig">469</div><div class="lbl">Active in July</div></div>
+    <div class="fstep"><div class="fig">258</div><div class="lbl">Observed again in August</div></div>
+    <div class="fstep"><div class="fig" style="color:#DB0011">55.0%</div><div class="lbl">Adjacent-window return</div><div class="goal">Goal · 80%</div></div>
+  </div>
+  <div class="fbar"><span>Not observed again</span><b>211</b><span>·</span><b>45.0%</b><span>of the July active base</span></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>Most common return contexts</h3>
+      <span class="meta">Where returning users were last seen</span>
+      <div class="rowline"><span>Manual Upload</span><b>51 · 19.8%</b></div>
+      <div class="rowline"><span>NII Calculation</span><b>49 · 19.0%</b></div>
+      <div class="rowline"><span>Data Explorer</span><b>39 · 15.1%</b></div>
+    </div>
+    <div class="card">
+      <h3>Last observed contexts of users not seen again</h3>
+      <span class="meta">Where the 211 were last active</span>
+      <div class="rowline"><span>Liquidity Premium Curve</span><b>16 · 7.6%</b></div>
+      <div class="rowline"><span>Document Repository</span><b>—</b></div>
+      <div class="rowline"><span>NII Calculation</span><b>8 · 3.8%</b></div>
+    </div>
+  </div>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>55.0% of 469 July actives returned; goal is 80%.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>Return contexts skew transactional (Manual Upload, NII); the biggest not-returned cluster last used LPC — the lowest repeat workflow at 36.4%.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>LPC is high-reach but low-habit; its users churn.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Research LPC user goal, first-session outcome and reason for not returning (UX Research).</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>LPC repeat trend; return rate by first-session workflow.</p></div>
+  </div>
+</section>
+
+<!-- ============ 4. ACCESS ============ -->
+<section id="access">
+  <div class="kicker">02 · Access</div>
+  <h2 class="h2">Can people get back to work?</h2>
+  <p class="sub">Two recorded paths: users looking for help, and users meeting a permission-like signal.</p>
+
+  <div class="grid2">
+    <div class="pathcard">
+      <span class="ptitle">Path A · Help-seeking</span>
+      <div class="flow">
+        <div class="fnode"><b>512</b>active users</div>
+        <span class="arrow">&#8594;</span>
+        <div class="fnode"><b>207</b>reached Access Guide · 40.4%</div>
+        <span class="arrow">&#8594;</span>
+        <div class="fnode"><b>769</b>Guide views · 3.7 per user</div>
+      </div>
+      <p class="note" style="margin-top:0">Views show demand for help, not confirmed recovery.</p>
+    </div>
+    <div class="pathcard">
+      <span class="ptitle">Path B · Permission friction</span>
+      <div class="flow">
+        <div class="fnode red"><b>64</b>users · 12.5%</div>
+        <span class="arrow">&#8594;</span>
+        <div class="fnode"><b>296</b>signals · 115 visits</div>
+        <span class="arrow">&#8594;</span>
+        <div class="fnode"><b>33/115</b>28.7% had a later work-screen step</div>
+        <span class="arrow">&#8594;</span>
+        <div class="fnode"><b>82</b>71.3% no later step</div>
+      </div>
+      <p class="note" style="margin-top:0">"No later step" is an observation about the recorded path, not proof of giving up.</p>
+    </div>
+  </div>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>12.5% of actives hit permission-like friction; 71.3% of affected visits show no later step.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>This 64-user group is the best candidate to explain part of the 211 — the overlap is unmeasured.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>Permission friction converts directly into next-window churn.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Instrument request → approval → task completion; join access-flagged users with the August return cohort (Product + Data).</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>Share of not-returned users who had access flags; completion after approval.</p></div>
+  </div>
+</section>
+
+<!-- ============ 5. VALUE ============ -->
+<section id="value">
+  <div class="kicker">03 · Value</div>
+  <h2 class="h2">Where is repeat value visible?</h2>
+  <p class="sub">Repeat rate per workflow, sorted from the strongest habit down to the weakest.</p>
+
+  <table>
+    <thead>
+      <tr><th>Workflow</th><th>Users</th><th>Repeat</th><th>Read</th><th>Note</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="wf">Manual Upload</td><td class="num">121</td><td class="num">90.1%</td>
+        <td><span class="tag protect">Protect</span></td>
+        <td>Strongest observed return habit — protect recovery and confirmation.</td>
+      </tr>
+      <tr>
+        <td class="wf">Data Explorer</td><td class="num">106</td><td class="num">85.8%</td>
+        <td><span class="tag fix">Protect + Fix</span></td>
+        <td>High value, highest 405 exposure — fix chart reliability first.</td>
+      </tr>
+      <tr>
+        <td class="wf">NII Calculation</td><td class="num">126</td><td class="num">85.7%</td>
+        <td><span class="tag protect">Protect</span></td>
+        <td>Dependable task loop — protect saved work.</td>
+      </tr>
+      <tr>
+        <td class="wf">Market Data Viewer</td><td class="num">96</td><td class="num">70.8%</td>
+        <td><span class="tag improve">Improve</span></td>
+        <td>Healthy use that can speed up.</td>
+      </tr>
+      <tr>
+        <td class="wf">Liquidity Premium Curve</td><td class="num">140</td><td class="num">36.4%</td>
+        <td><span class="tag research">Research first</span></td>
+        <td>Highest reach, lowest habit.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="pillrow">
+    <span class="lg"><i style="background:#0F766E"></i>3 Protect</span>
+    <span class="lg"><i style="background:#0F766E"></i>1 Protect + Fix</span>
+    <span class="lg"><i style="background:#DB0011"></i>1 Research first</span>
+  </div>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>Repeat spans 36.4%–90.1% across five workflows.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>Data Explorer pairs the second-highest repeat with the largest 405 count (471) — the single highest-priority item in this report.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>Users tolerate friction where no alternative exists — a risk, not a strength.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Do not redesign workflows with above 70% repeat before researching LPC.</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>Repeat stability per workflow across windows.</p></div>
+  </div>
+</section>
+
+<!-- ============ 6. FRICTION ============ -->
+<section id="friction">
+  <div class="kicker">04 · Friction</div>
+  <h2 class="h2">Which technical signal deserves attention first?</h2>
+  <p class="sub">Error volume by HTTP status across the two windows.</p>
+
+  <div class="band">
+    <div class="bcell hot"><div class="n">72.7%</div><div class="t">405 share of August errors</div></div>
+    <div class="bcell hot"><div class="n">1,062 → 1,250</div><div class="t">405 events · +188 · +17.7%</div></div>
+    <div class="bcell"><div class="n">134 → 135</div><div class="t">403 · stable</div></div>
+    <div class="bcell"><div class="n">2 → 11</div><div class="t">404 · +9 · low volume</div></div>
+  </div>
+
+  <div class="grid3">
+    <div class="card">
+      <h3>Where it appears</h3>
+      <span class="meta">Concentration</span>
+      <ul class="conc" style="list-style:none;margin:0;padding:0">
+        <li><span>Data Explorer · Update chart</span><b style="color:#DB0011">471</b></li>
+        <li><span>NII Calculation · auto</span><b>304</b></li>
+        <li><span>NII Calculation · Update chart</span><b>246</b></li>
+        <li><span>Data Explorer · auto</span><b>215</b></li>
+      </ul>
+      <div class="pillrow" style="margin-top:14px">
+        <span class="tag research">First check · Update chart</span>
+        <span class="tag improve">Second · NII Update chart</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Confirm task impact</h3>
+      <span class="meta">What is still unknown</span>
+      <div class="rowline"><span>Was it a user click?</span><b>Unknown</b></div>
+      <div class="rowline"><span>Or an automatic request?</span><b>Unknown</b></div>
+      <div class="rowline"><span>Chart loaded?</span><b>Unknown</b></div>
+      <div class="rowline"><span>Errored or exited?</span><b>Unknown</b></div>
+    </div>
+    <div class="card">
+      <h3>What to check next</h3>
+      <span class="meta">Instrumentation plan</span>
+      <div class="rowline"><span>Priority</span><b>Data Explorer Update chart</b></div>
+      <div class="rowline"><span>Separate</span><b>Clicks vs automatic calls</b></div>
+      <div class="rowline"><span>Record</span><b>Visible result after retry</b></div>
+      <div class="rowline"><span>Track</span><b>405 volume vs successful loads</b></div>
+    </div>
+  </div>
+
+  <p class="note red">HTTP status codes show technical exposure, not confirmed task failure.</p>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>+17.7% errors, 72.7% concentrated in HTTP 405.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>405 tops sit inside the two highest-repeat workflows — value and friction are the same story.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>Chart-related requests fail silently at scale.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Fix confirmed chart failures; record release date; compare error vs success after (Engineering).</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>405 count, share, and successful chart loads next window.</p></div>
+  </div>
+</section>
+
+<!-- ============ 7. DEPARTMENTS ============ -->
+<section id="departments">
+  <div class="kicker">05 · Context</div>
+  <h2 class="h2">How does behaviour vary by cohort?</h2>
+  <p class="sub">August multi-day use by department, against the 53.9% overall level.</p>
+
+  <div class="dotchart">
+    <div class="dc-row">
+      <div class="dc-label">ALCM Ops · IRRBB Reporting<small>India</small></div>
+      <div class="dc-track"><div class="dc-ref"><span>53.9% overall</span></div><div class="dc-dot" style="left:88.7%"></div></div>
+      <div class="dc-val">88.7%<small>62 users</small></div>
+    </div>
+    <div class="dc-row">
+      <div class="dc-label">CF Stress Testing IT<small>India</small></div>
+      <div class="dc-track"><div class="dc-ref"></div><div class="dc-dot" style="left:75.0%"></div></div>
+      <div class="dc-val">75.0%<small>20 users</small></div>
+    </div>
+    <div class="dc-row">
+      <div class="dc-label">China Fin IT · Financial Reporting<small>China</small></div>
+      <div class="dc-track"><div class="dc-ref"></div><div class="dc-dot" style="left:64.4%"></div></div>
+      <div class="dc-val">64.4%<small>45 users</small></div>
+    </div>
+    <div class="dc-row">
+      <div class="dc-label">Markets Treasury<small>Hong Kong</small></div>
+      <div class="dc-track"><div class="dc-ref"></div><div class="dc-dot" style="left:61.1%"></div></div>
+      <div class="dc-val">61.1%<small>18 users</small></div>
+    </div>
+    <div class="dc-row">
+      <div class="dc-label">GT2025<small>India</small></div>
+      <div class="dc-track"><div class="dc-ref"></div><div class="dc-dot" style="left:47.1%"></div></div>
+      <div class="dc-val">47.1%<small>17 users</small></div>
+    </div>
+  </div>
+
+  <p class="note">Department patterns are context for research — not a scorecard of experience quality.</p>
+
+  <div class="chain">
+    <div class="step"><span class="stepn">01</span><span class="stepl">Signal</span><p>Spread of 47.1%–88.7% multi-day use across five cohorts.</p></div>
+    <div class="step"><span class="stepn">02</span><span class="stepl">Cross-read</span><p>The two reporting-heavy teams hold the habit base; GT2025 sits far below the overall level.</p></div>
+    <div class="step"><span class="stepn">03</span><span class="stepl">Hypothesis</span><p>Reporting workflows build habits; exploratory use does not.</p></div>
+    <div class="step"><span class="stepn">04</span><span class="stepl">Action</span><p>Interview GT2025 users on first-session outcome; check whether LPC is their entry workflow (UX Research).</p></div>
+    <div class="step"><span class="stepn">05</span><span class="stepl">Watch metric</span><p>Multi-day use by department, next window.</p></div>
+  </div>
+</section>
+
+<!-- ============ 8. ACTIONS ============ -->
+<section id="actions">
+  <div class="kicker">06 · Close the loop</div>
+  <h2 class="h2">From insight to tracked action.</h2>
+  <p class="sub">Every insight leaves a chain with an owner, a baseline and a review date.</p>
+
+  <div class="loop">
+    <div class="loopitem"><span class="ln">01</span><h4>Insight</h4><p>What changed in this window.</p></div>
+    <div class="loopitem"><span class="ln">02</span><h4>Metrics</h4><p>Retention · error · success.</p></div>
+    <div class="loopitem"><span class="ln">03</span><h4>Use case</h4><p>Find the affected step.</p></div>
+    <div class="loopitem"><span class="ln">04</span><h4>Action</h4><p>Assign owner and review date.</p></div>
+    <div class="loopitem"><span class="ln">05</span><h4>Review</h4><p>Compare with the last report.</p></div>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Chain</th><th>Baseline (this report)</th><th>Next check</th><th>Owner</th><th>Review</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="wf">RET-01 · Return</td>
+        <td class="num">55.0% (258 / 469)</td>
+        <td>Is return ≥ 60%?</td><td>UX + Data</td><td>Next report</td>
+      </tr>
+      <tr>
+        <td class="wf">ACC-01 · Access recovery</td>
+        <td class="num">71.3% no later step (82 / 115)</td>
+        <td>Is the overlap with the 211 measured?</td><td>Product + Data</td><td>Next report</td>
+      </tr>
+      <tr>
+        <td class="wf">ERR-01 · Chart failures</td>
+        <td class="num">405 = 1,250 events · 72.7% of errors</td>
+        <td>Is the 405 share below 60% and are successful loads tracked?</td><td>Engineering</td><td>Next release</td>
+      </tr>
+      <tr>
+        <td class="wf">LPC-01 · Habit gap</td>
+        <td class="num">36.4% repeat on the highest reach</td>
+        <td>Is the user goal researched and is repeat trending?</td><td>UX Research</td><td>Next report</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="progressbar">
+    <span class="ptext"><b id="doneCount">0</b> of 12 done</span>
+    <span class="track"><i id="overallBar"></i></span>
+  </div>
+
+  <div class="grid3" style="margin-top:22px">
+    <div class="action-card" data-code="RET-01" data-owner="UX + Data">
+      <div class="ac-head"><span class="ac-code">RET-01</span><h4>Make returning easier</h4><span class="ac-owner">UX + Data</span></div>
+      <ul class="tasks">
+        <li><label><input type="checkbox"><span>Select workflow + cohort baseline</span></label></li>
+        <li><label><input type="checkbox"><span>Assign re-entry item, owner and date</span></label></li>
+        <li><label><input type="checkbox"><span>Test recent work / saved parameters</span></label></li>
+        <li><label><input type="checkbox"><span>Compare return; keep or revise RET-01</span></label></li>
+      </ul>
+      <div class="ac-progress"><span class="num">0/4</span><span class="t"><i></i></span></div>
+    </div>
+
+    <div class="action-card" data-code="ACC-01" data-owner="Product + Data">
+      <div class="ac-head"><span class="ac-code">ACC-01</span><h4>Restore access to the task</h4><span class="ac-owner">Product + Data</span></div>
+      <ul class="tasks">
+        <li><label><input type="checkbox"><span>Define task start / completion</span></label></li>
+        <li><label><input type="checkbox"><span>Link request → approval → task outcome</span></label></li>
+        <li><label><input type="checkbox"><span>Improve one step; record release date</span></label></li>
+        <li><label><input type="checkbox"><span>Establish baseline, then compare success</span></label></li>
+      </ul>
+      <div class="ac-progress"><span class="num">0/4</span><span class="t"><i></i></span></div>
+    </div>
+
+    <div class="action-card" data-code="ERR-01" data-owner="Engineering">
+      <div class="ac-head"><span class="ac-code">ERR-01</span><h4>Fix confirmed chart failures</h4><span class="ac-owner">Engineering</span></div>
+      <ul class="tasks">
+        <li><label><input type="checkbox"><span>Separate clicks from automatic calls</span></label></li>
+        <li><label><input type="checkbox"><span>Track attempts, retries and outcomes</span></label></li>
+        <li><label><input type="checkbox"><span>Fix confirmed failures; record release date</span></label></li>
+        <li><label><input type="checkbox"><span>Compare error / success; reopen if needed</span></label></li>
+      </ul>
+      <div class="ac-progress"><span class="num">0/4</span><span class="t"><i></i></span></div>
+    </div>
+  </div>
+
+  <p class="carry">Carry unresolved items forward — every new report re-scores this table.</p>
+</section>
+
+<!-- ============ 9. DATA MAP ============ -->
+<section id="datamap">
+  <div class="kicker">07 · Data Map</div>
+  <h2 class="h2">Where this data lives</h2>
+  <p class="sub">Every figure in this report comes from one of the six Data Workspace modules.</p>
+
+  <div class="grid3">
+    <div class="module">
+      <h4>Overview</h4>
+      <p>High-level metrics and MAU trend.</p>
+      <span class="mn">Nodes · <b>m1, m2, m3</b></span>
+    </div>
+    <div class="module">
+      <h4>Activity &amp; Usage</h4>
+      <p>Session depth and usage patterns.</p>
+      <span class="mn">Nodes · <b>m7</b></span>
+    </div>
+    <div class="module">
+      <h4>Audience</h4>
+      <p>User segments and persona insights.</p>
+      <span class="mn">Nodes · <b>s1 – s5</b></span>
+    </div>
+    <div class="module">
+      <h4>Retention &amp; Lifecycle</h4>
+      <p>Cohort health and lifecycle signals.</p>
+      <span class="mn">Nodes · <b>m4, m5, m6</b></span>
+    </div>
+    <div class="module">
+      <h4>Access &amp; Journeys</h4>
+      <p>Access paths and workflow journeys.</p>
+      <span class="mn">Nodes · <b>a1, a2, b1 – b4</b></span>
+    </div>
+    <div class="module">
+      <h4>Data Dictionary</h4>
+      <p>Definitions and field documentation.</p>
+      <span class="mn">Nodes · <b>definitions</b></span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>APEX · Insight Hub · Jun–Aug 2026 · Observed aggregates · definitions in the data dictionary · Baseline report v1</p>
+</footer>
+
+<!-- ============ PANEL ============ -->
+<aside class="panel" id="panel" aria-hidden="true" aria-live="polite">
+  <div class="panel-head">
+    <div>
+      <span class="panel-tag" id="panelTag">Core metric</span>
+      <h3 class="panel-title" id="panelTitle">—</h3>
+    </div>
+    <button class="panel-close" id="panelClose" aria-label="Close panel">&#215;</button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+  <div class="panel-foot">
+    <button class="btn" id="panelGo">Open related insight &#8594;</button>
+  </div>
+</aside>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     GRAPH DATA
+     ============================================================ */
+  var GROUPS = {
+    metric:   { name:'Core metrics',     color:'#1B2A4A' },
+    workflow: { name:'Workflows',        color:'#0F766E' },
+    segment:  { name:'User segments',    color:'#B45309' },
+    friction: { name:'Friction signals', color:'#DB0011' },
+    data:     { name:'Data modules',     color:'#4B5563' }
+  };
+
+  var NODES = [
+    /* ---- CORE METRICS (navy) ---- */
+    {id:'m1', g:'metric', x:740, y:70, w:170, v:'512', s:'active users (Aug)', tag:'Core metric · Reach', target:'#plot',
+     facts:['512 active users in August 2026','+43 users vs July (469)','+9.2% month over month'],
+     meaning:'Reach grew. The question is whether the same people came back.'},
+    {id:'m2', g:'metric', x:540, y:70, w:150, v:'469', s:'active users (Jul)', tag:'Core metric · Reach', target:'#return',
+     facts:['469 active users in July 2026','Baseline window for every return measure'],
+     meaning:'This is the denominator for all retention numbers in the report.'},
+    {id:'m3', g:'metric', x:540, y:140, w:200, v:'+9.2%', s:'growth · 43 more users', tag:'Core metric · Growth', target:'#plot',
+     facts:['43 more users than July','Entirely inside the August window'],
+     meaning:'Growth is the easy win; retention is the harder one.'},
+    {id:'m4', g:'metric', x:740, y:140, w:140, v:'258', s:'returned', tag:'Core metric · Return', target:'#return',
+     facts:['258 of 469 July actives seen again in August','55.0% of the July base'],
+     meaning:'Just over half of the base came back in the next window.'},
+    {id:'m5', g:'metric', x:720, y:215, w:200, v:'55.0%', s:'adjacent-window return', tag:'Core metric · Return', target:'#return',
+     facts:['55.0% adjacent-window return','Goal: 80%','Gap: 25 percentage points'],
+     meaning:'The largest single tension in this window.'},
+    {id:'m6', g:'metric', x:490, y:215, w:210, v:'45.0%', s:'211 not observed again', tag:'Core metric · Return', target:'#return',
+     facts:['211 of 469 July actives not seen again','45.0% of the July base','16 of them last used the Liquidity Premium Curve'],
+     meaning:'Directed re-entry work should start with this group.'},
+    {id:'m7', g:'metric', x:960, y:215, w:190, v:'53.9%', s:'multi-day use (Aug)', tag:'Core metric · Depth', target:'#departments',
+     facts:['53.9% of August actives used the platform on more than one day'],
+     meaning:'Depth tracks return better than reach does.'},
+    {id:'m8', g:'metric', x:960, y:140, w:190, v:'80%', s:'return goal (target)', tag:'Core metric · Goal', target:'#return',
+     facts:['80% adjacent-window return goal','A target, not a benchmark or external average'],
+     meaning:'Every return number in this report is read against this goal.'},
+
+    /* ---- WORKFLOWS (teal) ---- */
+    {id:'w1', g:'workflow', x:1070, y:410, w:210, v:'Manual Upload', s:'121u · 90.1% repeat', tag:'Workflow · Protect', target:'#value',
+     facts:['121 users','90.1% repeat rate','Top return context: 51 users (19.8%)'],
+     meaning:'The strongest observed return habit on the platform.'},
+    {id:'w2', g:'workflow', x:1070, y:475, w:210, v:'NII Calculation', s:'126u · 85.7% repeat', tag:'Workflow · Protect', target:'#value',
+     facts:['126 users','85.7% repeat rate','Return context: 49 users (19.0%)','304 + 246 error events attached'],
+     meaning:'A dependable task loop — protect saved work.'},
+    {id:'w3', g:'workflow', x:1070, y:540, w:210, v:'Data Explorer', s:'106u · 85.8% repeat', tag:'Workflow · Protect + Fix', target:'#value',
+     facts:['106 users','85.8% repeat rate','Highest 405 exposure: 471 events on Update chart'],
+     meaning:'High value paired with the top friction signal in the report.'},
+    {id:'w4', g:'workflow', x:1070, y:605, w:210, v:'Market Data Viewer', s:'96u · 70.8% repeat', tag:'Workflow · Improve', target:'#value',
+     facts:['96 users','70.8% repeat rate'],
+     meaning:'Healthy use with room to speed up.'},
+    {id:'w5', g:'workflow', x:1070, y:670, w:210, v:'Liquidity Premium Curve', s:'140u · 36.4% repeat', tag:'Workflow · Research first', target:'#value',
+     facts:['140 users — highest reach of any workflow','36.4% repeat rate — lowest habit','16 not-returned users last used it'],
+     meaning:'Highest reach, lowest habit: the clearest churn candidate.'},
+    {id:'w6', g:'workflow', dot:true,

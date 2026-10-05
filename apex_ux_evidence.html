@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX · UX Evidence — Jun–Aug 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,400;1,9..144,600&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --stage:#E9E6F7;
+  --panel:#FAF9F5;
+  --panel-2:#F3F1EA;
+  --panel-3:#FFFFFF;
+  --line:#E5E2DA;
+  --line-2:#D9D5CB;
+  --ink:#1B1B2F;
+  --ink-2:#3E3E5C;
+  --muted:#7A7893;
+  --violet:#6C5CE7;
+  --violet-2:#8B7CF0;
+  --violet-soft:#ECE9FB;
+  --green-bg:#DCEBCF; --green-tx:#22541D;
+  --risk-bg:#FAD9D3;  --risk-tx:#B2261B;
+  --info-bg:#DDE7F7;  --info-tx:#1E3A8A;
+  --warm-bg:#FBEAD8;  --warm-tx:#8A4B08;
+  --disp:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --serif:'Fraunces',Georgia,serif;
+  --body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --mono:'Space Mono','SFMono-Regular',Consolas,monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--stage);color:var(--ink);font-family:var(--body);
+  font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--violet-soft)}
+a{color:inherit}
+
+/* ---------------- top bar ---------------- */
+.topbar{position:sticky;top:0;z-index:80;background:rgba(233,230,247,.88);backdrop-filter:blur(14px);border-bottom:1px solid rgba(27,27,47,.08)}
+.topbar-in{max-width:1520px;margin:0 auto;padding:0 40px;height:70px;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--disp);font-weight:800;font-size:14px;letter-spacing:.12em;white-space:nowrap}
+.brand i{width:11px;height:11px;background:var(--violet);border-radius:3px;display:block}
+.nav{display:flex;gap:2px;flex:1;justify-content:center;flex-wrap:wrap}
+.nav a{font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--muted);text-decoration:none;padding:7px 12px;border-radius:999px;white-space:nowrap;transition:.18s}
+.nav a:hover{color:var(--ink);background:rgba(255,255,255,.7)}
+.nav a.on{color:#fff;background:var(--violet)}
+.tb-meta{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* ---------------- views ---------------- */
+.view{display:none;min-height:calc(100vh - 70px);padding:56px 40px 40px}
+.view.on{display:block;animation:rise .5s cubic-bezier(.16,1,.3,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.wrap{max-width:1520px;margin:0 auto}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ---------------- type ---------------- */
+.kicker{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);display:flex;align-items:center;gap:10px}
+.kicker::before{content:"";width:22px;height:2px;background:var(--violet);display:block}
+.display{font-family:var(--disp);font-weight:800;font-size:clamp(38px,4.6vw,74px);line-height:1.02;letter-spacing:-.035em;color:var(--ink);margin-top:16px}
+.display em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;display:block}
+.title{font-family:var(--disp);font-weight:800;font-size:clamp(26px,2.4vw,38px);line-height:1.1;letter-spacing:-.025em}
+.title-sm{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:-.015em}
+.lede{font-size:16.5px;color:var(--ink-2);margin-top:20px;max-width:560px}
+.lede b{color:var(--ink);font-weight:650}
+.cap{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.note{font-size:13px;color:var(--muted);line-height:1.55}
+.mono{font-family:var(--mono)}
+.big{font-family:var(--disp);font-weight:800;letter-spacing:-.04em;line-height:.95}
+
+/* ---------------- rail + panel layout ---------------- */
+.split{display:grid;grid-template-columns:minmax(340px,400px) 1fr;gap:52px;align-items:start}
+@media(max-width:1180px){.split{grid-template-columns:1fr;gap:34px}}
+.rail{position:relative}
+.explore{margin-top:30px;display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;border:none;border-radius:999px;padding:14px 24px 14px 22px;font-family:var(--disp);font-weight:700;font-size:13.5px;letter-spacing:.02em;cursor:pointer;transition:.2s}
+.explore:hover{background:var(--violet)}
+.explore span.arrow{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:13px}
+.rail .badge{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:20px}
+.rail .badge b{color:var(--violet)}
+.orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0}
+.orb.a{width:210px;height:210px;background:rgba(108,92,231,.14);left:-70px;top:-40px}
+.orb.b{width:130px;height:130px;background:rgba(178,38,27,.09);left:150px;top:230px}
+.orb.c{width:90px;height:90px;background:rgba(34,84,29,.10);left:-30px;top:400px}
+.rail-in{position:relative;z-index:1}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:30px 32px;box-shadow:0 2px 10px rgba(27,27,47,.045)}
+.panel+.panel{margin-top:20px}
+.panel-h{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.card{background:var(--panel-3);border:1px solid var(--line);border-radius:20px;padding:24px}
+.card.soft{background:var(--panel-2)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:1180px){.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:1fr}}
+
+/* ---------------- pills ---------------- */
+.pill{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 13px;border-radius:999px;white-space:nowrap}
+.pill.green{background:var(--green-bg);color:var(--green-tx)}
+.pill.risk{background:var(--risk-bg);color:var(--risk-tx)}
+.pill.info{background:var(--info-bg);color:var(--info-tx)}
+.pill.warm{background:var(--warm-bg);color:var(--warm-tx)}
+.pill.plain{background:#fff;border:1px solid var(--line);color:var(--ink-2)}
+
+/* ---------------- stat blocks ---------------- */
+.stat{font-family:var(--disp);font-weight:800;font-size:clamp(34px,3.4vw,56px);letter-spacing:-.04em;line-height:1}
+.stat-sm{font-family:var(--disp);font-weight:800;font-size:30px;letter-spacing:-.03em;line-height:1}
+.stat-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+
+/* ---------------- funnel ---------------- */
+.funnel{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--line)}
+.fstep{padding:24px 22px;border-right:1px solid var(--line)}
+.fstep:last-child{border-right:none}
+@media(max-width:900px){.funnel{grid-template-columns:1fr 1fr}.fstep{border-bottom:1px solid var(--line)}}
+.fstep .n{font-family:var(--disp);font-weight:800;font-size:40px;letter-spacing:-.04em;line-height:1}
+.fstep .n small{font-size:17px;color:var(--muted);font-weight:600}
+.fstep .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.fstep .s{font-size:12.5px;color:var(--ink-2);margin-top:7px}
+.fstep.risk .n{color:var(--risk-tx)}
+
+/* ---------------- evidence chain ---------------- */
+.chain{margin-top:34px;border-top:2px solid var(--ink);padding-top:20px;display:grid;grid-template-columns:repeat(5,1fr);gap:22px}
+@media(max-width:1100px){.chain{grid-template-columns:1fr 1fr}}
+.chain h5{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--violet);margin-bottom:8px}
+.chain h5 span{color:var(--muted);font-weight:400}
+.chain p{font-size:13.5px;line-height:1.5;color:var(--ink-2)}
+
+/* ---------------- tables ---------------- */
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:12px 14px;border-bottom:1px solid var(--line-2)}
+td{padding:15px 14px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink)}
+tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right;font-family:var(--mono);font-weight:700}
+tbody tr:hover td{background:rgba(108,92,231,.035)}
+
+/* ---------------- bars ---------------- */
+.bar-row{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.bar-row:last-child{margin-bottom:0}
+.bar-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.bar-name{font-weight:600;font-size:15px;color:var(--ink)}
+.bar-name small{display:block;font-weight:400;font-size:12px;color:var(--muted)}
+.bar-val{font-family:var(--mono);font-weight:700;font-size:17px}
+.track{height:30px;background:var(--panel-2);border-radius:8px;overflow:hidden;position:relative}
+.fill{height:100%;border-radius:8px;background:var(--violet)}
+.fill.green{background:#5B9B4E}
+.fill.risk{background:var(--risk-tx)}
+.fill.info{background:var(--info-tx)}
+.fill.warm{background:var(--warm-tx)}
+.fill.dim{background:var(--line-2)}
+.ref-line{position:absolute;top:-4px;bottom:-4px;width:0;border-left:2px dashed var(--violet)}
+
+/* ---------------- dot chart ---------------- */
+.dotrow{display:grid;grid-template-columns:250px 1fr 92px;gap:22px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)}
+.dotrow:last-child{border-bottom:none}
+.dotname{font-size:13.5px;font-weight:600;letter-spacing:.01em}
+.dotname small{display:block;font-size:11.5px;font-weight:400;color:var(--muted);margin-top:3px}
+.dottrack{position:relative;height:30px}
+.dottrack .axis{position:absolute;left:0;right:0;top:14px;height:1px;background:var(--line-2)}
+.dottrack .ref{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--violet);opacity:.75}
+.dotdot{position:absolute;top:4px;width:22px;height:22px;border-radius:50%;background:var(--violet);border:3px solid #fff;box-shadow:0 0 0 1px var(--line-2);transform:translateX(-50%)}
+.dotdot.risk{background:var(--risk-tx)}
+.dotval{font-family:var(--mono);font-weight:700;font-size:16px;text-align:right}
+
+/* ---------------- journey / steps ---------------- */
+.steps{display:grid;gap:16px}
+.step{background:var(--panel-3);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:flex;gap:18px;align-items:flex-start}
+.step .idx{flex:none;width:34px;height:34px;border-radius:50%;background:var(--violet-soft);color:var(--violet);display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:14px}
+.step.risk .idx{background:var(--risk-bg);color:var(--risk-tx)}
+.step h4{font-family:var(--disp);font-weight:700;font-size:16px;letter-spacing:-.01em;margin-bottom:4px}
+.step p{font-size:13.5px;color:var(--ink-2)}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:1100px){.flow{grid-template-columns:1fr 1fr}}
+.flowstep{background:var(--panel-3);border:1px solid var(--line);border-radius:16px;padding:18px;position:relative}
+.flowstep .fn{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.12em;color:var(--violet);margin-bottom:8px}
+.flowstep h4{font-family:var(--disp);font-weight:700;font-size:15px;margin-bottom:5px}
+.flowstep p{font-size:12.5px;color:var(--muted)}
+
+/* ---------------- action cards ---------------- */
+.prog{height:8px;background:var(--panel-2);border-radius:99px;overflow:hidden;margin:14px 0 8px}
+.prog i{display:block;height:100%;width:0;background:var(--violet);transition:width .3s}
+.acard{background:var(--panel-3);border:1px solid var(--line);border-radius:20px;padding:24px;display:flex;flex-direction:column}
+.acard h4{font-family:var(--disp);font-weight:700;font-size:18px;letter-spacing:-.015em;margin:10px 0 2px}
+.acard .own{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:14px}
+.acard label{display:flex;gap:11px;font-size:13.5px;color:var(--ink-2);padding:10px 0;cursor:pointer;border-top:1px solid var(--line);line-height:1.4}
+.acard label:hover{color:var(--ink)}
+.acard input{accent-color:var(--violet);margin-top:3px;flex:none;width:15px;height:15px}
+.acard .mini{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:auto;padding-top:14px}
+
+/* ---------------- module cards ---------------- */
+.mod{background:var(--panel-3);border:1px solid var(--line);border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:10px}
+.mod .mh{display:flex;justify-content:space-between;align-items:baseline}
+.mod h4{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:-.02em}
+.mod p{font-size:13.5px;color:var(--ink-2)}
+.mod .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+
+/* ---------------- graph ---------------- */
+.glegend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.glegend span{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel-3)}
+.glegend i{width:9px;height:9px;border-radius:50%}
+.gstage{background:var(--panel-3);border:1px solid var(--line);border-radius:22px;overflow:hidden}
+.gstage svg{display:block;width:100%;height:auto}
+svg .edge{stroke:#D8D4E4;stroke-width:1.2;fill:none;transition:opacity .2s,stroke .2s}
+svg .edge.dashed{stroke-dasharray:5 5;stroke:#C9A9A4}
+svg .elabel{font-family:var(--mono);font-size:9.5px;fill:var(--muted);opacity:0;transition:opacity .2s}
+svg .elabel.dashed{opacity:.8;fill:var(--risk-tx)}
+svg .node{cursor:pointer;transition:opacity .2s}
+svg .npill{fill:#fff;stroke:var(--line-2);transition:stroke .2s}
+svg .nval{font-family:var(--disp);font-size:12.5px;font-weight:700;fill:var(--ink)}
+svg .nsub{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+svg.focus .node{opacity:.2}
+svg.focus .edge{opacity:.08}
+svg.focus .elabel{opacity:0}
+svg.focus .hl{opacity:1!important}
+svg.focus .edge.hl{stroke-width:1.9;opacity:1}
+svg .node.hl .npill{stroke:var(--violet)}
+svg .node.sel .npill{stroke:var(--violet);stroke-width:1.8}
+
+.npanel{position:fixed;top:88px;right:32px;width:372px;max-height:calc(100vh - 120px);overflow:auto;z-index:90;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 18px 50px rgba(27,27,47,.18);display:none}
+.npanel.on{display:block;animation:rise .3s ease both}
+.npanel h3{font-family:var(--disp);font-weight:800;font-size:23px;letter-spacing:-.02em;margin:14px 0 4px}
+.npanel .facts{list-style:none;margin:16px 0}
+.npanel .facts li{font-size:13px;color:var(--ink-2);padding:8px 0;border-top:1px solid var(--line)}
+.npanel .meaning{font-size:13.5px;background:var(--violet-soft);border-left:3px solid var(--violet);padding:12px 15px;border-radius:0 10px 10px 0;margin:16px 0;color:var(--ink)}
+.connchip{display:flex;gap:9px;width:100%;text-align:left;background:none;border:none;border-top:1px solid var(--line);padding:9px 0;cursor:pointer;font-family:inherit}
+.connchip .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:none}
+.connchip .t{font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.connchip .t b{color:var(--ink);font-weight:650}
+.connchip:hover .t{color:var(--violet)}
+.openinsight{display:block;width:100%;margin-top:18px;background:var(--ink);color:#fff;border:none;border-radius:12px;padding:13px;font-family:var(--disp);font-weight:700;font-size:13px;cursor:pointer}
+.openinsight:hover{background:var(--violet)}
+.paneltop{display:flex;justify-content:space-between;align-items:flex-start}
+.panelclose{background:none;border:none;font-size:18px;color:var(--muted);cursor:pointer;line-height:1}
+.panelclose:hover{color:var(--ink)}
+
+/* ---------------- footer nav ---------------- */
+.fnav{max-width:1520px;margin:44px auto 0;padding-top:24px;border-top:1px solid rgba(27,27,47,.1);display:flex;justify-content:space-between;align-items:center;gap:20px}
+.dots{display:flex;gap:9px;align-items:center}
+.dots button{width:9px;height:9px;border-radius:50%;border:none;background:rgba(27,27,47,.18);cursor:pointer;padding:0;transition:.2s}
+.dots button:hover{background:var(--violet-2)}
+.dots button.on{background:var(--violet);width:26px;border-radius:99px}
+.pgno{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em}
+.roundnav{width:46px;height:46px;border-radius:50%;background:var(--ink);color:#fff;border:none;display:grid;place-items:center;font-size:16px;cursor:pointer;transition:.2s}
+.roundnav:hover{background:var(--violet)}
+.fnav-right{display:flex;align-items:center;gap:18px}
+@media(max-width:760px){.nav{display:none}.tb-meta{display:none}}
+
+/* ---------------- hero ---------------- */
+.hero{min-height:calc(100vh - 70px);display:flex;flex-direction:column;justify-content:space-between;gap:40px;position:relative;overflow:hidden}
+.hero .orb.a{width:460px;height:460px;left:auto;right:-120px;top:-140px;background:rgba(108,92,231,.16)}
+.hero .orb.b{width:230px;height:230px;left:-70px;bottom:120px;top:auto;background:rgba(178,38,27,.10)}
+.hero-in{position:relative;z-index:1}
+.hero h1{font-family:var(--disp);font-weight:800;font-size:clamp(46px,8vw,132px);line-height:.94;letter-spacing:-.05em;margin-top:22px}
+.hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em;display:block}
+.hero .sub{font-size:18px;color:var(--ink-2);max-width:620px;margin-top:26px}
+.hero-foot{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;border-top:1px solid rgba(27,27,47,.14);padding-top:26px}
+.hf-meta{display:flex;gap:34px;flex-wrap:wrap}
+.hf-meta div{display:flex;flex-direction:column;gap:4px}
+.hf-meta .cap{letter-spacing:.14em;text-transform:uppercase}
+.hf-meta .v{font-family:var(--disp);font-weight:700;font-size:14px}
+.begin{background:var(--panel-3);border:1px solid var(--line);border-radius:22px;padding:24px 28px;display:flex;align-items:center;gap:26px;box-shadow:0 3px 14px rgba(27,27,47,.05)}
+.begin .bt{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;white-space:nowrap}
+.begin p{font-size:13px;color:var(--muted);max-width:290px}
+@media(max-width:900px){.hero-foot{grid-template-columns:1fr}}
+
+/* ---------------- table of contents strip ---------------- */
+.toc{display:grid;grid-template-columns:repeat(9,1fr);gap:12px;position:relative;z-index:1;margin:34px 0 6px}
+@media(max-width:1280px){.toc{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.toc{grid-template-columns:1fr 1fr}}
+.toc button{text-align:left;background:rgba(250,249,245,.72);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer;font-family:inherit;transition:.2s;display:flex;flex-direction:column;gap:7px}
+.toc button:hover{background:#fff;border-color:var(--violet);transform:translateY(-2px)}
+.toc .tn{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--violet)}
+.toc .tt{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:-.01em;color:var(--ink)}
+.toc .ts{font-size:11.5px;color:var(--muted);line-height:1.35}
+
+/* ---------------- map header (full width) ---------------- */
+.maphead{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-bottom:26px}
+.maphead .display{font-size:clamp(34px,3.6vw,58px)}
+.maphead .lede{margin-top:16px;max-width:640px}
+.maphead .side{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+@media(max-width:1000px){.maphead{grid-template-columns:1fr}.maphead .side{align-items:flex-start}}
+
+</style>
+</head>
+<body>
+
+
+
+
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><i></i>APEX · UX EVIDENCE</div>
+  <nav class="nav" id="nav"></nav>
+  <div class="tb-meta">Jun–Aug 2026 · UTC+08:00</div>
+</div></div>
+
+<!-- ============ VIEW 0 · HERO ============ -->
+<section class="view" id="v-hero">
+  <div class="wrap hero">
+    <span class="orb a"></span><span class="orb b"></span>
+    <div class="hero-in">
+      <div class="kicker">APEX · INSIGHT HUB — BASELINE REPORT V1</div>
+      <h1>More arrived.<em>Who came back?</em></h1>
+      <p class="sub">APEX grew <b style="color:var(--ink)">+9.2%</b> between July and August. Growth is the opening act. The real story is whether people found enough value — and a clear enough path — to return.</p>
+      <div class="toc">
+        <button data-go="1"><span class="tn">00 · MAP</span><span class="tt">The Map</span><span class="ts">Every signal, connected</span></button>
+        <button data-go="2"><span class="tn">01</span><span class="tt">The Plot</span><span class="ts">Growth up, retention tense</span></button>
+        <button data-go="3"><span class="tn">02</span><span class="tt">Return</span><span class="ts">Are users coming back?</span></button>
+        <button data-go="4"><span class="tn">03</span><span class="tt">Access</span><span class="ts">Getting back to work</span></button>
+        <button data-go="5"><span class="tn">04</span><span class="tt">Value</span><span class="ts">Which workflows matter</span></button>
+        <button data-go="6"><span class="tn">05</span><span class="tt">Friction</span><span class="ts">The HTTP 405 signal</span></button>
+        <button data-go="7"><span class="tn">06</span><span class="tt">Departments</span><span class="ts">Behaviour by cohort</span></button>
+        <button data-go="8"><span class="tn">07</span><span class="tt">Actions</span><span class="ts">Close the loop</span></button>
+        <button data-go="9"><span class="tn">08</span><span class="tt">Data Map</span><span class="ts">Where the data lives</span></button>
+      </div>
+    </div>
+    <div class="hero-foot">
+      <div class="hf-meta">
+        <div><span class="cap">Report period</span><span class="v">Jun–Aug 2026 · 2 months</span></div>
+        <div><span class="cap">Windows</span><span class="v">Equal 31-day windows</span></div>
+        <div><span class="cap">Basis</span><span class="v">Observed signals</span></div>
+        <div><span class="cap">Claims</span><span class="v">Hypotheses clearly marked</span></div>
+      </div>
+      <div class="begin">
+        <div>
+          <div class="bt">Begin the story →</div>
+          <p>Use the arrow keys or the chapter dots to move. One idea per screen.</p>
+        </div>
+        <button class="roundnav" data-go="1">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 1 · THE MAP ============ -->
+<section class="view" id="v-map">
+  <div class="wrap">
+    <div class="maphead">
+      <div>
+        <div class="badge" style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)"><b style="color:var(--violet)">00</b> · The Map</div>
+        <h2 class="display">Every signal,<em>connected.</em></h2>
+        <p class="lede">This report's data as one system, not eight silos. <b>Click any node</b> to see what it connects to, what it means, and to jump straight to its insight.</p>
+      </div>
+      <div class="side">
+        <span class="pill info">Solid edge = observed relation</span>
+        <span class="pill risk">Dashed edge = hypothesis to test</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-h">
+        <div class="title-sm">Signal network · 41 nodes · 49 edges</div>
+        <div class="cap">Hover to trace a thread · click to open its panel</div>
+      </div>
+      <div class="glegend">
+        <span><i style="background:#6C5CE7"></i>Core metrics</span>
+        <span><i style="background:#5B9B4E"></i>Workflows</span>
+        <span><i style="background:#8A4B08"></i>User segments</span>
+        <span><i style="background:#B2261B"></i>Friction signals</span>
+        <span><i style="background:#7A7893"></i>Return contexts &amp; system</span>
+      </div>
+      <div class="gstage">
+        <svg id="graphSvg" viewBox="0 0 1240 840" role="img" aria-label="Node graph connecting all report data"></svg>
+      </div>
+      <div style="display:flex;justify-content:space-between;gap:20px;margin-top:16px;flex-wrap:wrap">
+        <span class="note" id="graphcap"></span>
+        <button id="resetBtn" style="background:none;border:none;font-family:var(--mono);font-size:12px;color:var(--violet);cursor:pointer">Reset selection</button>
+      </div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right">
+        <button class="roundnav" data-go="prev">←</button>
+        <button class="roundnav" data-go="next">→</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<aside class="npanel" id="npanel" aria-live="polite"></aside>
+
+<!-- ============ VIEW 2 · THE PLOT ============ -->
+<section class="view" id="v-plot">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <div class="rail-in">
+          <div class="badge"><b>01</b> · The Plot</div>
+          <h2 class="display">Growth is up.<em>Retention is the tension.</em></h2>
+          <p class="lede">Reach grew <b>+9.2%</b> (469 → 512 active users). Adjacent-window return was <b>55.0%</b> against an <b>80% goal</b>. The question is not growth — it is whether people found enough value to come back.</p>
+          <button class="explore" data-go="3"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Report summary</div>
+            <span class="pill plain">Equal 31-day windows</span>
+          </div>
+          <div class="funnel" style="margin-bottom:22px">
+            <div class="fstep"><div class="n">469</div><div class="l">Active · July</div><div class="s">Baseline window</div></div>
+            <div class="fstep"><div class="n">512<small> +43</small></div><div class="l">Active · August</div><div class="s">+9.2% month over month</div></div>
+            <div class="fstep"><div class="n">258</div><div class="l">Returned</div><div class="s">Seen again in August</div></div>
+            <div class="fstep risk"><div class="n">55.0%</div><div class="l">Adjacent-window return</div><div class="s">Goal 80% · gap 25pt</div></div>
+          </div>
+          <div class="grid2">
+            <div class="card soft">
+              <div class="stat-lbl">Report period</div>
+              <div class="title-sm" style="margin-bottom:14px">Jun–Aug 2026 · 2 months</div>
+              <table>
+                <tbody>
+                  <tr><td><b>Jul</b></td><td class="num" style="font-size:13px">12 Jun – 12 Jul 2026 · 31 days</td></tr>
+                  <tr><td><b>Aug</b></td><td class="num" style="font-size:13px">13 Jul – 12 Aug 2026 · 31 days</td></tr>
+                  <tr><td class="mono" style="font-size:12px;color:var(--muted)">Timezone</td><td class="num" style="font-size:13px">UTC+08:00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card soft">
+              <div class="stat-lbl">How to read this report</div>
+              <p class="note" style="font-size:13.5px;line-height:1.6">Two equal windows are compared directly. Every number is an observed aggregate. Where a connection is inferred rather than measured, it is labelled a <b style="color:var(--risk-tx)">hypothesis</b> and carries a watch metric for the next window.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><div class="title-sm">Three signals carrying this window</div></div>
+          <div class="grid3">
+            <div class="card" style="border-left:4px solid var(--violet)">
+              <div class="stat-lbl">Reach</div>
+              <div class="stat" style="color:var(--violet)">+9.2%</div>
+              <div class="title-sm" style="margin:12px 0 6px">Active users grew</div>
+              <p class="note"><b>Jul → Aug</b> · 469 → 512 active users. 43 more active users across equal 31-day windows.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--risk-tx)">
+              <div class="stat-lbl">Retention</div>
+              <div class="stat" style="color:var(--risk-tx)">55.0%</div>
+              <div class="title-sm" style="margin:12px 0 6px">Jul-to-Aug retention</div>
+              <p class="note">258 of 469 July active users were active again in August. <b>211 were not observed again.</b> The 80% target is a goal, not an observed benchmark.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--warm-tx)">
+              <div class="stat-lbl">Signals to validate</div>
+              <div class="stat" style="color:var(--warm-tx)">2</div>
+              <div class="title-sm" style="margin:12px 0 6px">Validate before concluding</div>
+              <p class="note" style="margin-bottom:10px">Access + errors → investigate friction.</p>
+              <p class="note">Task progress → 53.9% observed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>469 → 512 actives (+43); 55.0% adjacent-window return; 53.9% multi-day use.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>Multi-day users sit above overall return — depth of use tracks return better than reach.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>Habit-forming workflows drive return; one-off visitors drive growth.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Register this report as the baseline for all chains (see Actions).</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Return ≥ 60% confirms direction; below 55% means friction has to be addressed first.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 3 · RETURN ============ -->
+<section class="view" id="v-return">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <span class="orb b"></span>
+        <div class="rail-in">
+          <div class="badge"><b>02</b> · Retention</div>
+          <h2 class="display">Are users<em>coming back?</em></h2>
+          <p class="lede"><b>258 of 469</b> July actives were observed again in August — <b>55.0%</b>. The remaining <b>211 (45.0%)</b> were not. What they did last shapes where to look.</p>
+          <button class="explore" data-go="4"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Retention evidence journey</div>
+            <span class="pill plain">Equal 31-day windows</span>
+          </div>
+          <p class="note" style="margin-bottom:22px">Start with the July cohort, then look for the same people in the next equal 31-day window.</p>
+          <div class="grid3">
+            <div class="card soft" style="text-align:center">
+              <div class="stat-lbl">Step 1 · Cohort</div>
+              <div class="stat">469</div>
+              <div class="note" style="margin-top:8px">Active users in July</div>
+            </div>
+            <div class="card soft" style="text-align:center;border-color:var(--violet)">
+              <div class="stat-lbl">Step 2 · Observed again</div>
+              <div class="stat" style="color:var(--violet)">258</div>
+              <div class="note" style="margin-top:8px">Seen again in August</div>
+            </div>
+            <div class="card" style="text-align:center;background:var(--risk-bg);border-color:var(--risk-tx)">
+              <div class="stat-lbl" style="color:var(--risk-tx)">Step 3 · Result</div>
+              <div class="stat" style="color:var(--risk-tx)">55.0%</div>
+              <div class="note" style="margin-top:8px;color:var(--risk-tx)">Adjacent-window return · 80% goal</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:18px;margin-top:20px;padding:18px 22px;background:var(--panel-2);border-radius:16px;flex-wrap:wrap">
+            <span class="stat-sm" style="color:var(--risk-tx)">211</span>
+            <span style="font-weight:600">Not observed again</span>
+            <span class="pill risk">45.0% of the July base</span>
+            <span class="note" style="margin-left:auto">Directed re-entry work starts with this group.</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="grid2">
+            <div>
+              <div class="pill green" style="margin-bottom:16px">Returning · 258 users</div>
+              <div class="title-sm" style="margin-bottom:16px">Most common return contexts</div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">Manual Upload</span><span class="bar-val">51 · 19.8%</span></div>
+                <div class="track"><div class="fill green" style="width:100%"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">NII Calculation</span><span class="bar-val">49 · 19.0%</span></div>
+                <div class="track"><div class="fill green" style="width:96%"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">Data Explorer</span><span class="bar-val">39 · 15.1%</span></div>
+                <div class="track"><div class="fill green" style="width:76%"></div></div>
+              </div>
+              <p class="note" style="margin-top:16px">Transactional workflows dominate the return path.</p>
+            </div>
+            <div>
+              <div class="pill risk" style="margin-bottom:16px">Not returned · 211 users</div>
+              <div class="title-sm" style="margin-bottom:16px">Last observed work contexts</div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">Liquidity Premium Curve</span><span class="bar-val">16 · 7.6%</span></div>
+                <div class="track"><div class="fill risk" style="width:100%"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">Document Repository<small>Long-tail context</small></span><span class="bar-val">—</span></div>
+                <div class="track"><div class="fill dim" style="width:14%"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-top"><span class="bar-name">NII Calculation</span><span class="bar-val">8 · 3.8%</span></div>
+                <div class="track"><div class="fill risk" style="width:50%"></div></div>
+              </div>
+              <p class="note" style="margin-top:16px">The largest not-returned cluster last used LPC — the workflow with the lowest repeat rate (36.4%).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>55.0% of 469 July actives returned; the goal is 80%.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>Return contexts skew transactional; the biggest not-returned cluster last used LPC — the lowest repeat of any workflow.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>LPC is high-reach but low-habit; its users churn instead of returning.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Research LPC user goal, first-session outcome and reason for not returning — UX Research.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>LPC repeat trend; return rate by first-session workflow.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 4 · ACCESS ============ -->
+<section class="view" id="v-access">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <span class="orb c"></span>
+        <div class="rail-in">
+          <div class="badge"><b>03</b> · Access</div>
+          <h2 class="display">Can people get<em>back to work?</em></h2>
+          <p class="lede">Two access paths ran through August: people <b>asking for help</b>, and people <b>hitting permission friction</b>. They describe different problems with different fixes.</p>
+          <button class="explore" data-go="5"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Path A · Help-seeking</div>
+            <span class="pill plain">Access Guide</span>
+          </div>
+          <div class="steps">
+            <div class="step"><div class="idx">1</div><div><h4>Active in APEX</h4><p><b>512</b> active users · August 2026 · equal 31-day window</p></div></div>
+            <div class="step"><div class="idx">2</div><div><h4>Reached Access Guide</h4><p><b>207</b> users — <b>40.4% of active</b></p></div></div>
+            <div class="step"><div class="idx">3</div><div><h4>Repeated Guide activity</h4><p><b>769</b> recorded views — at least one Guide view · <b>3.7</b> views per Guide user</p></div></div>
+          </div>
+          <div class="grid2" style="margin-top:22px">
+            <div class="card soft">
+              <div class="pill green" style="margin-bottom:12px">What the sequence says</div>
+              <p class="note" style="font-size:13.5px">207 people opened the Guide. Repeated Guide activity produced 769 recorded views.</p>
+            </div>
+            <div class="card soft">
+              <div class="pill warm" style="margin-bottom:12px">What it does not say</div>
+              <p class="note" style="font-size:13.5px">Guide views alone cannot confirm that access was restored or that a task was completed.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Designed access-recovery journey</div>
+            <span class="pill info">Design proposal · not observed</span>
+          </div>
+          <div class="flow" style="margin-bottom:20px">
+            <div class="flowstep" style="border-color:var(--risk-tx)">
+              <div class="fn">01 · BEFORE</div>
+              <h4>Access issue</h4>
+              <p>“Why can't I continue?” — blocked &amp; uncertain</p>
+            </div>
+            <div class="flowstep">
+              <div class="fn">02 · BEFORE</div>
+              <h4>What happens next?</h4>
+              <p>Searching for help</p>
+            </div>
+            <div class="flowstep">
+              <div class="fn">03 · BEFORE</div>
+              <h4>Waiting</h4>
+              <p>Waiting &amp; unsure</p>
+            </div>
+            <div class="flowstep">
+              <div class="fn">04 · BEFORE</div>
+              <h4>Losing the thread</h4>
+              <p>Lost my place</p>
+            </div>
+            <div class="flowstep">
+              <div class="fn">05 · BEFORE</div>
+              <h4>Disengaged</h4>
+              <p>Drops out of the task</p>
+            </div>
+          </div>
+          <div class="card" style="border-left:4px solid var(--violet)">
+            <div class="stat-lbl" style="color:var(--violet)">Experience hypothesis</div>
+            <p style="font-size:14px;line-height:1.6;color:var(--ink-2)">A clear request, visible approval and a return-to-task link should move emotion from <b>uncertainty</b> to <b>confidence</b> — and increase D7 return. Validate it with the changed events above.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Path B · Permission friction</div>
+            <span class="pill plain">512 active users · shared cohort</span>
+          </div>
+          <div class="grid2" style="margin-bottom:22px">
+            <div class="card soft" style="text-align:center">
+              <div class="stat-lbl">Users with a permission-like signal</div>
+              <div class="stat" style="color:var(--risk-tx)">64</div>
+              <div class="note" style="margin-top:8px">12.5% of August active users</div>
+            </div>
+            <div class="card soft" style="text-align:center">
+              <div class="stat-lbl">Signals across affected visits</div>
+              <div class="stat">296</div>
+              <div class="note" style="margin-top:8px">across 115 affected visits</div>
+            </div>
+          </div>
+          <div class="title-sm" style="margin-bottom:12px">How the 115 visits split after the signal</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:10px">
+            <span class="pill green">28.7% · another recorded work-screen step</span>
+            <span class="pill risk">71.3% · no later recorded work-screen step</span>
+          </div>
+          <div style="display:flex;height:38px;border-radius:12px;overflow:hidden;background:var(--panel-2)">
+            <div style="width:28.7%;background:#5B9B4E"></div>
+            <div style="width:71.3%;background:var(--risk-tx)"></div>
+          </div>
+          <div class="grid2" style="margin-top:16px">
+            <div class="card soft"><div class="title-sm">3A · 33 of 115 visits</div><p class="note" style="margin-top:6px">28.7% had another recorded work-screen step after the permission signal.</p></div>
+            <div class="card soft"><div class="title-sm">3B · 82 of 115 visits</div><p class="note" style="margin-top:6px">71.3% had no later recorded work-screen step.</p></div>
+          </div>
+          <div class="grid2" style="margin-top:20px">
+            <div class="card" style="border-left:4px solid var(--warm-tx)">
+              <div class="pill warm" style="margin-bottom:10px">How to read “no later step”</div>
+              <p class="note" style="font-size:13px">It is an observation about this visit's recorded path, not proof that the user gave up or failed.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--risk-tx)">
+              <div class="pill risk" style="margin-bottom:10px">Evidence boundary</div>
+              <p class="note" style="font-size:13px">This path does not prove recovery, Guide use, or eventual task completion for any individual user.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>12.5% of actives hit permission-like friction; 71.3% of affected visits show no later step.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>This 64-user group is the best candidate to explain part of the 211 not-returned — the overlap is unmeasured.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>Permission friction converts directly into next-window churn.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Instrument request → approval → task-completion as one chain; join access-flagged users with the August return cohort — Product + Data.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Share of not-returned users who had access flags; task completion after approval.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 5 · VALUE ============ -->
+<section class="view" id="v-value">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <div class="rail-in">
+          <div class="badge"><b>04</b> · Core workflows</div>
+          <h2 class="display">Which workflows<em>need attention?</em></h2>
+          <p class="lede">Repeat rates span <b>36.4% – 90.1%</b> across the five main workflows. Protect what brings users back. Research what does not.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+            <span class="pill green">3 · Protect</span>
+            <span class="pill risk">1 · Research first</span>
+          </div>
+          <button class="explore" data-go="6"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Workflow opportunity guide</div>
+            <span class="pill plain">Repeat rate · August</span>
+          </div>
+          <div class="grid2">
+            <div class="card" style="border-left:4px solid #5B9B4E">
+              <div class="pill green" style="margin-bottom:14px">Protect</div>
+              <div class="stat-sm">90.1%</div>
+              <div class="title-sm" style="margin:8px 0 4px">Manual Upload</div>
+              <div class="note">121 users</div>
+              <p class="note" style="margin-top:12px">The strongest observed return habit.</p>
+              <p class="note" style="margin-top:8px;color:var(--ink)">→ Protect recovery and confirmation.</p>
+            </div>
+            <div class="card" style="border-left:4px solid #5B9B4E">
+              <div class="pill green" style="margin-bottom:14px">Protect</div>
+              <div class="stat-sm">85.7%</div>
+              <div class="title-sm" style="margin:8px 0 4px">NII Calculation</div>
+              <div class="note">126 users</div>
+              <p class="note" style="margin-top:12px">Users return to a dependable task loop.</p>
+              <p class="note" style="margin-top:8px;color:var(--ink)">→ Protect saved work and reliability.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--warm-tx);background:var(--panel-2)">
+              <div class="pill warm" style="margin-bottom:14px">Protect + Fix</div>
+              <div class="stat-sm">85.8%</div>
+              <div class="title-sm" style="margin:8px 0 4px">Data Explorer</div>
+              <div class="note">106 users</div>
+              <p class="note" style="margin-top:12px">Strong repeat value, with technical exposure.</p>
+              <p class="note" style="margin-top:8px;color:var(--ink)">→ Fix chart reliability first.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--warm-tx)">
+              <div class="pill warm" style="margin-bottom:14px">Improve</div>
+              <div class="stat-sm">70.8%</div>
+              <div class="title-sm" style="margin:8px 0 4px">Market Data Viewer</div>
+              <div class="note">96 users</div>
+              <p class="note" style="margin-top:12px">Healthy use that can become faster.</p>
+              <p class="note" style="margin-top:8px;color:var(--ink)">→ Speed up common views.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel" style="border-color:var(--risk-tx);background:#FDF4F2">
+          <div class="panel-h">
+            <div>
+              <div class="pill risk" style="margin-bottom:12px">Research first · priority opportunity</div>
+              <div class="title">Liquidity Premium Curve</div>
+            </div>
+            <div style="text-align:right">
+              <div class="stat" style="color:var(--risk-tx)">36.4%</div>
+              <div class="note">repeat rate · 140 users</div>
+            </div>
+          </div>
+          <div class="track" style="background:rgba(178,38,27,.14)"><div class="fill risk" style="width:36.4%"></div></div>
+          <p class="note" style="margin-top:18px;font-size:13.5px;color:var(--ink-2)">High reach, but users do not build a habit. It carries the highest reach of any workflow (140 users) and the lowest repeat rate (36.4%) — the clearest churn candidate in the window. Do not redesign workflows above 70% repeat before researching LPC.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>Repeat spans 36.4%–90.1% across five workflows.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>Data Explorer: 2nd-highest repeat × largest 405 count (471) — the single highest-priority item in the report.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>Users tolerate friction where no alternative exists — a risk, not a strength.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Fix Data Explorer chart reliability; research LPC before any redesign — Platform UX.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Repeat-rate stability per workflow across windows.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 6 · FRICTION ============ -->
+<section class="view" id="v-friction">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <span class="orb b"></span>
+        <div class="rail-in">
+          <div class="badge"><b>05</b> · Technical evidence</div>
+          <h2 class="display">Which technical signal<em>deserves attention first?</em></h2>
+          <p class="lede">Errors rose <b>1,062 → 1,250 (+17.7%)</b>, and <b>72.7%</b> of August's errors are one status code: <b>HTTP 405</b>. Its top three sources all sit in the two most-used workflows.</p>
+          <button class="explore" data-go="7"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Technical checks</div>
+            <span class="pill risk">+188 events · +17.7%</span>
+          </div>
+          <div style="display:flex;align-items:flex-end;gap:26px;flex-wrap:wrap">
+            <div>
+              <div class="stat-lbl">405 share of August errors</div>
+              <div class="stat" style="color:var(--risk-tx)">72.7%</div>
+            </div>
+            <div style="padding-bottom:6px">
+              <div class="note"><b style="color:var(--ink)">Jul 1,062 → Aug 1,250</b></div>
+              <div class="note">405 events · Jul → Aug</div>
+            </div>
+          </div>
+          <div class="track" style="margin-top:20px;height:34px"><div class="fill risk" style="width:72.7%"></div></div>
+          <div class="grid2" style="margin-top:20px">
+            <div class="card soft">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="pill plain">403 · Monitor</span><span class="mono" style="font-size:13px">+1 event</span></div>
+              <div class="stat-sm" style="margin:12px 0 4px">134 → 135</div>
+              <p class="note">Stable month to month.</p>
+            </div>
+            <div class="card soft">
+              <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="pill plain">404 · Monitor</span><span class="mono" style="font-size:13px">+9 events</span></div>
+              <div class="stat-sm" style="margin:12px 0 4px">2 → 11</div>
+              <p class="note">Increased, but remains low volume.</p>
+            </div>
+          </div>
+          <div class="card" style="margin-top:20px;border-left:4px solid var(--risk-tx)">
+            <div class="pill risk" style="margin-bottom:10px">Why this matters</div>
+            <p class="note" style="font-size:13.5px;color:var(--ink-2)">The August increase is concentrated in HTTP 405. Start by checking whether chart-related requests still give users a visible result.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><div class="title-sm">Where the 405s appear</div><span class="pill plain">Top four sources</span></div>
+          <div class="bar-row">
+            <div class="bar-top"><span class="bar-name">Data Explorer · Update chart<small>First place to check</small></span><span class="bar-val" style="color:var(--risk-tx)">471</span></div>
+            <div class="track"><div class="fill risk" style="width:100%"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-top"><span class="bar-name">NII Calculation · auto<small>Automatic requests</small></span><span class="bar-val">304</span></div>
+            <div class="track"><div class="fill" style="width:64.5%"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-top"><span class="bar-name">NII Calculation · Update chart<small>Second priority</small></span><span class="bar-val">246</span></div>
+            <div class="track"><div class="fill" style="width:52.2%"></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-top"><span class="bar-name">Data Explorer · auto<small>Automatic requests</small></span><span class="bar-val">215</span></div>
+            <div class="track"><div class="fill" style="width:45.6%"></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="grid3">
+            <div class="step"><div class="idx">1</div><div><h4>Where it appears</h4><p>Data Explorer · Update chart <b>471</b> — first place to check. NII Calculation · auto <b>304</b>; NII · Update chart <b>246</b>; Data Explorer · auto <b>215</b>.</p></div></div>
+            <div class="step"><div class="idx">2</div><div><h4>Confirm task impact</h4><p>User click or automatic request? Chart loaded, errored, or exited?</p></div></div>
+            <div class="step"><div class="idx">3</div><div><h4>What to check next</h4><p>Check Data Explorer Update chart first. Separate clicks from automatic requests. Record the visible result after retry. Track 405 volume and successful chart loads.</p></div></div>
+          </div>
+          <div class="card" style="margin-top:20px;border-left:4px solid var(--warm-tx)">
+            <div class="pill warm" style="margin-bottom:10px">Boundary</div>
+            <p class="note" style="font-size:13px">HTTP status codes show technical exposure, not confirmed task failure or business loss.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>+17.7% errors; 72.7% concentrated in 405.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>405 tops sit inside the two highest-repeat workflows — value and friction are the same story.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>Chart-related requests fail silently at scale.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Fix confirmed chart failures; record release date; compare error vs success afterwards — Engineering.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>405 count, share, and successful chart loads next window.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 7 · DEPARTMENTS ============ -->
+<section class="view" id="v-departments">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <div class="rail-in">
+          <div class="badge"><b>06</b> · Department comparison</div>
+          <h2 class="display">How does behaviour<em>vary by cohort?</em></h2>
+          <p class="lede">Multi-day use ranges from <b>47.1%</b> to <b>88.7%</b> across five departments — a 41-point spread against the <b>53.9%</b> platform average. Patterns here are context for research, not a scorecard.</p>
+          <button class="explore" data-go="8"><span>Explore this module</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h">
+            <div class="title-sm">Multi-day use by department</div>
+            <div class="cap">Dot position = multi-day use rate · dot size = August users</div>
+          </div>
+          <div class="dotrow">
+            <div class="dotname">ALCM OPS · IRRBB REPORTING<small>India · 62 users</small></div>
+            <div class="dottrack"><span class="axis"></span><span class="ref" style="left:53.9%"></span><span class="dotdot" style="left:88.7%;width:28px;height:28px;top:1px"></span></div>
+            <div class="dotval">88.7%</div>
+          </div>
+          <div class="dotrow">
+            <div class="dotname">CF STRESS TESTING IT<small>India · 20 users</small></div>
+            <div class="dottrack"><span class="axis"></span><span class="ref" style="left:53.9%"></span><span class="dotdot" style="left:75.0%"></span></div>
+            <div class="dotval">75.0%</div>
+          </div>
+          <div class="dotrow">
+            <div class="dotname">CHINA_FIN IT · FINANCIAL REPORT<small>China · 45 users</small></div>
+            <div class="dottrack"><span class="axis"></span><span class="ref" style="left:53.9%"></span><span class="dotdot" style="left:64.4%"></span></div>
+            <div class="dotval">64.4%</div>
+          </div>
+          <div class="dotrow">
+            <div class="dotname">MARKETS TREASURY<small>Hong Kong · 18 users</small></div>
+            <div class="dottrack"><span class="axis"></span><span class="ref" style="left:53.9%"></span><span class="dotdot" style="left:61.1%"></span></div>
+            <div class="dotval">61.1%</div>
+          </div>
+          <div class="dotrow">
+            <div class="dotname" style="color:var(--risk-tx)">GT2025<small>India · 17 users · interview first</small></div>
+            <div class="dottrack"><span class="axis"></span><span class="ref" style="left:53.9%"></span><span class="dotdot risk" style="left:47.1%"></span></div>
+            <div class="dotval" style="color:var(--risk-tx)">47.1%</div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;padding:14px 18px;background:var(--panel-2);border-radius:14px;flex-wrap:wrap">
+            <span class="note">Dashed line = August overall multi-day use · <b style="color:var(--violet)">53.9%</b></span>
+            <span class="note">Spread: 41 percentage points</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="grid2">
+            <div class="card" style="border-left:4px solid #5B9B4E">
+              <div class="stat-lbl">Peak cohort</div>
+              <div class="stat-sm" style="color:#3F7B33">88.7%</div>
+              <p class="note" style="margin-top:12px"><b style="color:var(--ink)">ALCM Ops</b> (62 users) is the habit core of the platform — reporting workflows run on a daily cadence.</p>
+            </div>
+            <div class="card" style="border-left:4px solid var(--risk-tx)">
+              <div class="stat-lbl">Lowest cohort</div>
+              <div class="stat-sm" style="color:var(--risk-tx)">47.1%</div>
+              <p class="note" style="margin-top:12px"><b style="color:var(--ink)">GT2025</b> (17 users) sits below the platform average; its entry workflow is suspected to be the low-repeat LPC.</p>
+            </div>
+          </div>
+          <div class="card soft" style="margin-top:20px">
+            <div class="stat-lbl">Business use-case hypothesis</div>
+            <p class="note" style="font-size:13.5px;line-height:1.6;color:var(--ink-2)">Reporting workflows build habits; exploratory use does not. Department differences reflect the natural frequency of each team's work — treat them as context for user research, not as a quality scorecard.</p>
+          </div>
+          <div style="margin-top:18px"><button class="explore" data-go="9"><span>View follow-up actions</span><span class="arrow">→</span></button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>Spread 47.1%–88.7% multi-day use across five departments.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>The two reporting-heavy teams hold the habit base; GT2025 sits far below the overall figure.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>Reporting workflows build habits; exploratory use does not.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Interview GT2025 users on first-session outcome; check whether LPC is their entry workflow — UX Research.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Multi-day use by department, next window.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 8 · ACTIONS ============ -->
+<section class="view" id="v-actions">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <span class="orb b"></span>
+        <div class="rail-in">
+          <div class="badge"><b>07</b> · Continuous reporting loop</div>
+          <h2 class="display">Close<em>the loop.</em></h2>
+          <p class="lede">Turn insights into actions. Compare outcomes in every new report — so the next one is a comparison, not another starting line.</p>
+          <div style="margin-top:24px">
+            <div class="cap">Action progress</div>
+            <div class="prog"><i id="progfill"></i></div>
+            <div class="note" id="progtext">0% · 0 of 12 actions completed</div>
+          </div>
+          <button class="explore" data-go="9"><span>Open the data map</span><span class="arrow">→</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="panel">
+          <div class="panel-h"><div class="title-sm">The five-step loop</div><span class="pill plain">Every new report re-scores this</span></div>
+          <div class="flow">
+            <div class="flowstep"><div class="fn">01 · INSIGHT</div><h4>What changed?</h4><p>Read the signal →</p></div>
+            <div class="flowstep"><div class="fn">02 · METRICS</div><h4>Measure it</h4><p>Retention · error · success →</p></div>
+            <div class="flowstep"><div class="fn">03 · USE CASE</div><h4>Find the step</h4><p>Locate the affected step →</p></div>
+            <div class="flowstep"><div class="fn">04 · ACTION</div><h4>Assign it</h4><p>Owner &amp; review date →</p></div>
+            <div class="flowstep"><div class="fn">05 · REVIEW</div><h4>Compare</h4><p>Against the last report ↻</p></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><div class="title-sm">Previous → current → change</div><span class="pill info">Comparison template · prior-report baseline not supplied</span></div>
+          <table>
+            <thead><tr><th>Measure</th><th>Previous</th><th>Current</th><th>Change</th></tr></thead>
+            <tbody>
+              <tr><td><b>Return</b></td><td class="num">Not available</td><td class="num">55.0% · 258 / 469 Jul → Aug</td><td class="num">Not available</td></tr>
+              <tr><td><b>Error rate</b></td><td class="num">Not available</td><td class="num">Not measurable yet · denominator missing</td><td class="num">Not available</td></tr>
+              <tr><td><b>Task success</b></td><td class="num">Not available</td><td class="num">Not instrumented end to end</td><td class="num">Not available</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-h"><div class="title-sm">Follow-up actions</div><span class="pill plain">4 chains · 12 actions</span></div>
+          <div class="grid3">
+            <div class="acard">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span class="pill plain">RET-01 · Retention</span><span class="mono" style="font-size:11px;color:var(--muted)">0 / 4</span>
+              </div>
+              <h4>Make returning easier</h4>
+              <div class="own">Owner · UX + Data</div>
+              <label><input type="checkbox" class="ck"> Select workflow + cohort baseline</label>
+              <label><input type="checkbox" class="ck"> Assign re-entry item, owner and date</label>
+              <label><input type="checkbox" class="ck"> Test recent work · saved parameters</label>
+              <label><input type="checkbox" class="ck"> Compare return; keep or revise RET-01</label>
+              <div class="mini">Watch: adjacent-window return vs 55.0% baseline.</div>
+            </div>
+            <div class="acard">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span class="pill plain">ACC-01 · Task success</span><span class="mono" style="font-size:11px;color:var(--muted)">0 / 4</span>
+              </div>
+              <h4>Restore access to the task</h4>
+              <div class="own">Owner · Product + Data</div>
+              <label><input type="checkbox" class="ck"> Define task start · completion</label>
+              <label><input type="checkbox" class="ck"> Link request → approval → task outcome</label>
+              <label><input type="checkbox" class="ck"> Improve one step; record release date</label>
+              <label><input type="checkbox" class="ck"> Establish baseline, then compare success</label>
+              <div class="mini">Watch: “no later step” rate vs 71.3% baseline.</div>
+            </div>
+            <div class="acard">
+              <div style="display:flex;justify-content:space-between;align-items:center">
+                <span class="pill plain">ERR-01 · Error rate</span><span class="mono" style="font-size:11px;color:var(--muted)">0 / 4</span>
+              </div>
+              <h4>Fix confirmed chart failures</h4>
+              <div class="own">Owner · Engineering</div>
+              <label><input type="checkbox" class="ck"> Separate clicks from automatic calls</label>
+              <label><input type="checkbox" class="ck"> Track attempts, retries and outcomes</label>
+              <label><input type="checkbox" class="ck"> Fix confirmed failures; record release date</label>
+              <label><input type="checkbox" class="ck"> Compare error · success; reopen if needed</label>
+              <div class="mini">Watch: 405 share vs 72.7% baseline.</div>
+            </div>
+          </div>
+          <p class="note" style="margin-top:18px">Carry unresolved items forward — every new report re-scores this table. LPC-01 (habit gap, 36.4% repeat) is tracked in the same registry.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>469 → 512 active, but only 55.0% adjacent-window return — a 25pt gap to goal.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>71.3% of permission-affected visits stop, and 405s concentrate in the highest-repeat workflows.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>The not-returned cluster is shaped by permission friction and by high-reach, low-habit workflows.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Four baseline chains and twelve actions, each with an owner and a review date.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Return ≥ 60% · 405 share &lt; 60% · access overlap measured.</p></div>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIEW 9 · DATA MAP ============ -->
+<section class="view" id="v-datamap">
+  <div class="wrap">
+    <div class="split">
+      <div class="rail">
+        <span class="orb a"></span>
+        <div class="rail-in">
+          <div class="badge"><b>08</b> · Data workspace</div>
+          <h2 class="display">Where this data<em>lives.</em></h2>
+          <p class="lede">Six modules, one source window. Every node in the signal graph traces back to one of these Data Workspace modules.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+            <span class="pill info">6 modules available</span>
+            <span class="pill plain">Jun–Aug 2026</span>
+          </div>
+          <p class="note" style="margin-top:20px">Observed aggregates. Every definition, in context.</p>
+        </div>
+      </div>
+      <div>
+        <div class="grid2">
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">01</span><span class="pill plain">Current view</span></div>
+            <h4>Overview</h4>
+            <p>High-level metrics and MAU trend.</p>
+            <div class="tags"><span class="pill plain">m1</span><span class="pill plain">m2</span><span class="pill plain">m3</span></div>
+          </div>
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">02</span><span class="pill plain">Current view</span></div>
+            <h4>Activity &amp; Usage</h4>
+            <p>Session depth and usage patterns.</p>
+            <div class="tags"><span class="pill plain">m7</span></div>
+          </div>
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">03</span><span class="pill plain">Current view</span></div>
+            <h4>Audience</h4>
+            <p>User segments and persona insights.</p>
+            <div class="tags"><span class="pill plain">s1–s5</span></div>
+          </div>
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">04</span><span class="pill plain">Current view</span></div>
+            <h4>Retention &amp; Lifecycle</h4>
+            <p>Cohort health and lifecycle signals.</p>
+            <div class="tags"><span class="pill plain">m4</span><span class="pill plain">m5</span><span class="pill plain">m6</span><span class="pill plain">r1–r5</span></div>
+          </div>
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">05</span><span class="pill plain">Current view</span></div>
+            <h4>Access &amp; Journeys</h4>
+            <p>Access paths and workflow journeys.</p>
+            <div class="tags"><span class="pill plain">a1</span><span class="pill plain">a2</span><span class="pill plain">b1–b4</span><span class="pill plain">w1–w5</span></div>
+          </div>
+          <div class="mod">
+            <div class="mh"><span class="mono" style="font-size:11px;color:var(--violet);font-weight:700">06</span><span class="pill plain">Definitions</span></div>
+            <h4>Data Dictionary</h4>
+            <p>Definitions and field documentation behind every node.</p>
+            <div class="tags"><span class="pill plain">Aug users</span><span class="pill plain">Repeat rate</span><span class="pill plain">Visits</span><span class="pill plain">Records</span></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:20px">
+          <div class="panel-h"><div class="title-sm">How a number gets into this report</div></div>
+          <div class="flow">
+            <div class="flowstep"><div class="fn">SOURCE</div><h4>Data Workspace</h4><p>Six modules, one source window</p></div>
+            <div class="flowstep"><div class="fn">MEASURE</div><h4>Observed aggregate</h4><p>Equal 31-day windows</p></div>
+            <div class="flowstep"><div class="fn">DEFINE</div><h4>Data Dictionary</h4><p>Field definition in context</p></div>
+            <div class="flowstep"><div class="fn">CONNECT</div><h4>Signal graph</h4><p>41 nodes · 49 edges</p></div>
+            <div class="flowstep"><div class="fn">TRACK</div><h4>Baseline registry</h4><p>4 chains · 12 actions</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chain">
+      <div><h5>Signal <span>/ observed</span></h5><p>41 nodes spread across six Data Workspace modules.</p></div>
+      <div><h5>Cross-read <span>/ comparison</span></h5><p>Access and friction data complete the retention and workflow picture.</p></div>
+      <div><h5>Hypothesis <span>/ to test</span></h5><p>A single workspace mapping links technical exposure to business churn.</p></div>
+      <div><h5>Action <span>/ owner</span></h5><p>Align the data dictionary and fix node and event definitions.</p></div>
+      <div><h5>Watch metric <span>/ next window</span></h5><p>Cross-module coverage and how many dashed hypotheses get validated.</p></div>
+    </div>
+
+    <div class="panel" style="margin-top:34px;display:flex;justify-content:space-between;align-items:center;gap:26px;flex-wrap:wrap">
+      <div>
+        <div class="stat-lbl">Baseline report v1 · archived</div>
+        <div class="title">Next cycle: Sep–Nov 2026</div>
+        <p class="note" style="margin-top:8px">Unresolved tensions carry forward. Every new report re-scores this table.</p>
+      </div>
+      <button class="explore" data-go="0"><span>Back to the top</span><span class="arrow">↑</span></button>
+    </div>
+
+    <div class="fnav">
+      <div class="dots" data-dots></div>
+      <span class="pgno" data-pgno></span>
+      <div class="fnav-right"><button class="roundnav" data-go="prev">←</button><button class="roundnav" data-go="next">→</button></div>
+    </div>
+  </div>
+</section>
+
+<div style="max-width:1520px;margin:0 auto;padding:0 40px 60px">
+  <div style="border-top:1px solid rgba(27,27,47,.1);padding-top:18px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <span class="cap">APEX · INSIGHT HUB · Jun–Aug 2026 · UTC+08:00</span>
+    <span class="cap">Observed aggregates · definitions in the Data Dictionary · Baseline report v1</span>
+  </div>
+</div>
+
+
+
+<script>
+(function(){
+"use strict";
+var SVGNS='http://www.w3.org/2000/svg';
+var COLORS={metric:'#6C5CE7',workflow:'#5B9B4E',segment:'#8A4B08',friction:'#B2261B',context:'#7A7893',system:'#7A7893'};
+var CATNAME={metric:'Core metric',workflow:'Workflow',segment:'User segment',friction:'Friction signal',context:'Return context',system:'System'};
+
+/* ---------------- NODE DATA ---------------- */
+var NODES=[
+{id:'m1',g:'metric',x:920,y:44,w:150,v:'512',s:'active users (Aug)',n:'512 active (Aug)',target:'plot',facts:['512 active users in August 2026','+43 users vs July (469)','+9.2% month over month'],meaning:'Reach grew. The question is whether the same people came back.'},
+{id:'m2',g:'metric',x:520,y:44,w:150,v:'469',s:'active users (Jul)',n:'469 active (Jul)',target:'return',facts:['469 active users in July 2026','Baseline window for every return measure'],meaning:'The denominator of every retention number in this report.'},
+{id:'m3',g:'metric',x:700,y:44,w:190,v:'+9.2%',s:'growth · 43 more users',n:'Growth +9.2%',target:'plot',facts:['43 more users than July','Entirely inside the August window'],meaning:'Growth is the easy win; retention is the harder one.'},
+{id:'m4',g:'metric',x:420,y:116,w:150,v:'258',s:'returned',n:'258 returned',target:'return',facts:['258 of 469 July actives seen again in August','55.0% of the July base'],meaning:'Just over half of the base came back next window.'},
+{id:'m5',g:'metric',x:610,y:116,w:200,v:'55.0%',s:'adjacent-window return',n:'55.0% return',target:'return',facts:['55.0% adjacent-window return','Goal: 80%','Gap: 25 percentage points'],meaning:'The largest single tension in this window.'},
+{id:'m6',g:'metric',x:330,y:190,w:210,v:'45.0%',s:'211 not observed again',n:'211 not returned',target:'return',facts:['211 of 469 July actives not seen again','16 last used the Liquidity Premium Curve','8 last used NII Calculation'],meaning:'Directed re-entry work should start with this group.'},
+{id:'m7',g:'metric',x:860,y:116,w:190,v:'53.9%',s:'multi-day use (Aug)',n:'53.9% multi-day',target:'departments',facts:['53.9% of August actives used the platform on multiple days','Sits above overall return — depth tracks return'],meaning:'Depth of use, not reach, is what tracks return.'},
+{id:'m8',g:'metric',x:840,y:190,w:160,v:'80%',s:'return goal',n:'80% goal',target:'plot',facts:['Aspirational target, not a benchmark','Current gap: 25 points'],meaning:'Named so the gap has a direction, not just a number.'},
+{id:'w1',g:'workflow',x:760,y:300,w:185,v:'Manual Upload',s:'121u · 90.1% repeat',n:'Manual Upload',target:'value',facts:['121 users','90.1% repeat rate','Top return context: 51 users (19.8%)'],meaning:'The strongest observed return habit on the platform.'},
+{id:'w2',g:'workflow',x:760,y:372,w:185,v:'NII Calculation',s:'126u · 85.7% repeat',n:'NII Calculation',target:'value',facts:['126 users','85.7% repeat rate','Return context: 49 users (19.0%)','304 + 246 error events attached'],meaning:'A dependable task loop — protect saved work.'},
+{id:'w3',g:'workflow',x:760,y:444,w:185,v:'Data Explorer',s:'106u · 85.8% repeat',n:'Data Explorer',target:'value',facts:['106 users','85.8% repeat rate','Highest 405 exposure: 471 events on Update chart'],meaning:'High value paired with the top friction signal in the report.'},
+{id:'w4',g:'workflow',x:760,y:516,w:195,v:'Market Data Viewer',s:'96u · 70.8% repeat',n:'Market Data Viewer',target:'value',facts:['96 users','70.8% repeat rate'],meaning:'Healthy use with room to speed up.'},
+{id:'w5',g:'workflow',x:760,y:588,w:215,v:'Liquidity Premium Curve',s:'140u · 36.4% repeat',n:'Liquidity Premium Curve',target:'value',facts:['140 users — highest reach of any workflow','36.4% repeat rate — lowest habit','16 not-returned users last used it'],meaning:'Highest reach, lowest habit: the clearest churn candidate.'},
+{id:'w6',g:'workflow',x:770,y:668,dot:true,v:'Document Repository',s:'',n:'Document Repository',target:'value',facts:['Minor workflow by repeat data','Last observed context for part of the not-returned group'],meaning:'A supporting surface — its churn role is a watch item.'},
+{id:'s1',g:'segment',x:60,y:500,w:240,v:'ALCM Ops · IRRBB',s:'88.7% multi-day · 62u',n:'ALCM Ops IRRBB',target:'departments',facts:['88.7% multi-day use — highest of any cohort','62 users'],meaning:'The habit core of the platform.'},
+{id:'s2',g:'segment',x:60,y:572,w:240,v:'China Fin IT · Fin Rep',s:'64.4% multi-day · 45u',n:'China Fin IT',target:'departments',facts:['64.4% multi-day use','45 users','Reporting-heavy team'],meaning:'Above average, still below the reporting-team pattern.'},
+{id:'s3',g:'segment',x:60,y:644,w:210,v:'CF Stress Testing IT',s:'75.0% multi-day · 20u',n:'CF Stress Testing IT',target:'departments',facts:['75.0% multi-day use','20 users'],meaning:'Strong depth in a small team.'},
+{id:'s4',g:'segment',x:60,y:716,w:205,v:'Markets Treasury (HK)',s:'61.1% multi-day · 18u',n:'Markets Treasury',target:'departments',facts:['61.1% multi-day use','18 users'],meaning:'Near the platform average.'},
+{id:'s5',g:'segment',x:60,y:788,w:180,v:'GT2025',s:'47.1% multi-day · 17u',n:'GT2025',target:'departments',facts:['47.1% multi-day use — lowest of any cohort','17 users','Entry workflow suspected: Liquidity Premium Curve'],meaning:'The cohort to interview first.'},
+{id:'a1',g:'system',x:64,y:345,w:220,v:'207 reached Guide',s:'40.4% of active',n:'207 reached Access Guide',target:'access',facts:['207 of 512 August actives','40.4% of the active base'],meaning:'Help-seeking is common — demand for recovery exists.'},
+{id:'a2',g:'system',x:64,y:417,w:200,v:'769 Guide views',s:'3.7 per Guide user',n:'769 Guide views',target:'access',facts:['769 repeated views','3.7 views per Guide user'],meaning:'Views show demand for help, not confirmed recovery.'},
+{id:'b1',g:'friction',x:64,y:44,w:225,v:'64 users',s:'permission-like signal · 12.5%',n:'64 permission users',target:'access',facts:['64 users = 12.5% of August actives','296 permission-like signals'],meaning:'A tenth of the base hits permission friction.'},
+{id:'b2',g:'friction',x:64,y:116,w:215,v:'296 signals',s:'across 115 visits',n:'296 signals / 115 visits',target:'access',facts:['296 signals across 115 visits','Split below: with vs without a later step'],meaning:'Friction clusters into repeated visits, not one-offs.'},
+{id:'b3',g:'friction',x:64,y:190,w:220,v:'28.7%',s:'33/115 had a later work-screen step',n:'33 had a later step',target:'access',facts:['33 of 115 visits (28.7%) continued to a work screen'],meaning:'Some users recover and continue.'},
+{id:'b4',g:'friction',x:64,y:264,w:220,v:'71.3%',s:'82/115 no later recorded step',n:'82 no later step',target:'access',facts:['82 of 115 visits (71.3%) had no later recorded step','An observation about the path, not proof of giving up'],meaning:'The strongest candidate explanation for next-window churn.'},
+{id:'f1',g:'friction',x:1020,y:250,w:185,v:'HTTP 405',s:'1,062 → 1,250 (+17.7%)',n:'405 total',target:'friction',facts:['405 events grew 1,062 → 1,250','+188 events · +17.7%'],meaning:'The one error class that grew.'},
+{id:'f2',g:'friction',x:1020,y:322,w:170,v:'72.7%',s:'405 share of Aug errors',n:'405 share 72.7%',target:'friction',facts:['72.7% of all August errors are 405'],meaning:'One code dominates — investigate it first.'},
+{id:'f3',g:'friction',x:1020,y:120,w:155,v:'403',s:'134 → 135 · stable',n:'403 stable',target:'friction',facts:['134 → 135 events','Effectively flat month over month'],meaning:'Stability makes the 405 spike the outlier.'},
+{id:'f4',g:'friction',x:1190,y:120,w:110,v:'404',s:'2 → 11 · low volume',n:'404 low volume',target:'friction',facts:['2 → 11 events','Low absolute volume'],meaning:'A watch item, not an action.'},
+{id:'f5',g:'friction',x:1000,y:400,w:215,v:'Data Explorer · Update chart',s:'471 events',n:'405 · DE Update chart',target:'friction',facts:['471 events — the single largest 405 source','Sits in a workflow with 85.8% repeat'],meaning:'The report\u2019s highest-priority single item.'},
+{id:'f6',g:'friction',x:1000,y:472,w:195,v:'NII Calculation · auto',s:'304 events',n:'405 · NII auto',target:'friction',facts:['304 events from automatic requests'],meaning:'Separate automatic calls from user clicks before judging.'},
+{id:'f7',g:'friction',x:1000,y:544,w:215,v:'NII · Update chart',s:'246 events',n:'405 · NII Update chart',target:'friction',facts:['246 events on the same action type as DE\u2019s top source'],meaning:'Chart-update requests fail across both workflows.'},
+{id:'f8',g:'friction',x:1000,y:616,w:195,v:'Data Explorer · auto',s:'215 events',n:'405 · DE auto',target:'friction',facts:['215 events from automatic requests'],meaning:'Same pattern — automation is part of the volume.'},
+{id:'r1',g:'context',x:360,y:300,w:205,v:'Manual Upload',s:'return context · 51 · 19.8%',n:'Return ctx · Manual Upload',target:'return',facts:['51 of 258 returners (19.8%) last used Manual Upload'],meaning:'The most common thing returners did.'},
+{id:'r2',g:'context',x:360,y:372,w:195,v:'NII Calculation',s:'return context · 49 · 19.0%',n:'Return ctx · NII',target:'return',facts:['49 of 258 returners (19.0%)'],meaning:'Transactional loops anchor the return path.'},
+{id:'r3',g:'context',x:360,y:444,w:195,v:'Data Explorer',s:'return context · 39 · 15.1%',n:'Return ctx · Data Explorer',target:'return',facts:['39 of 258 returners (15.1%)'],meaning:'Exploratory work also brings people back.'},
+{id:'r4',g:'context',x:360,y:516,w:215,v:'Liquidity Premium Curve',s:'last ctx · 16 · 7.6%',n:'Last ctx · LPC',target:'return',facts:['16 of 211 not-returned (7.6%) last used LPC','LPC repeat rate is 36.4% — the lowest'],meaning:'The trailhead of the churn hypothesis.'},
+{id:'r5',g:'context',x:360,y:588,w:195,v:'NII Calculation',s:'last ctx · 8 · 3.8%',n:'Last ctx · NII',target:'return',facts:['8 of 211 not-returned (3.8%) last used NII'],meaning:'Even a dependable workflow loses some users — worth asking why.'},
+{id:'ac1',g:'system',x:620,y:760,w:235,v:'12 actions · 3 chains',s:'RET-01 / ACC-01 / ERR-01',n:'12 tracked actions',target:'actions',facts:['12 actions across 3 chains','Each carries owner and review point'],meaning:'The loop that turns this report into progress.'},
+{id:'ac2',g:'system',x:900,y:760,w:220,v:'Baseline registry',s:'4 chains · this report = baseline',n:'Baseline registry',target:'actions',facts:['RET-01, ACC-01, ERR-01, LPC-01','Next report re-scores this table'],meaning:'Comparison tracking starts here.'},
+{id:'d1',g:'system',x:360,y:700,w:210,v:'Data Workspace',s:'6 modules · the source',n:'Data Workspace',target:'datamap',facts:['Overview · Activity & Usage · Audience','Retention & Lifecycle · Access & Journeys','Data Dictionary'],meaning:'Every number in this report traces back here.'}
+];
+
+/* ---------------- EDGES ---------------- */
+var EDGES=[
+{a:'m2',b:'m3',l:'grew by 43'},{a:'m3',b:'m1',l:'becomes'},{a:'m2',b:'m4',l:'base for return'},
+{a:'m4',b:'m5',l:'share returning'},{a:'m4',b:'m6',l:'complement'},{a:'m5',b:'m8',l:'25pt gap to goal'},
+{a:'m7',b:'m5',l:'depth tracks return'},{a:'m6',b:'r4',l:'16 last used LPC'},{a:'m6',b:'r5',l:'8 last used NII'},
+{a:'m4',b:'r1',l:'return context'},{a:'m4',b:'r2',l:'return context'},{a:'m4',b:'r3',l:'return context'},
+{a:'r1',b:'w1',l:'is the context of'},{a:'r2',b:'w2',l:'is the context of'},{a:'r3',b:'w3',l:'is the context of'},
+{a:'w5',b:'m6',l:'largest habit gap'},{a:'w1',b:'m5',l:'top return context'},{a:'w2',b:'m5',l:'return context'},
+{a:'w3',b:'m5',l:'return context'},{a:'w3',b:'f5',l:'top error site'},{a:'w2',b:'f6',l:'auto errors'},
+{a:'w2',b:'f7',l:'chart errors'},{a:'w3',b:'f8',l:'auto errors'},{a:'f5',b:'f2',l:'feeds the share'},
+{a:'f6',b:'f1',l:'part of total'},{a:'f7',b:'f1',l:'part of total'},{a:'f8',b:'f1',l:'part of total'},
+{a:'f1',b:'f2',l:'share of errors'},{a:'f3',b:'f1',l:'stable contrast'},{a:'f4',b:'f1',l:'low-volume signal'},
+{a:'a1',b:'a2',l:'repeated views'},{a:'m1',b:'a1',l:'40.4% reached'},
+{a:'a1',b:'m5',l:'help-seeking vs return — unmeasured',d:true},
+{a:'b1',b:'b2',l:'signal detail'},{a:'b2',b:'b3',l:'had a later step'},{a:'b2',b:'b4',l:'no later step'},
+{a:'b4',b:'m6',l:'overlap with the 211 — unverified',d:true},
+{a:'b1',b:'f3',l:'permission signal link? — to confirm',d:true},
+{a:'s1',b:'m7',l:'multi-day use'},{a:'s2',b:'m7',l:'multi-day use'},{a:'s3',b:'m7',l:'multi-day use'},
+{a:'s4',b:'m7',l:'multi-day use'},{a:'s5',b:'m7',l:'lowest depth',d:true},
+{a:'s5',b:'w5',l:'suspected entry workflow',d:true},
+{a:'m1',b:'d1',l:'reported in'},{a:'ac2',b:'ac1',l:'tracks'},
+{a:'ac1',b:'m5',l:'RET-01 checks'},{a:'ac1',b:'b4',l:'ACC-01 checks'},{a:'ac1',b:'f1',l:'ERR-01 checks'}
+];
+
+/* ---------------- RENDER GRAPH ---------------- */
+var svg=document.getElementById('graphSvg');
+var byId={}; NODES.forEach(function(n){byId[n.id]=n;});
+var NH=44;
+var edgesG=document.createElementNS(SVGNS,'g');
+var nodesG=document.createElementNS(SVGNS,'g');
+svg.appendChild(edgesG); svg.appendChild(nodesG);
+var edgeEls=[];
+EDGES.forEach(function(e){
+  var a=byId[e.a],b=byId[e.b];
+  var ax=a.x+a.w/2, ay=a.y+NH/2, bx=b.x+b.w/2, by=b.y+NH/2;
+  if(a.dot){ax=a.x;ay=a.y+7;} if(b.dot){bx=b.x;by=b.y+7;}
+  var mx=(ax+bx)/2,my=(ay+by)/2;
+  var dx=bx-ax,dy=by-ay,len=Math.sqrt(dx*dx+dy*dy)||1;
+  var cx=mx-dy/len*26, cy=my+dx/len*26;
+  var p=document.createElementNS(SVGNS,'path');
+  p.setAttribute('d','M'+ax+' '+ay+' Q'+cx+' '+cy+' '+bx+' '+by);
+  p.setAttribute('class','edge'+(e.d?' dashed':''));
+  edgesG.appendChild(p);
+  var t=document.createElementNS(SVGNS,'text');
+  t.setAttribute('x',cx); t.setAttribute('y',cy-4);
+  t.setAttribute('text-anchor','middle');
+  t.setAttribute('class','elabel'+(e.d?' dashed':''));
+  t.textContent=e.l;
+  edgesG.appendChild(t);
+  edgeEls.push({e:e,p:p,t:t,a:a,b:b});
+});
+var nodeEls={};
+NODES.forEach(function(n){
+  var g=document.createElementNS(SVGNS,'g');
+  g.setAttribute('class','node');
+  g.setAttribute('tabindex','0');
+  g.setAttribute('role','button');
+  g.setAttribute('aria-label',n.n);
+  if(n.dot){
+    var c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',n.x); c.setAttribute('cy',n.y); c.setAttribute('r',7);
+    c.setAttribute('fill',COLORS[n.g]);
+    g.appendChild(c);
+    var t=document.createElementNS(SVGNS,'text');
+    t.setAttribute('x',n.x); t.setAttribute('y',n.y+22);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('class','nsub');
+    t.textContent=n.v; g.appendChild(t);
+  } else {
+    var r=document.createElementNS(SVGNS,'rect');
+    r.setAttribute('x',n.x); r.setAttribute('y',n.y); r.setAttribute('width',n.w);
+    r.setAttribute('height',NH); r.setAttribute('rx',12);
+    r.setAttribute('class','npill'); g.appendChild(r);
+    var cbar=document.createElementNS(SVGNS,'rect');
+    cbar.setAttribute('x',n.x+1.5); cbar.setAttribute('y',n.y+9);
+    cbar.setAttribute('width',3.5); cbar.setAttribute('height',NH-18);
+    cbar.setAttribute('rx',2); cbar.setAttribute('fill',COLORS[n.g]);
+    g.appendChild(cbar);
+    var t1=document.createElementNS(SVGNS,'text');
+    t1.setAttribute('x',n.x+14); t1.setAttribute('y',n.y+19);
+    t1.setAttribute('class','nval'); t1.textContent=n.v; g.appendChild(t1);
+    var t2=document.createElementNS(SVGNS,'text');
+    t2.setAttribute('x',n.x+14); t2.setAttribute('y',n.y+34);
+    t2.setAttribute('class','nsub'); t2.textContent=n.s; g.appendChild(t2);
+  }
+  nodesG.appendChild(g);
+  nodeEls[n.id]=g;
+});
+document.getElementById('graphcap').textContent=NODES.length+' nodes · '+EDGES.length+' edges · dashed edges are hypotheses the next window must test.';
+
+/* ---------------- INTERACTIONS ---------------- */
+var selected=null;
+var panel=document.getElementById('npanel');
+function connsOf(id){var out=[];EDGES.forEach(function(e){if(e.a===id)out.push({dir:'out',o:byId[e.b],l:e.l});else if(e.b===id)out.push({dir:'in',o:byId[e.a],l:e.l});});return out;}
+function highlight(id){
+  svg.classList.add('focus');
+  NODES.forEach(function(n){nodeEls[n.id].classList.remove('hl');});
+  edgeEls.forEach(function(x){
+    x.p.classList.remove('hl'); x.t.classList.remove('hl');
+    if(x.e.a===id||x.e.b===id){x.p.classList.add('hl');x.t.classList.add('hl');nodeEls[x.e.a].classList.add('hl');nodeEls[x.e.b].classList.add('hl');}
+  });
+}
+function clearFocus(){
+  svg.classList.remove('focus');
+  NODES.forEach(function(n){nodeEls[n.id].classList.remove('hl','sel');});
+  edgeEls.forEach(function(x){x.p.classList.remove('hl');x.t.classList.remove('hl');});
+}
+function openPanel(n){
+  if(!n) return;
+  selected=n.id;
+  var col=COLORS[n.g], conns=connsOf(n.id);
+  panel.innerHTML='<div class="paneltop"><span class="pill" style="background:'+col+';color:#fff">'+CATNAME[n.g]+'</span>'+
+    '<button class="panelclose" aria-label="Close">✕</button></div>'+
+    '<h3>'+n.n+'</h3>'+
+    '<ul class="facts">'+n.facts.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul>'+
+    '<div class="meaning">'+n.meaning+'</div>'+
+    '<div class="cap" style="margin-bottom:8px">CONNECTS TO · '+conns.length+'</div>'+
+    conns.map(function(c){return '<button class="connchip" data-node="'+c.o.id+'"><span class="dot" style="background:'+COLORS[c.o.g]+'"></span>'+
+      '<span class="t">'+(c.dir==='out'?'→ ':'← ')+'<b>'+c.o.n+'</b><br>'+c.l+'</span></button>';}).join('')+
+    '<button class="openinsight" data-target="'+n.target+'">Open related insight →</button>';
+  panel.classList.add('on');
+  if(nodeEls[n.id]) nodeEls[n.id].classList.add('sel');
+  highlight(n.id);
+  panel.querySelector('.panelclose').addEventListener('click',closePanel);
+  panel.querySelectorAll('.connchip').forEach(function(ch){
+    ch.addEventListener('click',function(){openPanel(byId[ch.getAttribute('data-node')]);});
+  });
+  panel.querySelector('.openinsight').addEventListener('click',function(){
+    var t=panel.querySelector('.openinsight').getAttribute('data-target');
+    closePanel(); goPage(PAGES.indexOf(t));
+  });
+}
+function closePanel(){panel.classList.remove('on');if(selected&&nodeEls[selected])nodeEls[selected].classList.remove('sel');selected=null;clearFocus();}
+Object.keys(nodeEls).forEach(function(id){
+  var el=nodeEls[id];
+  el.addEventListener('mouseenter',function(){if(!selected)highlight(id);});
+  el.addEventListener('mouseleave',function(){if(!selected)clearFocus();});
+  el.addEventListener('click',function(ev){ev.stopPropagation();openPanel(byId[id]);});
+  el.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();openPanel(byId[id]);}});
+});
+svg.addEventListener('click',function(){if(selected)closePanel();});
+document.getElementById('resetBtn').addEventListener('click',closePanel);
+
+/* ---------------- ROUTER ---------------- */
+var PAGES=['hero','map','plot','return','access','value','friction','departments','actions','datamap'];
+var TITLES={hero:'Start',map:'The Map',plot:'The Plot',return:'Return',access:'Access',value:'Value',friction:'Friction',departments:'Departments',actions:'Actions',datamap:'Data Map'};
+var sections={}; PAGES.forEach(function(p){sections[p]=document.getElementById('v-'+p);});
+var navEl=document.getElementById('nav');
+navEl.innerHTML=PAGES.map(function(p,i){return '<a href="#/'+p+'" data-p="'+i+'">'+TITLES[p]+'</a>';}).join('');
+var navLinks=navEl.querySelectorAll('a');
+document.querySelectorAll('[data-dots]').forEach(function(d){
+  d.innerHTML=PAGES.map(function(p,i){return '<button data-p="'+i+'" aria-label="'+TITLES[p]+'"></button>';}).join('');
+});
+function goPage(i){
+  if(selected)closePanel();
+  if(i<0||i>=PAGES.length)i=0;
+  PAGES.forEach(function(p,k){sections[p].classList.toggle('on',k===i);});
+  navLinks.forEach(function(a){a.classList.toggle('on',parseInt(a.getAttribute('data-p'),10)===i);});
+  document.querySelectorAll('[data-dots] button').forEach(function(b){b.classList.toggle('on',parseInt(b.getAttribute('data-p'),10)===i);});
+  document.querySelectorAll('[data-pgno]').forEach(function(el){el.textContent=String(i+1).padStart(2,'0')+' / '+String(PAGES.length).padStart(2,'0');});
+  window.scrollTo({top:0,behavior:'auto'});
+  if(location.hash!=='#/'+PAGES[i]) history.replaceState(null,'','#/'+PAGES[i]);
+}
+navLinks.forEach(function(a){a.addEventListener('click',function(ev){ev.preventDefault();goPage(parseInt(a.getAttribute('data-p'),10));});});
+document.querySelectorAll('[data-dots]').forEach(function(d){
+  d.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click',function(){ goPage(parseInt(b.getAttribute('data-p'),10)); });
+  });
+});
+document.querySelectorAll('[data-go]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var g=b.getAttribute('data-go');
+    var i=PAGES.indexOf(currentPage());
+    if(g==='next')goPage(i+1);
+    else if(g==='prev')goPage(i-1);
+    else goPage(parseInt(g,10));
+  });
+});
+function currentPage(){for(var k=0;k<PAGES.length;k++){if(sections[PAGES[k]].classList.contains('on'))return PAGES[k];}return 'hero';}
+window.addEventListener('keydown',function(ev){
+  if(ev.target.tagName==='INPUT')return;
+  var i=PAGES.indexOf(currentPage());
+  if(ev.key==='ArrowRight')goPage(i+1);
+  if(ev.key==='ArrowLeft')goPage(i-1);
+});
+var start=PAGES.indexOf((location.hash.replace('#/','')||'hero'));
+goPage(start<0?0:start);
+window.addEventListener('hashchange',function(){
+  var i=PAGES.indexOf(location.hash.replace('#/',''));
+  if(i>=0&&PAGES[i]!==currentPage())goPage(i);
+});
+
+/* ---------------- ACTION CHECKBOXES ---------------- */
+var cks=document.querySelectorAll('.ck');
+cks.forEach(function(c){c.addEventListener('change',updateProg);});
+function updateProg(){
+  var done=0;cks.forEach(function(c){if(c.checked)done++;});
+  var pct=Math.round(done/cks.length*100);
+  document.getElementById('progfill').style.width=pct+'%';
+  document.getElementById('progtext').textContent=pct+'% · '+done+' of '+cks.length+' actions completed';
+}
+})();
+</script>
+</body>
+</html>
+
+
+
