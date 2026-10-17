@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Apex UX Metrics — Use case view (mapping v1)</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --ink:#111214; --ink2:#2A2C31; --muted:#6B6E76; --faint:#8E939A;
+    --line:#E5E5E1; --line2:#D8D8D3; --panel:#FAFAF8; --paper:#FFFFFF; --faint2:#8E939A;
+    --red:#DB0011;
+    --a:#111214; --b:#9BA0A7; --c:#DB0011; --d:#DCDCD6;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-size:14px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 40px 96px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);
+    backdrop-filter:saturate(180%) blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-in{max-width:1180px;margin:0 auto;padding:12px 40px;display:flex;align-items:center;gap:18px}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .mark{width:22px;height:22px;flex:0 0 22px;position:relative}
+  .mark i{position:absolute;display:block;background:var(--ink)}
+  .mark i:nth-child(1){left:0;top:0;width:13px;height:13px}
+  .mark i:nth-child(2){right:0;bottom:0;width:13px;height:13px}
+  .mark i:nth-child(3){left:0;bottom:0;width:13px;height:13px;background:var(--red);opacity:.18}
+  .brand-t{font-size:12.5px;letter-spacing:.02em;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .brand-t b{font-weight:600}
+  .brand-t span{color:var(--faint)}
+  .spacer{flex:1}
+  .toggle{display:inline-flex;border:1px solid var(--line2);border-radius:999px;padding:2px;background:var(--panel)}
+  .toggle button{
+    appearance:none;border:0;background:transparent;font-family:var(--sans);font-size:12px;
+    letter-spacing:.02em;color:var(--muted);padding:6px 14px;border-radius:999px;cursor:pointer;
+    transition:color .18s,background .18s;
+  }
+  .toggle button.on{background:var(--ink);color:#fff}
+  .toggle button:not(.on):hover{color:var(--ink)}
+  .vtag{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);border:1px solid var(--line2);border-radius:3px;padding:3px 7px;white-space:nowrap;
+  }
+  .vtag b{color:var(--ink);font-weight:600}
+
+  /* ---------- header ---------- */
+  header{padding:56px 0 0}
+  .eyebrow{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--faint);margin:0 0 18px;display:flex;align-items:center;gap:10px;
+  }
+  .eyebrow::after{content:"";height:1px;flex:1;background:var(--line)}
+  h1{
+    font-size:clamp(28px,3.4vw,42px);line-height:1.1;letter-spacing:-.02em;
+    font-weight:600;margin:0 0 16px;max-width:720px;
+  }
+  h1 em{font-style:normal;color:var(--red)}
+  .lede{font-size:15px;line-height:1.6;color:var(--ink2);max-width:66ch;margin:0 0 10px}
+  .lede b{font-weight:600}
+  .srcline{
+    font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.02em;
+    display:flex;flex-wrap:wrap;gap:6px 18px;padding-top:14px;border-top:1px solid var(--line);margin-top:26px;
+  }
+  .srcline span{white-space:nowrap}
+  .srcline i{font-style:normal;color:var(--ink2)}
+
+  /* ---------- kpi ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line);margin-top:8px}
+  .kpi{padding:26px 22px 30px;border-left:1px solid var(--line)}
+  .kpi:first-child{border-left:0;padding-left:0}
+  .kpi .lab{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:10px;
+  }
+  .kpi .num{font-size:40px;line-height:1;font-weight:300;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .kpi .num small{font-size:15px;font-weight:400;color:var(--muted);letter-spacing:0;margin-left:2px}
+  .kpi .sub{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.45}
+  .kpi .sub b{color:var(--ink);font-weight:600}
+  .kpi.alert .num{color:var(--red)}
+
+  /* ---------- section ---------- */
+  section{padding:64px 0 0}
+  .shead{display:flex;align-items:baseline;gap:16px;margin-bottom:8px}
+  .snum{font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:.06em;flex:0 0 auto;padding-top:6px}
+  h2{font-size:20px;font-weight:600;letter-spacing:-.01em;margin:0;flex:1;line-height:1.3}
+  .snote{font-size:12px;color:var(--faint);font-family:var(--mono);letter-spacing:.02em;white-space:nowrap}
+  .sdesc{font-size:13.5px;color:var(--muted);max-width:74ch;margin:2px 0 26px;padding-left:34px}
+  .sdesc b{color:var(--ink2);font-weight:600}
+
+  /* ---------- two bars ---------- */
+  .bars{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-left:34px}
+  .bar-h{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:14px;display:flex;justify-content:space-between;
+  }
+  .bar-h b{color:var(--ink);font-weight:600}
+  .stack{display:flex;height:46px;width:100%;border-radius:2px;overflow:hidden;background:var(--panel)}
+  .seg{position:relative;display:flex;align-items:center;justify-content:center;transition:opacity .18s,filter .18s;cursor:default}
+  .seg.a{background:var(--a)} .seg.b{background:var(--b)} .seg.c{background:var(--c)} .seg.d{background:var(--d)}
+  .seg span{
+    font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.02em;
+    color:#fff;opacity:.96;font-variant-numeric:tabular-nums;
+  }
+  .seg.d span{color:#54565C}
+  .seg.b span{color:#3A3C41}
+  .seg:hover{filter:brightness(1.12)}
+  .slabels{display:flex;flex-wrap:wrap;gap:4px 20px;margin-top:14px}
+  .slab{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted)}
+  .slab i{width:8px;height:8px;border-radius:1.5px;display:block;flex:0 0 8px}
+  .slab b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .slab u{text-decoration:none;font-family:var(--mono);font-size:10px;color:var(--faint)}
+
+  /* ---------- dot strip ---------- */
+  .strip{padding-left:34px;margin-top:44px;border-top:1px solid var(--line);padding-top:26px}
+  .strip-h{
+    font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);
+    margin-bottom:18px;display:flex;justify-content:space-between;
+  }
+  .strip-h b{color:var(--ink);font-weight:600}
+  .groups{display:flex;flex-direction:column;gap:14px}
+  .grp{display:grid;grid-template-columns:186px 1fr;gap:16px;align-items:center}
+  .grp-l{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:8px}
+  .grp-l i{width:8px;height:8px;border-radius:1.5px;flex:0 0 8px}
+  .grp-l b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .dots{display:flex;flex-wrap:wrap;gap:5px}
+  .dot{
+    width:13px;height:13px;border-radius:50%;cursor:pointer;
+    transition:transform .16s ease,box-shadow .16s ease;
+  }
+  .dot:hover{transform:scale(1.45);box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+
+  /* ---------- use case table ---------- */
+  .plate{margin-top:6px;border-top:1px solid var(--line2)}
+  .grphead{
+    display:flex;align-items:baseline;gap:10px;padding:14px 0 12px;
+    border-bottom:1px solid var(--line);background:var(--paper);
+    position:sticky;top:49px;z-index:5;
+  }
+  .grphead .gi{width:9px;height:9px;border-radius:2px;flex:0 0 9px;transform:translateY(-1px)}
+  .grphead .gn{font-size:11.5px;font-weight:600;letter-spacing:.02em}
+  .grphead .gc{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.02em}
+  .grphead .gd{font-size:11.5px;color:var(--muted);margin-left:auto;text-align:right}
+  .row{
+    display:grid;grid-template-columns:250px 1fr 56px;gap:20px;align-items:start;
+    padding:13px 0;border-bottom:1px solid var(--line);transition:background .14s;
+  }
+  .row:hover{background:#FCFCFA}
+  .rname{font-size:13px;font-weight:600;letter-spacing:-.005em;padding-top:2px}
+  .rname u{display:block;text-decoration:none;font-family:var(--mono);font-size:10px;font-weight:400;color:var(--faint);letter-spacing:.02em;margin-top:3px}
+  .pills{display:flex;flex-wrap:wrap;gap:5px}
+  .pill{
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.01em;color:var(--ink2);
+    background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:2px 6px;
+    white-space:nowrap;
+  }
+  .pill.warn{color:var(--red);border-color:#F2C9CC;background:#FEF6F6}
+  .pill.pale{color:var(--faint);background:#FDFDFC;border-style:dashed}
+  .rcount{
+    font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right;padding-top:2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .rcount b{color:var(--ink);font-weight:600;font-size:14px}
+
+  /* ---------- probe cards ---------- */
+  .probes{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-left:34px}
+  .probe{background:var(--paper);padding:22px 24px 24px;position:relative;display:flex;flex-direction:column}
+  .probe:hover{background:#FDFDFB}
+  .ptag{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--red);margin-bottom:11px;display:flex;align-items:center;gap:7px;
+  }
+  .ptag::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--red);flex:0 0 5px}
+  .probe h3{font-size:14px;font-weight:600;margin:0 0 9px;letter-spacing:-.005em;line-height:1.35}
+  .probe .paths{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+  .probe .pf{font-family:var(--mono);font-size:10.5px;color:var(--ink2);display:flex;gap:8px;align-items:baseline}
+  .probe .pf u{text-decoration:none;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);flex:0 0 66px}
+  .probe p{font-size:12.5px;color:var(--muted);margin:0 0 14px;line-height:1.55}
+  .probe p b{color:var(--ink2);font-weight:600}
+  .fix{
+    margin-top:auto;padding-top:10px;border-top:1px dashed var(--line2);
+    font-size:11.5px;color:var(--ink2);
+  }
+  .fix u{text-decoration:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-right:7px}
+  .probe.minor{background:var(--panel)}
+  .probe.minor .ptag{color:var(--faint)}
+  .probe.minor .ptag::before{background:var(--faint)}
+
+  /* ---------- cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-left:34px}
+  .card{background:var(--paper);padding:24px 26px 26px;display:flex;flex-direction:column}
+  .ch{display:flex;align-items:baseline;gap:9px;margin-bottom:6px}
+  .ch h3{font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
+  .ch .ct{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 6px;border-radius:3px;color:#fff;flex:0 0 auto;
+  }
+  .ch .ct.c{background:var(--red)} .ch .ct.b{background:var(--b)} .ch .ct.a{background:var(--a)}
+  .cmeta{font-family:var(--mono);font-size:10.5px;color:var(--faint);letter-spacing:.02em;margin-bottom:16px}
+  .chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:14px}
+  .step{
+    font-family:var(--mono);font-size:10.5px;padding:4px 8px;border:1px solid var(--line2);
+    border-radius:3px;background:var(--panel);color:var(--ink2);position:relative;
+  }
+  .step.amb{border-style:dashed;color:var(--red);border-color:#F2C9CC;background:#FEF7F7}
+  .arw{color:var(--faint);font-size:11px;line-height:1;flex:0 0 auto}
+  .chainlab{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:9px;
+  }
+  .slots{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:2px;overflow:hidden}
+  .slot{background:var(--panel);padding:9px 11px}
+  .slot .sl{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint)}
+  .slot .sv{font-size:11.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+  .slot .sv b{color:var(--ink);font-weight:600}
+  .empty{color:var(--faint)}
+  .need{
+    font-family:var(--mono);font-size:9.5px;border:1px solid var(--line2);border-radius:2px;
+    padding:1px 4px;color:var(--faint);white-space:nowrap;
+  }
+  .cnote{font-size:12px;color:var(--muted);margin:auto 0 0;padding-top:14px;line-height:1.55}
+  .cnote b{color:var(--ink2);font-weight:600}
+
+  /* ---------- table (cols) ---------- */
+  .tscroll{margin-left:34px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.cols{width:100%;border-collapse:collapse}
+  table.cols th{
+    text-align:left;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--faint);font-weight:400;padding:0 16px 10px 0;border-bottom:1px solid var(--line2);
+  }
+  table.cols td{padding:13px 16px 13px 0;border-bottom:1px solid var(--line);vertical-align:top;font-size:12.5px;color:var(--muted)}
+  table.cols td:first-child{color:var(--ink);font-weight:600;white-space:nowrap}
+  table.cols td.code{font-family:var(--mono);font-size:11px;color:var(--ink2);white-space:nowrap}
+  table.cols td.last{border-bottom:0}
+  table.cols tr:hover td{background:#FCFCFA}
+  .tag{
+    font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+    border:1px solid var(--line2);border-radius:2px;padding:1px 5px;color:var(--muted);white-space:nowrap;
+  }
+  .tag.red{color:var(--red);border-color:#F2C9CC;background:#FEF6F6}
+  .tag.ink{color:#fff;background:var(--ink);border-color:var(--ink)}
+
+  /* ---------- closing note ---------- */
+  .close{
+    margin:64px 0 0;padding:28px 0 0;border-top:1px solid var(--line2);
+    display:grid;grid-template-columns:186px 1fr;gap:28px;align-items:start;
+  }
+  .close-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);line-height:1.8}
+  .close-l b{display:block;color:var(--ink);font-weight:600;letter-spacing:.06em;margin-bottom:6px}
+  .close-r{font-size:12.5px;color:var(--muted);line-height:1.65;max-width:76ch}
+  .close-r b{color:var(--ink2);font-weight:600}
+  .close-r .k{color:var(--red);font-weight:600}
+
+  /* ---------- metric view stub ---------- */
+  #metricView{display:none}
+  #metricView.on{display:block}
+  #ucView.off{display:none}
+  .stub{
+    margin-top:26px;border:1px solid var(--line);background:var(--panel);
+    padding:30px 32px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+  }
+  .stub h3{font-size:15px;font-weight:600;margin:0 0 8px}
+  .stub p{font-size:12.5px;color:var(--muted);margin:0;max-width:62ch;line-height:1.6}
+  .units{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .unit{
+    font-family:var(--mono);font-size:10px;letter-spacing:.04em;padding:4px 8px;
+    border:1px solid var(--line2);background:var(--paper);border-radius:3px;color:var(--ink2);
+  }
+  .unit u{text-decoration:none;color:var(--faint);display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
+  .stubbtn{
+    appearance:none;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;
+    font-family:var(--sans);font-size:12px;letter-spacing:.02em;padding:10px 18px;border-radius:999px;white-space:nowrap;
+  }
+  .stubbtn:hover{background:#000}
+
+  @media (max-width:900px){
+    .wrap{padding:0 22px 72px}
+    .topbar-in{padding:12px 22px}
+    .kpis{grid-template-columns:1fr 1fr}
+    .kpi:nth-child(3){border-left:0;padding-left:0}
+    .bars,.probes,.cards{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr 46px;gap:6px 12px}
+    .pills{grid-column:1/-1}
+    .grp{grid-template-columns:1fr}
+    .sdesc,.bars,.strip,.probes,.cards,table.cols{margin-left:0;padding-left:0}
+    .probes,.cards{margin-left:0}
+    table.cols{margin-left:0;width:100%}
+    .tscroll{margin-left:0}
+    table.cols{min-width:600px}
+    .probe .pf{overflow-wrap:anywhere;min-width:0}
+    .close{grid-template-columns:1fr;gap:12px}
+    h1{max-width:none}
+    .pill,.step{white-space:normal;overflow-wrap:anywhere}
+    .stack{height:38px}
+    .vtag{display:none}
+    .snote{display:none}
+    .toggle button{padding:6px 11px;font-size:11.5px}
+    .kpi{padding:22px 16px 24px}
+    .kpi .num{font-size:34px}
+    .kpi .sub{font-size:11px}
+  }
+  @media print{
+    .topbar{position:static;border:0}
+    .toggle{display:none}
+    body{font-size:11px}
+    section{padding-top:34px;break-inside:avoid}
+    .grphead{position:static}
+  }
+</style>
+</head>
+<body>
+
+
+
+
+
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="mark"><i></i><i></i><i></i></div>
+      <div class="brand-t"><b>Apex</b> &nbsp;Insight &nbsp;<span>·</span>&nbsp; UX Metrics</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="vtag">mapping <b>v1</b> · 17 Oct 2026</div>
+    <div class="toggle" role="tablist" aria-label="View">
+      <button id="btnMetric" role="tab" aria-selected="false">Metric view</button>
+      <button id="btnUC" class="on" role="tab" aria-selected="true">Use case view</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div id="metricView">
+  <header>
+    <p class="eyebrow">UX Metrics · current report</p>
+    <h1>Metric view</h1>
+    <p class="lede">This is what the report shows today: five chapters, each sliced by a different unit. Nothing here is wrong — the chapters simply do not share a spine.</p>
+  </header>
+  <div class="stub">
+    <div>
+      <h3>Five chapters, four analysis units</h3>
+      <p>Return is sliced by workflow context, Access by user, Friction by HTTP status × page, Value by module. A reader has to convert between them in their head, which is why the chapters do not add up to a story.</p>
+      <div class="units">
+        <div class="unit">Return<u>workflow context</u></div>
+        <div class="unit">Access<u>users</u></div>
+        <div class="unit">Friction<u>status × page</u></div>
+        <div class="unit">Value<u>module</u></div>
+        <div class="unit">Actions<u>action cards</u></div>
+      </div>
+    </div>
+    <button class="stubbtn" id="btnBack">Open use case view</button>
+  </div>
+</div>
+
+<div id="ucView">
+
+<header>
+  <p class="eyebrow">UX Metrics · use case view · sample section</p>
+  <h1>Reading Apex usage by <em>use case</em>, not by module</h1>
+  <p class="lede">Every chapter gets a second reading on the same spine: which task the user started, which route they were on, and whether they finished. The mapping is a hand-maintained CSV of <b>25 use cases</b> and <b>44 routes</b>, standing in until the automated site map lands.</p>
+  <div class="srcline">
+    <span>source <i>use case → traffic mapping, CSV v1</i></span>
+    <span>routes <i>44</i></span>
+    <span>use cases <i>25</i></span>
+    <span>refresh <i>manual · replace with site map crawl</i></span>
+  </div>
+</header>
+
+<div class="kpis">
+  <div class="kpi">
+    <div class="lab">Use cases</div>
+    <div class="num">25</div>
+    <div class="sub"><b>22</b> carry a task · <b>3</b> are navigation, catalogue or support</div>
+  </div>
+  <div class="kpi">
+    <div class="lab">Routes mapped</div>
+    <div class="num">44</div>
+    <div class="sub">one route can serve one task, or several</div>
+  </div>
+  <div class="kpi">
+    <div class="lab">Cleanly attributable</div>
+    <div class="num">50<small>%</small></div>
+    <div class="sub"><b>22 of 44</b> routes, one use case, no collision</div>
+  </div>
+  <div class="kpi alert">
+    <div class="lab">Conflicts to fix</div>
+    <div class="num">4</div>
+    <div class="sub"><b>14 routes</b> — 32% of the surface — can land in two use cases</div>
+  </div>
+</div>
+
+<!-- 01 -->
+<section>
+  <div class="shead">
+    <div class="snum">01</div>
+    <h2>Where the net catches, and where it leaks</h2>
+    <div class="snote">mapping v1</div>
+  </div>
+  <p class="sdesc">Counted two ways, because the two ways disagree: <b>17 of 25 use cases are clean but cover only half the routes</b>, while <b>4 conflicted use cases cover nearly a third</b>. The risk is concentrated, not spread.</p>
+
+  <div class="bars">
+    <div>
+      <div class="bar-h"><span>by route</span><b>44 routes</b></div>
+      <div class="stack" id="stackRoute">
+        <div class="seg a" style="flex:22"><span>22</span></div>
+        <div class="seg b" style="flex:3"><span></span></div>
+        <div class="seg c" style="flex:14"><span>14</span></div>
+        <div class="seg d" style="flex:5"><span>5</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="bar-h"><span>by use case</span><b>25 use cases</b></div>
+      <div class="stack" id="stackUC">
+        <div class="seg a" style="flex:17"><span>17</span></div>
+        <div class="seg b" style="flex:1"><span></span></div>
+        <div class="seg c" style="flex:4"><span>4</span></div>
+        <div class="seg d" style="flex:3"><span>3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bars" style="margin-top:0">
+    <div class="slabels" style="grid-column:1/-1">
+      <div class="slab"><i style="background:var(--a)"></i><b>Clean</b> one use case, no collision <u>22 routes · 17 cases</u></div>
+      <div class="slab"><i style="background:var(--b)"></i><b>Fragmented</b> one task, 3+ routes <u>3 · 1</u></div>
+      <div class="slab"><i style="background:var(--c)"></i><b>Conflict</b> a route lands in two cases <u>14 · 4</u></div>
+      <div class="slab"><i style="background:var(--d)"></i><b>No completion event</b> nav, catalogue, support <u>5 · 3</u></div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="strip-h"><span>one mark per route</span><b>44 routes</b></div>
+    <div class="groups" id="dotGroups"></div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section>
+  <div class="shead">
+    <div class="snum">02</div>
+    <h2>The plate</h2>
+    <div class="snote">25 use cases · 44 routes</div>
+  </div>
+  <p class="sdesc">Grouped by mapping quality, worst first. A route shown in <b>red</b> is one that can be counted twice; a dashed route is a container that catches reports it does not name.</p>
+  <div class="plate" id="plate"></div>
+</section>
+
+<!-- 03 -->
+<section>
+  <div class="shead">
+    <div class="snum">03</div>
+    <h2>Where the mapping still leaks</h2>
+    <div class="snote">6 findings from the CSV</div>
+  </div>
+  <p class="sdesc">Every item below is visible in the CSV as it stands, before any traffic is joined. They are cheap to fix now and expensive to discover in a published number.</p>
+
+  <div class="probes">
+    <div class="probe">
+      <div class="ptag">Blocking · prefix</div>
+      <h3>One path is the parent of another, across two use cases</h3>
+      <div class="paths">
+        <div class="pf"><u>NII</u>/irrbb/exercise-management</div>
+        <div class="pf"><u>CSAT</u>/irrbb/exercise-management/bsp</div>
+      </div>
+      <p>Under prefix matching, every CSAT page view also counts as NII. Both use cases end up wrong, in opposite directions, and neither number looks broken.</p>
+      <div class="fix"><u>Fix</u>Declare one rule — exact match, or longest prefix wins — and apply it everywhere.</div>
+    </div>
+
+    <div class="probe">
+      <div class="ptag">Blocking · naming</div>
+      <h3>“Manual update” and “Manual upload” are different tasks</h3>
+      <div class="paths">
+        <div class="pf"><u>NII</u>/manual-update/irrbb</div>
+        <div class="pf"><u>Submission</u>/manual-upload/submission-portal</div>
+      </div>
+      <p>The current report carries a workflow context called <b>Manual Upload</b>. Joined to the wrong route, an assumption refresh and a submission become the same thing.</p>
+      <div class="fix"><u>Fix</u>Pin the join key before the first metric is computed.</div>
+    </div>
+
+    <div class="probe">
+      <div class="ptag">Structural · shared container</div>
+      <h3>Superset reports are named one by one, so the container is unattributed</h3>
+      <div class="paths">
+        <div class="pf"><u>Mortgage</u>/superset-report/mp-… (×2)</div>
+        <div class="pf"><u>Rapid dev</u>/superset-report/sh-…</div>
+      </div>
+      <p>Every new Superset report ships with no use case until someone edits the CSV — the exact “it will go stale” failure the automated site map is meant to catch.</p>
+      <div class="fix"><u>Fix</u>Add a catch-all row <span class="need">/superset-report/*</span> that reports its own unmapped share.</div>
+    </div>
+
+    <div class="probe">
+      <div class="ptag">Blocking · duplicate</div>
+      <h3>Two spellings of one page</h3>
+      <div class="paths">
+        <div class="pf"><u>Deposit</u>/deposit/report</div>
+        <div class="pf"><u>Deposit</u>/deposit/reports</div>
+      </div>
+      <p>Harmless for use case attribution, since both belong to the same task. Fatal for route-level error counting: one page’s failures split across two rows and neither looks severe.</p>
+      <div class="fix"><u>Fix</u>Confirm the live route, delete the other.</div>
+    </div>
+
+    <div class="probe minor">
+      <div class="ptag">Minor · case</div>
+      <h3>The only capitalised path in the file</h3>
+      <div class="paths">
+        <div class="pf"><u>Mortgage</u>/MortgageProductPipeline</div>
+      </div>
+      <p>Case-sensitive matching drops it with no error, which reads as zero traffic rather than as a bug.</p>
+      <div class="fix"><u>Fix</u>Normalise to lower case on match.</div>
+    </div>
+
+    <div class="probe minor">
+      <div class="ptag">Minor · no event</div>
+      <h3>Three “use cases” are places, not tasks</h3>
+      <div class="paths">
+        <div class="pf"><u>Nav</u>/ &nbsp;·&nbsp; /home</div>
+        <div class="pf"><u>Other</u>/products · /about · /apex-support</div>
+      </div>
+      <p>Keep them in the map, exclude them from reach and from task success — otherwise browsing fills the denominator and every success rate drops without anything getting worse.</p>
+      <div class="fix"><u>Fix</u>Flag them <span class="need">non_task = true</span>.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section>
+  <div class="shead">
+    <div class="snum">04</div>
+    <h2>Four use cases, read through the mapping</h2>
+    <div class="snote">structural sample</div>
+  </div>
+  <p class="sdesc">The step chain is <b>proposed from the route names</b> and needs the use case owner to confirm the order — but the slots below it are the four cells this view is built to fill, and each one names the join it needs.</p>
+
+  <div class="cards">
+    <div class="card">
+      <div class="ch"><h3>NII</h3><span class="ct c">Conflict</span></div>
+      <div class="cmeta">6 routes · prefix clash with CSAT</div>
+      <div class="chainlab">proposed chain · to confirm</div>
+      <div class="chain">
+        <span class="step">assumption-mgmt</span><span class="arw">→</span>
+        <span class="step amb">exercise-mgmt</span><span class="arw">→</span>
+        <span class="step">calculation/nii</span><span class="arw">→</span>
+        <span class="step">data-explorer</span><span class="arw">→</span>
+        <span class="step">manual-update</span>
+      </div>
+      <div class="slots">
+        <div class="slot"><div class="sl">Reach</div><div class="sv empty">traffic by route <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Repeat</div><div class="sv empty">session id <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">First drop-off</div><div class="sv empty">step events <span class="need">new</span></div></div>
+        <div class="slot"><div class="sl">Error rate</div><div class="sv empty">4xx/5xx by route <span class="need">join</span></div></div>
+      </div>
+      <p class="cnote">Today NII is a <b>workflow context</b> — it says where someone was last seen, not where they stopped. With the chain, “stuck in NII” becomes “stopped after Data Explorer”, which an owner can act on.</p>
+    </div>
+
+    <div class="card">
+      <div class="ch"><h3>Submission Portal</h3><span class="ct a">Clean</span></div>
+      <div class="cmeta">1 route · no collision</div>
+      <div class="chainlab">proposed chain · to confirm</div>
+      <div class="chain">
+        <span class="step">manual-upload/submission-portal</span><span class="arw">→</span>
+        <span class="step">submit</span><span class="arw">→</span>
+        <span class="step">acknowledgement</span>
+      </div>
+      <div class="slots">
+        <div class="slot"><div class="sl">Reach</div><div class="sv empty">traffic by route <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Success</div><div class="sv empty">completion event <span class="need">new</span></div></div>
+        <div class="slot"><div class="sl">Funnel</div><div class="sv empty">single route <span class="need">simple</span></div></div>
+        <div class="slot"><div class="sl">Error rate</div><div class="sv empty">4xx/5xx by route <span class="need">join</span></div></div>
+      </div>
+      <p class="cnote">One route in, one completion out. <b>This is where the view should be proven first</b> — the arithmetic is small enough to audit by hand before it is trusted anywhere else.</p>
+    </div>
+
+    <div class="card">
+      <div class="ch"><h3>Client Deposit Monitoring</h3><span class="ct b">Fragmented</span></div>
+      <div class="cmeta">3 routes · duplicate /report(s)</div>
+      <div class="chainlab">proposed chain · to confirm</div>
+      <div class="chain">
+        <span class="step">client-deposit-monitoring</span><span class="arw">→</span>
+        <span class="step">deposit/report</span><span class="arw">→</span>
+        <span class="step">deposit/reports</span>
+      </div>
+      <div class="slots">
+        <div class="slot"><div class="sl">Reach</div><div class="sv empty">traffic by route <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Repeat</div><div class="sv empty">session id <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Drop-off</div><div class="sv empty">which of the 3 <span class="need">new</span></div></div>
+        <div class="slot"><div class="sl">Error rate</div><div class="sv empty">split across 2 rows <span class="need">blocked</span></div></div>
+      </div>
+      <p class="cnote">Three routes for one task, two of them probably the same page. Until the duplicate is settled, <b>any per-route error rate for this use case is wrong</b> — a quiet failure mode the current report cannot see.</p>
+    </div>
+
+    <div class="card">
+      <div class="ch"><h3>Data Hub</h3><span class="ct a">Clean</span></div>
+      <div class="cmeta">2 routes · not the same as Data Explorer</div>
+      <div class="chainlab">proposed chain · to confirm</div>
+      <div class="chain">
+        <span class="step">alchemist-explorer</span><span class="arw">→</span>
+        <span class="step">datahub</span>
+      </div>
+      <div class="slots">
+        <div class="slot"><div class="sl">Reach</div><div class="sv empty">traffic by route <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Repeat</div><div class="sv empty">session id <span class="need">join</span></div></div>
+        <div class="slot"><div class="sl">Drop-off</div><div class="sv empty">step events <span class="need">new</span></div></div>
+        <div class="slot"><div class="sl">Error rate</div><div class="sv empty">4xx/5xx by route <span class="need">join</span></div></div>
+      </div>
+      <p class="cnote">Data Hub lives here; <b>/irrbb/data-explorer sits under NII</b>. The Friction chapter calls the page “Data Explorer” without saying which one — the mapping forces that question, and the error story changes depending on the answer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section>
+  <div class="shead">
+    <div class="snum">05</div>
+    <h2>What the mapping cannot answer yet</h2>
+    <div class="snote">4 columns to add</div>
+  </div>
+  <p class="sdesc">The CSV gives <b>attribution</b> — which use case a page belongs to. It does not give <b>progression</b> — where in the task the user stopped. Task success and error rate need both.</p>
+
+  <div class="tscroll"><table class="cols">
+    <thead>
+      <tr><th style="width:150px">Add to the CSV</th><th style="width:118px">Type</th><th style="width:280px">Example (NII)</th><th>What it unlocks</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>entry_route</td>
+        <td><span class="tag ink">required</span></td>
+        <td class="code">/irrbb/assumption-management</td>
+        <td>Defines where the task starts. <b>This is the denominator.</b></td>
+      </tr>
+      <tr>
+        <td>completion_event</td>
+        <td><span class="tag ink">required</span></td>
+        <td class="code">/calculation/nii returns a result</td>
+        <td>Defines success. <b>This is the numerator.</b></td>
+      </tr>
+      <tr>
+        <td>match_rule</td>
+        <td><span class="tag">enum</span></td>
+        <td class="code">longest-prefix</td>
+        <td>One rule applied everywhere kills the whole conflict class in §03.</td>
+      </tr>
+      <tr class="last">
+        <td>owner</td>
+        <td><span class="tag">string</span></td>
+        <td class="code">NII use case owner</td>
+        <td>Moves action ownership off “UX + Data” and onto someone who can close it.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <p class="sdesc" style="margin-top:22px;margin-bottom:0">With the first two columns, task success and error rate stop being <span class="tag red">not measurable yet</span> and become arithmetic. That is the whole of the denominator problem on the Actions page.</p>
+</section>
+
+<!-- 06 -->
+<section>
+  <div class="shead">
+    <div class="snum">06</div>
+    <h2>What moves in the six pages</h2>
+    <div class="snote">one line each</div>
+  </div>
+  <p class="sdesc">The section layout stays. What changes is the unit each chapter counts in — the spine becomes the same one across all six.</p>
+
+  <div class="tscroll"><table class="cols">
+    <thead>
+      <tr><th style="width:132px">Chapter</th><th style="width:44%">Today</th><th>With the use case view</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>The plot</td><td>7 metric nodes on two axes</td><td>25 use case nodes, same two axes, shaded by conflict</td></tr>
+      <tr><td>Return</td><td>last module touched</td><td>last step before the chain broke</td></tr>
+      <tr><td>Access</td><td>512 → 207 users (40.4%)</td><td>guide coverage per use case step</td></tr>
+      <tr><td>Value</td><td>5 module cards</td><td>reach × repeat quadrants, third dimension = friction</td></tr>
+      <tr><td>Friction</td><td>HTTP status × page name</td><td>error rate per use case <i>step</i>, not per page</td></tr>
+      <tr class="last"><td>Actions</td><td>3 cards, 2 of them unmeasurable</td><td>each card pinned to a step id and a use case owner</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<div class="close">
+  <div class="close-l">
+    <b>How to read this</b>
+    derived from the CSV alone<br>
+    mapping v1 · 17 Oct 2026<br>
+    no traffic joined
+  </div>
+  <div class="close-r">
+    Every number on this page comes from the mapping file itself — route counts, collisions, the 50 / 32 split. No reach, repeat or error rate is shown, because the current export cannot yet attribute traffic to a route. When it can, this page fills in without another design pass.<br><br>
+    <span class="k">To make it live:</span> confirm the matching rule, name one completion event per use case, and give each use case an owner. Three inputs, no rebuild.
+  </div>
+</div>
+
+</div><!-- /ucView -->
+</div><!-- /wrap -->
+
+<script>
+(function(){
+  "use strict";
+
+  var GROUPS=[
+    {k:"c",n:"Conflict",d:"a route can land in two use cases"},
+    {k:"b",n:"Fragmented",d:"one task spread across 3+ routes"},
+    {k:"d",n:"No completion event",d:"navigation, catalogue, support"},
+    {k:"a",n:"Clean",d:"one use case, no collision"}
+  ];
+
+  var UC=[
+    {n:"NII",t:"c",note:"6 routes · clash with CSAT",r:[
+      "/calculation/nii","/irrbb/assumption-management","/irrbb/data-explorer",
+      "!/irrbb/exercise-management","/irrbb/market-data-viewer","/manual-update/irrbb"]},
+
+    {n:"Mortgage Pipeline",t:"c",note:"4 routes · shares /superset-report/",r:[
+      "/mortgage-report","/MortgageProductPipeline",
+      "~/superset-report/mp-application-and-completion-pipeline-monitoring/Report",
+      "~/superset-report/mp-data-report/Report"]},
+
+    {n:"Rapid dev · Structure Hedge",t:"c",note:"2 routes · shares /superset-report/",r:[
+      "/structural-hedge",
+      "~/superset-report/sh-maturity-profile-and-rates-of-structural-hedge/Report"]},
+
+    {n:"CSAT",t:"c",note:"2 routes · clash with NII",r:[
+      "!/irrbb/exercise-management/bsp","/stress-testing/bsp-modeling"]},
+
+    {n:"Client Deposit Monitoring",t:"b",note:"3 routes · duplicate /report(s)",r:[
+      "/deposit/client-deposit-monitoring","/deposit/report","!/deposit/reports"]},
+
+    {n:"Product page",t:"d",note:"1 route · catalogue",r:["/products"]},
+    {n:"Platform support & information",t:"d",note:"2 routes · support",r:["/apex-support","/about"]},
+    {n:"Shared navigation",t:"d",note:"2 routes · chrome",r:["/","/home"]},
+
+    {n:"Access Management",t:"a",note:"2 routes",r:["/entitlement","/raise-access-help"]},
+    {n:"Nostro funding",t:"a",note:null,r:["/consolidated-funding-dashboard","/intraday-funding-dashboard"]},
+    {n:"ROTE",t:"a",note:null,r:[
+      "/markets-treasury-reports/rote-summary-dashboard/Report","/markets-treasury/rote-and-ep-dashboard"]},
+    {n:"Rapid dev · RWA tool",t:"a",note:null,r:["/rwa-portfolio","/rwa-what-if-analyzer"]},
+    {n:"Data Hub",t:"a",note:"2 routes · not /irrbb/data-explorer",r:["/alchemist-explorer","/datahub"]},
+    {n:"Capital Planning",t:"a",note:null,r:["/capital-management"]},
+    {n:"ILM",t:"a",note:null,r:["/calculation/ilm"]},
+    {n:"Rapid dev · Capital MI",t:"a",note:null,r:["/capital-mi-report"]},
+    {n:"Rapid dev · Document repository",t:"a",note:null,r:["/document-repo"]},
+    {n:"Rapid dev · Kyoto",t:"a",note:null,r:["/kyoto-mi"]},
+    {n:"Rapid dev · LP curve",t:"a",note:null,r:["/lp-curve/liquidity-premium"]},
+    {n:"Submission Portal",t:"a",note:"1 route · cleanest test case",r:["/manual-upload/submission-portal"]},
+    {n:"Alice AI",t:"a",note:null,r:["/alice-ai"]},
+    {n:"Model Hub",t:"a",note:null,r:["/model-hub"]},
+    {n:"Funding & Issuance",t:"a",note:null,r:["/fundingissuance"]},
+    {n:"Regulation",t:"a",note:null,r:["/regulation"]},
+    {n:"Collateral Management",t:"a",note:null,r:["/collateral-management"]}
+  ];
+
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  function split(route){
+    var cls="pill", r=route;
+    if(r.charAt(0)==="!"){cls+=" warn"; r=r.slice(1);}
+    else if(r.charAt(0)==="~"){cls+=" pale"; r=r.slice(1);}
+    return {cls:cls, path:r};
+  }
+
+  /* ---------- 02 the plate ---------- */
+  var plate=document.getElementById("plate");
+  if(plate){
+    var html="";
+    GROUPS.forEach(function(g){
+      var list=UC.filter(function(u){return u.t===g.k;});
+      if(!list.length) return;
+      var routeCount=list.reduce(function(s,u){return s+u.r.length;},0);
+
+      html+='<div class="grphead">'
+          + '<span class="gi" style="background:var(--'+g.k+')"></span>'
+          + '<span class="gn">'+g.n+'</span>'
+          + '<span class="gc">'+list.length+' use case'+(list.length>1?"s":"")+' · '+routeCount+' route'+(routeCount>1?"s":"")+'</span>'
+          + '<span class="gd">'+g.d+'</span>'
+          + '</div>';
+
+      list.forEach(function(u){
+        var pills=u.r.map(function(route){
+          var p=split(route);
+          return '<span class="'+p.cls+'">'+esc(p.path)+'</span>';
+        }).join("");
+        html+='<div class="row">'
+            + '<div class="rname">'+esc(u.n)+(u.note?'<u>'+esc(u.note)+'</u>':'')+'</div>'
+            + '<div class="pills">'+pills+'</div>'
+            + '<div class="rcount"><b>'+u.r.length+'</b></div>'
+            + '</div>';
+      });
+    });
+    plate.innerHTML=html;
+  }
+
+  /* ---------- 01 dot strip ---------- */
+  var dots=document.getElementById("dotGroups");
+  if(dots){
+    var dh="";
+    GROUPS.forEach(function(g){
+      var list=UC.filter(function(u){return u.t===g.k;});
+      if(!list.length) return;
+      var marks="";
+      list.forEach(function(u){
+        u.r.forEach(function(route){
+          var p=split(route);
+          marks+='<span class="dot" style="background:var(--'+g.k+')" title="'+esc(p.path)+' — '+esc(u.n)+'"></span>';
+        });
+      });
+      var total=list.reduce(function(s,u){return s+u.r.length;},0);
+      dh+='<div class="grp">'
+        + '<div class="grp-l"><i style="background:var(--'+g.k+')"></i>'+g.n+' <b>'+total+'</b></div>'
+        + '<div class="dots">'+marks+'</div>'
+        + '</div>';
+    });
+    dots.innerHTML=dh;
+  }
+
+  /* ---------- view toggle ---------- */
+  var mv=document.getElementById("metricView");
+  var uv=document.getElementById("ucView");
+  var btnM=document.getElementById("btnMetric");
+  var btnU=document.getElementById("btnUC");
+  var btnBack=document.getElementById("btnBack");
+
+  function setView(isUC){
+    mv.classList.toggle("on",!isUC);
+    uv.classList.toggle("off",isUC);
+    btnU.classList.toggle("on",isUC);
+    btnM.classList.toggle("on",!isUC);
+    btnU.setAttribute("aria-selected",isUC?"true":"false");
+    btnM.setAttribute("aria-selected",isUC?"false":"true");
+    try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){window.scrollTo(0,0);}
+  }
+
+  if(btnM) btnM.addEventListener("click",function(){setView(false);});
+  if(btnU) btnU.addEventListener("click",function(){setView(true);});
+  if(btnBack) btnBack.addEventListener("click",function(){setView(true);});
+
+})();
+</script>
+</body>
+</html>
+
