@@ -1,0 +1,613 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apex 2026 Road Map · Executive Briefing</title><style>
+*,*::before,*::after{box-sizing:border-box}
+:root{--red:#DB0011;--red-d:#A80010;--ink:#15120E;--ink2:#3D3A36;--muted:#6E6A64;--paper:#fff;--wash:#F8F6F4;--wash2:#EFEBE7;--line:#E7E2DC;--line2:#D8D1C8;--navy:#34406B;--steel:#17607A;--purple:#6C4CB0;--blue:#1E5FA8;--green:#1B7A5E;--amber:#C97A12;--plum:#8A2F4E;--tp:#F3EFFB;--tb:#EAF2FB;--tg:#E9F5F0;--ta:#FCF3E5;--tl:#FBEDF2;--tn:#EEF0F7;--ts:#E8F2F6;--r:14px;--r2:10px;--r3:999px;--sh:0 1px 2px rgba(21,18,14,.04);--sh2:0 12px 30px rgba(21,18,14,.10);--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 "Helvetica Neue",Inter,"Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px;border-radius:6px}
+.mono{font-family:var(--mono)}
+.hide{display:none}
+.ic{width:18px;height:18px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ic.sm{width:15px;height:15px;stroke-width:1.8}
+.ic.xs{width:13px;height:13px;stroke-width:2}
+.iT{width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;background:var(--tp);color:var(--purple);flex:0 0 auto;border:1px solid rgba(108,76,176,.14)}
+.iT.pu{background:var(--tp);color:var(--purple);border-color:rgba(108,76,176,.16)}
+.iT.bl{background:var(--tb);color:var(--blue);border-color:rgba(30,95,168,.16)}
+.iT.gr{background:var(--tg);color:var(--green);border-color:rgba(27,122,94,.16)}
+.iT.am{background:var(--ta);color:var(--amber);border-color:rgba(201,122,18,.18)}
+.iT.pl{background:var(--tl);color:var(--plum);border-color:rgba(138,47,78,.16)}
+.iT.nv{background:var(--tn);color:var(--navy);border-color:rgba(52,64,107,.16)}
+.iT.st{background:var(--ts);color:var(--steel);border-color:rgba(23,96,122,.16)}
+.iT.rd{background:var(--tl);color:var(--red);border-color:rgba(219,0,17,.18)}
+.iT.sm{width:30px;height:30px;border-radius:10px}
+.iT.sm .ic{width:15px;height:15px}
+.lbl{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--wash);border:1px solid var(--line);border-radius:var(--r3);padding:3px 9px}
+.lbl.rd{color:var(--red);background:#FDF3F4;border-color:#F3D6DA}
+#prog{position:fixed;top:0;left:0;height:3px;width:0;background:var(--red);border-radius:0 var(--r3) var(--r3) 0;z-index:80}
+#top{position:fixed;top:0;left:0;right:0;height:64px;background:rgba(255,255,255,.94);backdrop-filter:saturate(1.4) blur(8px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;padding:0 22px;z-index:60}
+.sq{width:14px;height:14px;border-radius:5px;background:var(--red);flex:0 0 auto}
+.brand{font-weight:700;letter-spacing:.12em;font-size:13px;white-space:nowrap}
+#nav{display:flex;gap:4px;margin-left:auto}
+#nav button{position:relative;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);padding:7px 10px;border-radius:var(--r3)}
+#nav button:hover{background:var(--wash);color:var(--ink)}
+#nav button.on{color:#fff;background:var(--red)}
+#tools{display:flex;gap:8px}
+#tools button{font-size:12px;border:1px solid var(--line);border-radius:var(--r3);padding:7px 13px;color:var(--ink2);background:#fff;transition:.16s}
+#tools button:hover{border-color:var(--line2);box-shadow:var(--sh)}
+#tools button[aria-pressed="true"]{border-color:var(--red);color:var(--red);background:#FDF3F4}
+#rail{position:fixed;left:0;top:64px;bottom:0;width:228px;background:#fff;border-right:1px solid var(--line);padding:22px 16px 30px;overflow:auto;z-index:50}
+#rail button{display:flex;align-items:center;gap:11px;width:100%;padding:8px;border-radius:var(--r2);transition:.16s}
+#rail button b{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;background:var(--wash);color:var(--muted);font-family:var(--mono);font-size:12px;font-weight:600;flex:0 0 auto;transition:.16s}
+#rail button span{font-size:12.5px;color:var(--muted)}
+#rail button:hover{background:var(--wash)}
+#rail button.on b{background:var(--red);color:#fff;box-shadow:0 6px 14px rgba(219,0,17,.24)}
+#rail button.on span{color:var(--ink);font-weight:600}
+main{margin-left:228px;padding-top:64px;transition:padding-right .3s}
+.ch{max-width:1180px;margin:0 auto;padding:64px 44px 58px;border-bottom:1px solid var(--line)}
+#c0{border-bottom:0}
+.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--red)}
+h1{font-size:clamp(34px,4.6vw,58px);line-height:1.04;letter-spacing:-.03em;margin:12px 0 10px;font-weight:700}
+h2{font-size:clamp(23px,2.5vw,32px);line-height:1.16;letter-spacing:-.02em;margin:10px 0 8px;font-weight:700}
+h3{font-size:16px;margin:0 0 6px;letter-spacing:-.01em}
+.enh{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--red);background:#FDF3F4;border:1px solid #F3D6DA;border-radius:var(--r3);padding:4px 11px;margin:0 0 2px}
+#c0 .enh{color:var(--muted);background:var(--wash);border-color:var(--line)}
+.sub{font-size:14px;color:var(--muted);margin:9px 0 0;max-width:70ch}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--r3);padding:6px 12px;box-shadow:var(--sh);white-space:nowrap}
+.chip.rd{color:var(--red);border-color:#F3D6DA;background:#FDF3F4}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.c{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh);transition:.18s;position:relative;overflow:hidden}
+.c::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--accent,var(--line));opacity:.9}
+.c:hover{transform:translateY(-3px);box-shadow:var(--sh2);border-color:var(--line2)}
+.c .iT{margin-bottom:12px}
+.c.pu{--accent:var(--purple)}.c.bl{--accent:var(--blue)}.c.gr{--accent:var(--green)}.c.pl{--accent:var(--plum)}.c.am{--accent:var(--amber)}
+.c.pu .iT{background:var(--tp);color:var(--purple);border-color:rgba(108,76,176,.18)}
+.c.bl .iT{background:var(--tb);color:var(--blue);border-color:rgba(30,95,168,.18)}
+.c.gr .iT{background:var(--tg);color:var(--green);border-color:rgba(27,122,94,.18)}
+.c.pl .iT{background:var(--tl);color:var(--plum);border-color:rgba(138,47,78,.18)}
+.c.am .iT{background:var(--ta);color:var(--amber);border-color:rgba(201,122,18,.2)}
+.c h3{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.num{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:var(--wash);border:1px solid var(--line);border-radius:var(--r3);padding:3px 10px;margin-bottom:12px}
+.c p{margin:0;color:var(--ink2);font-size:13.6px;line-height:1.62}
+.c>p{margin-top:6px}
+.ex{margin-top:13px;display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--red);background:#FDF3F4;border:1px solid #F3D6DA;border-radius:var(--r3);padding:6px 12px;transition:.16s}
+.ex:hover{background:#FBE9EC}
+.exp{display:none;margin-top:11px!important;font-size:12.6px!important;color:var(--ink2);background:var(--wash);border-left:3px solid var(--red);border-radius:0 var(--r2) var(--r2) 0;padding:10px 12px}
+.c.open .exp{display:block}
+.an{display:none;margin-top:18px;font-size:12.4px;color:var(--ink2);background:#FDF6F7;border:1px dashed #EBC9CE;border-radius:var(--r2);padding:11px 13px}
+.an::before{content:"CHANGE";font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;color:var(--red);display:block;margin-bottom:5px}
+body.chg .an{display:block}
+.pager{display:flex;gap:10px;margin-top:30px}
+.pager button{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);border:1px solid var(--line);border-radius:var(--r3);padding:8px 15px;background:#fff;transition:.16s}
+.pager button:hover{border-color:var(--red);color:var(--red);box-shadow:var(--sh)}
+.lead{font-size:15px;color:var(--ink2);max-width:88ch;margin:16px 0 0}
+.bk{display:flex;gap:13px;align-items:flex-start;background:var(--wash);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;margin:22px 0 0}
+.bk b{display:block;font-size:14.5px;margin-bottom:4px}
+.bk p{margin:0;font-size:13.4px;color:var(--ink2)}
+.lgd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:26px 0 0}
+.lg{display:inline-flex;align-items:center;gap:8px;font-size:12.3px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--r3);padding:7px 13px;box-shadow:var(--sh);transition:.16s}
+.lg .iT.sm{width:24px;height:24px;border-radius:8px;border:0}
+.lg[data-f="a"] .iT{background:var(--tp);color:var(--purple)}
+.lg[data-f="b"] .iT{background:var(--tb);color:var(--blue)}
+.lg[data-f="c"] .iT{background:var(--tg);color:var(--green)}
+.lg:hover{border-color:var(--line2)}
+.lg.on{border-color:var(--red);color:var(--red);box-shadow:0 6px 16px rgba(219,0,17,.12)}
+#cnt{margin-left:auto}
+.hint{font-size:12.5px;color:var(--muted);margin:14px 0 0}
+#c0{background-image:radial-gradient(#F1EDE8 1px,transparent 1px);background-size:22px 22px;background-position:0 0}
+.strip{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:14px 2px 6px}
+.stages{display:grid;grid-template-columns:repeat(6,minmax(158px,1fr));gap:12px;min-width:1000px}
+.stg{transition:opacity .2s;background:#FCFBFA;border:1px solid var(--line);border-radius:18px;padding:10px}
+.sh{display:flex;gap:11px;align-items:center;background:linear-gradient(180deg,#205F8F,#1B4F7A);color:#fff;border-radius:var(--r);padding:12px;margin-bottom:10px;cursor:pointer;transition:.18s;box-shadow:0 8px 18px rgba(27,79,122,.18)}
+.sh:hover{transform:translateY(-2px)}
+.sh .iT{background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.24)}
+.shTxt{display:flex;flex-direction:column;gap:1px}
+.shTxt .mono{font-size:9.5px;letter-spacing:.14em;opacity:.82}
+.shTxt b{font-size:15px;letter-spacing:-.01em}
+.shTxt i{font-style:normal;font-size:11px;opacity:.85}
+.k{display:block;width:100%;background:#fff;border:1px solid var(--line);border-left:3px solid var(--kc,var(--line));border-radius:var(--r2);padding:10px 12px;margin-bottom:8px;transition:opacity .18s,transform .18s,box-shadow .18s;box-shadow:var(--sh)}
+.k:hover{transform:translateX(2px);box-shadow:var(--sh2)}
+.k b{display:block;font-size:10.6px;letter-spacing:.05em;font-weight:700}
+.k i{display:block;font-style:normal;font-size:11.4px;color:var(--muted);margin-top:2px}
+.k.a{--kc:var(--purple)}.k.b{--kc:var(--blue)}.k.c{--kc:var(--green)}.k.d{--kc:var(--line2)}
+.k .m{display:block;font-family:var(--mono);font-size:9.5px;color:var(--red);margin-top:8px;padding-top:7px;border-top:1px dashed #EBC9CE}
+.fbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:20px}
+.fbar .mono{font-size:10px;letter-spacing:.14em;color:var(--muted)}
+.fbar button,[data-qf],[data-sf],#lf button{font-size:11.8px;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:var(--r3);padding:6px 13px;transition:.16s}
+.fbar button:hover,[data-qf]:hover,[data-sf]:hover,#lf button:hover{border-color:var(--line2);box-shadow:var(--sh)}
+[data-qf][aria-pressed="true"],[data-sf][aria-pressed="true"],#lf button.on{background:var(--red);border-color:var(--red);color:#fff}
+#lf{display:flex;gap:8px;flex-wrap:wrap}
+#sq{font:inherit;font-size:13px;padding:9px 14px;border:1px solid var(--line);border-radius:var(--r3);min-width:270px;background:#fff}
+#sq:focus{outline:2px solid var(--red);outline-offset:1px;border-color:var(--red)}
+.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+.pl2{display:flex;align-items:center;gap:11px;font-size:13.6px;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);transition:.18s;cursor:pointer}
+.pl2 .iT{width:32px;height:32px;border-radius:10px}
+.pl2:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.pl2.on{border-color:var(--red);box-shadow:0 8px 20px rgba(219,0,17,.12)}
+.dg{display:grid;grid-template-columns:250px 1fr 1fr 1fr 1fr;gap:12px;min-width:1010px;align-items:start}
+.tk{display:flex;gap:11px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--tc,var(--navy));border-radius:var(--r);padding:13px;margin-bottom:12px;transition:.18s;box-shadow:var(--sh)}
+.tk.a{--tc:var(--steel)}.tk.b{--tc:var(--amber)}.tk.c{--tc:var(--navy)}
+.tk.on{box-shadow:0 10px 24px rgba(219,0,17,.14);border-color:var(--red);border-top-color:var(--red)}
+.tkIn{display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.tk h3{margin:2px 0 0;font-size:14.5px}
+.tk p{margin:0;font-size:11.5px;color:var(--muted);font-family:var(--mono);letter-spacing:.04em}
+.tk .chip{padding:3px 9px;font-size:10.5px;font-family:var(--mono);box-shadow:none;background:var(--wash)}
+.tag{font-size:11.4px;color:var(--ink2);margin-top:4px}
+.ln{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--red);background:#FDF3F4;border-radius:var(--r3);padding:3px 9px;margin-top:7px}
+.qb{border:1px solid var(--line);border-radius:var(--r);padding:13px;background:#fff;box-shadow:var(--sh);transition:opacity .18s,border-color .18s,box-shadow .18s}
+.qb.on{border-color:var(--red);box-shadow:0 10px 24px rgba(219,0,17,.12)}
+.qh{background:var(--navy);color:#fff;border-radius:var(--r2);text-align:center;font-size:13px;font-weight:600;letter-spacing:.04em;padding:9px;margin-bottom:11px}
+.qh.steel{background:var(--steel)}
+.qi{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.4px;padding:6px 2px;border-bottom:1px solid var(--wash2);transition:opacity .18s}
+.qi:last-of-type{border-bottom:0}
+.qi .o{color:var(--amber);font-weight:600}
+.bg{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;border:1px solid var(--line);border-radius:var(--r3);padding:2px 8px;background:var(--wash);color:var(--muted);white-space:nowrap}
+.qi[data-st="done"] .bg{background:var(--tg);color:#12684F;border-color:#C8E4D9}
+.qi[data-st="dev"] .bg{background:var(--tl);color:#A2122F;border-color:#F0D2D9}
+.qi[data-st="poc"] .bg{background:var(--tp);color:#553A9B;border-color:#DDD2F2}
+.qi[data-st="plan"] .bg{background:var(--ta);color:#8A530A;border-color:#F0DDC0}
+.qi[data-st=""] .o{color:var(--amber)}
+.qi[data-st=""] .o::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;vertical-align:middle}
+.qf{margin-top:10px;font-size:10.5px;font-family:var(--mono);letter-spacing:.06em;color:var(--muted);background:var(--wash);border:1px dashed var(--line2);border-radius:var(--r2);padding:6px;text-align:center}
+.qb .m{display:none;font-family:var(--mono);font-size:10px;color:var(--red);margin-top:9px;padding-top:8px;border-top:1px dashed #EBC9CE}
+.qb.on .m{display:block}
+.vt{display:inline-flex;align-items:center;gap:7px;font-size:12px;border:1px solid var(--line);border-radius:var(--r3);padding:7px 14px;background:#fff;color:var(--ink2);margin-top:16px}
+.vt:hover{border-color:var(--red);color:var(--red)}
+.frow{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+.nd{display:inline-flex;align-items:center;gap:7px;font-size:12.3px;background:#fff;border:1px solid var(--line);border-radius:var(--r3);padding:7px 13px;transition:opacity .18s,border-color .18s,box-shadow .18s;cursor:pointer;box-shadow:var(--sh)}
+.nd::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--wash2);box-shadow:inset 0 0 0 1px var(--line2)}
+.nd.on{border-color:var(--red);box-shadow:0 8px 18px rgba(219,0,17,.12)}
+.nd.on::before{background:var(--red)}
+.midbar{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink2);background:var(--tn);border:1px dashed var(--line2);border-radius:var(--r);padding:11px 14px;margin:14px 0}
+#pl{font-size:12.5px;color:var(--ink2);margin-top:14px;font-family:var(--mono);background:var(--wash);border-radius:var(--r2);padding:9px 12px}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;margin-top:16px}
+.tbl th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 9px 0;border-bottom:1px solid var(--line)}
+.tbl td{padding:10px 12px 10px 0;border-bottom:1px solid var(--wash2);color:var(--ink2)}
+.tbl td:first-child{color:var(--ink);font-weight:600}
+.okr{margin-top:16px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff;box-shadow:var(--sh)}
+.hrow,.orow{display:grid;grid-template-columns:1fr 76px 74px 74px 70px;gap:12px;align-items:center;padding:12px 18px}
+.hrow{background:var(--wash);font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.orow{border-top:1px solid var(--wash2)}
+.nm{font-size:13.4px;font-weight:600;line-height:1.4}
+.is{font-size:11.6px;color:var(--muted);margin-top:2px}
+.box{font-family:var(--mono);font-size:12.5px;text-align:center;border:1px solid var(--line);border-radius:var(--r2);padding:7px 4px;background:#fff}
+.box.cur{background:#FDF3F4;border-color:#F3D6DA;color:var(--red);font-weight:600}
+.bar{height:6px;border-radius:var(--r3);background:var(--wash2);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;border-radius:var(--r3);background:var(--red)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.8px;background:var(--tg);color:#12684F;border:1px solid #C8E4D9;border-radius:var(--r3);padding:5px 12px;margin-top:12px}
+.pill.g{background:var(--wash);color:var(--ink2);border-color:var(--line)}
+.acc{margin-top:14px}
+.ac{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:9px;box-shadow:var(--sh);transition:.18s}
+.ac.open{border-color:var(--line2);box-shadow:var(--sh2)}
+.ac-h{display:flex;align-items:center;gap:12px;width:100%;padding:13px 16px}
+.ac-h b{font-size:13.6px;white-space:nowrap}
+.ac-h i{font-style:normal;color:var(--muted);font-size:12.4px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;border-radius:var(--r3);padding:3px 9px;background:var(--wash);border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.ac-b{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.ac.open .ac-b{max-height:900px}
+.ac-b .in{padding:2px 16px 16px;border-top:1px solid var(--wash2);margin:0 16px;padding-left:0;padding-right:0}
+.ac-b p{margin:10px 0 0;color:var(--ink2);font-size:13.3px;max-width:92ch}
+.ac-b ul{margin:8px 0 0 18px;padding:0;color:var(--ink2);font-size:13.1px}
+.cc{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-top:10px;box-shadow:var(--sh);transition:.18s}
+.cc.open{border-color:var(--line2);box-shadow:var(--sh2)}
+.cc-h{display:flex;align-items:center;gap:12px;width:100%;font-size:15px;font-weight:600;padding:15px 18px}
+.cc-h .ic{margin-left:auto;color:var(--muted);transition:.2s}
+.cc.open .cc-h .ic.chev{transform:rotate(180deg)}
+.cc-b{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.cc.open .cc-b{max-height:760px}
+.cc-b .in{padding:0 18px 18px}
+.cc-b p{margin:0 0 8px;color:var(--ink2);font-size:13.6px}
+.micro{font-family:var(--mono);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin:14px 0 7px;display:flex;align-items:center;gap:7px}
+.micro:first-child{margin-top:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grp{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-top:28px}
+.q{font-size:15px;background:var(--wash);border-left:3px solid var(--red);border-radius:0 var(--r2) var(--r2) 0;padding:11px 13px;margin-top:12px}
+footer{max-width:1180px;margin:0 auto;padding:34px 44px 70px;border-top:1px solid var(--line)}
+footer h3{display:flex;align-items:center;gap:9px;font-size:13px}
+footer p{margin:10px 0 0;font-size:12.4px;color:var(--muted);max-width:96ch}
+#notes{position:fixed;top:64px;right:0;bottom:0;width:340px;background:#fff;border-left:1px solid var(--line);padding:20px 20px 40px;overflow:auto;z-index:55;transform:translateX(102%);transition:transform .3s ease;box-shadow:-14px 0 40px rgba(21,18,14,.06)}
+body.notes #notes{transform:none}
+@media(min-width:1401px){body.notes main{padding-right:340px}}
+.nb{border-bottom:1px solid var(--wash2);padding:14px 0}
+.nb h3{display:flex;align-items:center;gap:9px;font-size:13.6px}
+.nb .mono{font-size:10px;color:var(--red);letter-spacing:.1em;display:block;margin:5px 0 8px}
+.nb p{position:relative;margin:0 0 8px;padding-left:14px;font-size:12.6px;color:var(--ink2);line-height:1.6}
+.nb p::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--red)}
+#ex{display:none;position:fixed;right:16px;bottom:16px;z-index:75;background:#fff;border:1px solid var(--line);border-radius:var(--r3);padding:9px 15px;font-size:11.5px;font-family:var(--mono);box-shadow:var(--sh2)}
+body.demo #rail,body.demo #nav,body.demo .pager,body.demo #prog{display:none}
+body.demo main{margin-left:0;padding-right:0}
+body.demo .ch{max-width:1360px;padding:52px 40px}
+body.demo #ex{display:block}
+body.demo h2{font-size:clamp(24px,2.8vw,36px)}
+.js .rv{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.js .rv.in{opacity:1;transform:none}
+@media(max-width:1180px){#rail{display:none}main{margin-left:0}.ch{padding:52px 26px}}
+@media(max-width:900px){.g3,.pills,.two{grid-template-columns:1fr}.hd{flex-direction:column}.ac-h{flex-wrap:wrap}.ac-h i{white-space:normal;flex-basis:100%}#notes{width:100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.js .rv{opacity:1;transform:none}}
+@media print{#top,#rail,#notes,#prog,#ex{display:none}main{margin:0;padding:0}.ch{page-break-inside:avoid;padding:20px 0}.js .rv{opacity:1;transform:none}.ac-b,.cc-b,.exp{max-height:none!important;display:block}.an{display:block}body{background:#fff}}
+.hsec{font-size:20px;display:flex;align-items:center;gap:10px;margin:6px 0 0}
+.hsec::before{content:"";width:22px;height:3px;border-radius:2px;background:var(--red)}
+.mbar{position:relative;display:block;height:8px;background:var(--wash2);border-radius:99px}
+.mbar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--red)}
+.mbar b{position:absolute;top:-4px;bottom:-4px;width:2px;border-radius:2px;background:var(--ink2)}
+</style></head><body><script>document.documentElement.className+=" js";</script>
+<div id="prog"></div>
+<header id="top"><span class="sq"></span><span class="brand">APEX 2026</span>
+<nav id="nav"><button data-go="c0" class="on">00</button><button data-go="c1">01</button><button data-go="c2">02</button><button data-go="c3">03</button><button data-go="c4">04</button><button data-go="c5">05</button><button data-go="c6">06</button><button data-go="c7">07</button></nav>
+<div id="tools"><button id="bD" aria-pressed="false">Present</button><button id="bN" aria-pressed="false">Notes</button><button id="bC" aria-pressed="false">Changes</button></div></header>
+<aside id="rail"><button data-go="c0" class="on"><b>00</b><span>Cover</span></button><button data-go="c1"><b>01</b><span>Outcome</span></button><button data-go="c2"><b>02</b><span>Principles</span></button><button data-go="c3"><b>03</b><span>Agentic SDLC</span></button><button data-go="c4"><b>04</b><span>Engagement</span></button><button data-go="c5"><b>05</b><span>Roles &amp; OKR</span></button><button data-go="c6"><b>06</b><span>Inventory</span></button><button data-go="c7"><b>07</b><span>Governance</span></button></aside>
+<main>
+<section class="ch rv" id="c0"><div class="hd"><div><div class="eyebrow">EXECUTIVE BRIEFING</div><h1>Apex 2026 Road Map</h1><p class="enh">HSBC · APEX 2026</p><p class="sub">AI Role Evolution &amp; Platform Roadmap</p></div><span class="chip">≈ 0.5 min</span></div>
+<div class="row"><span class="chip">Source: long-scroll single page</span><span class="chip">This version: 7 interactive chapters</span><span class="chip">Runtime: 10–15 minutes</span><span class="chip">Apex 2026 Road Map</span></div>
+<h3 style="margin:26px 0 12px">Briefing summary</h3>
+<div class="grid g3"><div class="c pu"><div class="num">01 · WHAT CHANGED</div><h3>Priorities &amp; roles</h3><p>Priority shifts from delivery to customer value and team autonomy: remove coordination, translation and waiting. 11 traditional roles evolve into 12 AI-enhanced roles; collaboration moves from hand-off to shared ownership.</p></div>
+<div class="c bl"><div class="num">02 · HOW IT CHANGES</div><h3>Pace &amp; measurement</h3><p>Agents are embedded across 6 product-lifecycle stages; 18 capabilities are placed over 2026 Q1–Q4 (done → DEV/PoC → plan); measured by 4 OKR metrics, all On track.</p></div>
+<div class="c gr"><div class="num">03 · THE GUARDRAILS</div><h3>Governance &amp; guardrails</h3><p>Financial logic stays Deterministic / Governed / Reproducible; AI does not bypass controls or governance; four non-negotiable guardrails: Auditable / Explainable / Bounded / Secure; progression from Assistive → Guided → Automated.</p></div></div>
+
+<div class="an">Rebuilt from one long-scroll page into 7 chapters — one screen each, freely navigable.</div>
+<div class="pager"><button data-go="c1">Next →</button></div></section>
+<section class="ch rv" id="c1"><div class="hd"><div><div class="eyebrow">CHAPTER 01</div><h2>The outcome</h2><p class="enh">Three priorities</p></div><span class="chip">≈ 1.5 min</span></div>
+<p class="lead">Organise technology around customer and give teams real autonomy to solve problem</p>
+<div class="q">“Technology becomes something teams use to create competitive advantage, not simply something they deliver.”</div>
+<div class="bk"><b>Three priorities</b><p>Use AI and technology to get closer to customers, give teams more decision-making power, and deliver value faster</p></div>
+<div class="grid g3"><div class="c pu"><div class="num">01</div><h3>Remove coordination</h3><p>Simplify the operating model. Teams spend less energy arranging work and more energy solving it.</p><button class="ex">Example</button><p class="exp">Example: Scrum Master agent -&gt; more self-orchestration team</p></div>
+<div class="c bl"><div class="num">02</div><h3>Remove translation</h3><p>Bring engineers closer to customers and business context, so the need is understood before a requirement is built.</p><button class="ex">Example</button><p class="exp">Example: AI agent chats with user -&gt; understands and clarifies needs, translates it into an executable test</p></div>
+<div class="c gr"><div class="num">03</div><h3>Remove waiting</h3><p>Put clear guardrails into the flow of work, enabling safe decisions without unnecessary approval queues.</p><button class="ex">Example</button><p class="exp">Example: Rule of Five + encoding controls -&gt; make the right decision without waiting for governance</p></div></div>
+<div class="an">Examples are collapsed by default: give the conclusion line first, expand only when asked.</div>
+<div class="pager"><button data-go="c0">← Previous</button><button data-go="c2">Next</button></div></section>
+<section class="ch rv" id="c2"><div class="hd"><div><div class="eyebrow">CHAPTER 02</div><h2>Principles and standards</h2><p class="enh">Shared expectations</p><p class="sub">The shared expectations that keep autonomy safe and useful.</p></div><span class="chip">≈ 1.5 min</span></div>
+<div class="grid g3"><div class="c pu"><h3>V2MOM &amp; North Star</h3><p>Keep teams focused on customer value and outcomes.</p></div>
+<div class="c gr"><h3>Rule of Five</h3><p>Maintain business agility, resilience, reuse, customer and operability with simple controls</p></div>
+<div class="c bl"><h3>Integrated platform</h3><p>Share services, data, security and AI capabilities as Golden Path so teams can move faster</p></div>
+<div class="c pl"><h3>High-quality engineers</h3><p>Use AI-skill ready, full-stack engineers who understand the business</p></div>
+<div class="c am"><h3>Customer journey</h3><p>Deep understand customer behaviors and better serve the customer needs</p></div>
+<div class="c gr"><h3>Measure what matters</h3><p>Track customer journeys, NPS, usage and quality—not just activity</p></div></div>
+<div class="an">The six principles were two truncated rows; rebuilt as one three-column grid that fits one screen.</div>
+<div class="pager"><button data-go="c1">← Previous</button><button data-go="c3">Next</button></div></section>
+<section class="ch rv" id="c3"><div class="hd"><div><div class="eyebrow">CHAPTER 03</div><h2>AI Agentic Product lifecycle - SDLC</h2><p class="enh">Agentic SDLC</p><p class="sub">Six stages, six agent involvement levels</p></div><span class="chip">≈ 2.5 min</span></div>
+<div class="bk"><b>Product lifecycle, supported by agents</b><p>Each stage keeps its human purpose. Agents reduce repetitive work, improve visibility and help teams make better calls.</p></div>
+<div class="lgd"><button class="lg" data-f="a">New agent capability</button><button class="lg" data-f="b">AI-assisted work</button><button class="lg" data-f="c">More autonomous support</button><span class="chip" id="cnt" style="margin-left:auto">20 capabilities · 6 stages</span></div>
+
+<div class="strip"><div class="stages" id="stages">
+<div class="stg"><div class="sh" data-st="01 Discover"><span class="mono">STAGE 01</span><b>Discover</b><i>Problem fit</i></div>
+<button class="k a"><b>SKILL-BASED RULE OF FIVE</b><i>Delivery Guardrails</i></button>
+<button class="k b"><b>CONVERSATION SPACE</b><i>Requirement Analysis</i></button>
+<button class="k b"><b>TASK ASSESSMENT DESK</b><i>Requirement evolution</i></button>
+<button class="k c"><b>AI-POWERED UX DESIGN VALIDATOR</b><i>Understand Customer requirement</i></button></div>
+<div class="stg"><div class="sh" data-st="02 Validate"><span class="mono">STAGE 02</span><b>Validate</b><i>Solution fit / MVP</i></div>
+<button class="k a"><b>AI-ASSISTED RULE OF FIVE</b><i>Governance</i></button>
+<button class="k b"><b>AI OPERABILITY SCORE FOR EARLY WARNING</b><i>Reduce opertional risk</i></button>
+<button class="k b"><b>AI SCRUM MASTER</b><i>Efficient team flow</i></button>
+<button class="k d"><b>SERVICE MAP</b><i>Architecture</i></button>
+<button class="k d"><b>CUCUMBER SCENARIO BUILDER</b><i>Quality assurance</i></button>
+<button class="k d"><b>AI-ASSISTED CONTRACT TEST GENERATOR WITH PACT</b><i>Quality assurance</i></button>
+<button class="k d"><b>AI ASSIST IN PERFORMANCE TEST REPORT</b><i>Quality assurance</i></button>
+<button class="k d"><b>AUTO CODE REBUILDER WITH CVE FIX</b><i>Security</i></button></div>
+<div class="stg"><div class="sh" data-st="03 Launch"><span class="mono">STAGE 03</span><b>Launch</b><i>Release / adoption fit</i></div>
+<button class="k c"><b>RELEASE NOTE STUDIO</b><i>Release operations</i></button>
+<button class="k b"><b>INCIDENT ANALYSIS WITH AI</b><i>Defect analysis</i></button>
+<button class="k d"><b>CR BUILDER &amp; VALIDATOR</b><i>Change readiness</i></button>
+<button class="k d"><b>AI-ASSISTED SRE ADVISER</b><i>Reliability</i></button></div>
+<div class="stg"><div class="sh" data-st="04 Grow"><span class="mono">STAGE 04</span><b>Grow</b><i>Scale / value fit</i></div>
+<button class="k b"><b>AI USER BEHAVIOUR ANALYSIS WITH UX METRICS</b><i>Customer behaviour</i></button>
+<button class="k b"><b>AI AGENT FOR ENTITLEMENT ADVISER</b><i>Decision support</i></button></div>
+<div class="stg"><div class="sh" data-st="05 Maturity"><span class="mono">STAGE 05</span><b>Maturity</b><i>Value optimisation &amp; trust fit</i></div>
+<button class="k c"><b>UI GENERATOR FOR SEMANTIC LAYER MODEL</b><i>Experience design</i></button></div>
+<div class="stg"><div class="sh" data-st="06 Retire / Sunset"><span class="mono">STAGE 06</span><b>Retire / Sunset</b><i>Decommission fit</i></div>
+<button class="k c"><b>INTELLIGENT DEPENDENCY &amp; BLAST RADIUS ANALYSIS</b><i>Risk and closure</i></button></div>
+</div></div>
+<div class="an">Static exhibit rebuilt as an interactive six-stage map: filter by involvement, focus a stage, expand any card.</div>
+<div class="pager"><button data-go="c2">← Previous</button><button data-go="c4">Next</button></div></section>
+<section class="ch rv" id="c4"><div class="hd"><div><div class="eyebrow">CHAPTER 04</div><h2>What changes for engaging model with stakeholders</h2><p class="enh">Engagement model &amp; roadmap</p><p class="sub">Less hand-off, more shared ownership — capabilities placed by quarter</p></div><span class="chip">≈ 2.5 min</span></div>
+<h3>Less hand-off. More shared ownership.</h3>
+<div class="pills"><div class="pl2">Operating model: simplify the process</div><div class="pl2">Ways of working: fewer handoffs</div><div class="pl2">Time to value: less meeting time</div><div class="pl2">Decision making: continuous and closer to the work</div><div class="pl2">Teamwork: human + AI collaboration</div><div class="pl2">Learning: continuous productivity improvement</div></div>
+<div class="hd" style="margin-top:40px"><div><h2 class="hsec">RoadMap Overview</h2><p class="sub">Three quarterly tracks, four quarters of 2026</p></div></div>
+<div class="fbar"><span class="mono">QUARTER</span><button data-qf="" aria-pressed="true">All</button><button data-qf="Q1" aria-pressed="false">Q1</button><button data-qf="Q2" aria-pressed="false">Q2</button><button data-qf="Q3" aria-pressed="false">Q3</button><button data-qf="Q4" aria-pressed="false">Q4</button></div>
+<div class="fbar"><span class="mono">STATUS</span><button data-sf="" aria-pressed="true">All</button><button data-sf="done" aria-pressed="false">done</button><button data-sf="dev" aria-pressed="false">DEV</button><button data-sf="poc" aria-pressed="false">PoC</button><button data-sf="plan" aria-pressed="false">plan</button></div>
+
+<div class="strip"><div class="dg">
+<div><div class="tk a" data-q="Q4"><span class="chip">Q4</span><h3>Orchestrate Workflow</h3><p>Production</p><span class="tag">Assist with analysis and Interpretation</span><span class="ln">→ 2026 Q4</span></div>
+<div class="tk b" data-q="Q3"><span class="chip">Q3</span><h3>Prevent and Mitigate</h3><p>SDLC - operation risk</p><span class="tag">Reduce problem at operational time</span><span class="ln">→ 2026 Q3</span></div>
+<div class="tk c" data-q="Q1"><span class="chip">Q1</span><h3>Amplify Productivity</h3><p>SDLC - fondamental</p><span class="tag">Simplify the Intent-to-Code-to-delivery</span><span class="ln">→ 2026 Q1</span></div></div>
+<div class="qb" data-q="Q1" data-n="Source track: Q1 · SDLC - fondamental"><div class="qh">2026 Q1</div>
+<div class="qi" data-st="done"><span>Conversation Space</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Ticket Assessment Desk</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Cucumber Scenario Builder</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>AI Assist In Perf Test Report</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>CR builder &amp; Validator</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Release Note Studio</span><span class="bg">done</span></div>
+<div class="qf">Apex Agent</div><span class="m"></span></div>
+<div class="qb" data-q="Q2" data-n="Source track: Q1 · SDLC - fondamental"><div class="qh">2026 Q2</div>
+<div class="qi" data-st="dev"><span>AI Powered UX design validator</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>AI-assisted Contract Test Generator with PAC</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>Auto code reBuilder with CVE fix</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>Skill-based Rule of 5 Validation</span><span class="bg">Dev</span></div>
+<div class="qi" data-st=""><span class="o">AI assisted SRE advisor</span></div>
+<span class="m"></span></div>
+<div class="qb" data-q="Q3" data-n="Source track: Q3 · SDLC - operation risk"><div class="qh">2026 Q3</div>
+<div class="qi" data-st="poc"><span>UI generator for semantic layer model</span><span class="bg">PoC</span></div>
+<div class="qi" data-st=""><span>AI Scrum master</span></div>
+<div class="qi" data-st="dev"><span>Incident Analysis with AI</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="plan"><span class="o">AI User Behaviour Analysis with UX</span><span class="bg">plan</span></div>
+<div class="qi" data-st="plan"><span class="o">Service Map with AI</span><span class="bg">plan</span></div>
+<span class="m"></span></div>
+<div class="qb" data-q="Q4" data-n="Source track: Q4 · Production"><div class="qh steel">2026 Q4</div>
+<div class="qi" data-st="dev"><span>Intelligent Dependency &amp; Blask Radius Analysis</span><span class="bg">Dev</span></div>
+<div class="qi" data-st="dev"><span>AI Agent for Apex entitlement</span><span class="bg">Dev</span></div>
+<span class="m"></span></div>
+</div></div>
+<div class="an">Dense crossing dashes replaced: track-to-quarter links light up on hover with their source labelled, and status is filterable.</div>
+<div class="pager"><button data-go="c3">← Previous</button><button data-go="c5">Next</button></div></section>
+<section class="ch rv" id="c5"><div class="hd"><div><div class="eyebrow">CHAPTER 05</div><h2>Future Force Transition</h2><p class="enh">Roles &amp; OKR</p><p class="sub">Role transition and four key metrics</p></div><span class="chip">≈ 2.5 min</span></div>
+<p class="lead">Future force: engineers must embrace AI, reinvent themselves and adapt to changing roles. While some traditional roles may disappear, new opportunities and responsibilities will emerge</p>
+<button class="vt" id="vt">List view</button>
+<div id="fv">
+<div class="mono" style="font-size:11px;color:var(--muted);margin-top:18px">CURRENT FORCE</div>
+<div class="frow"><span class="nd" data-l="BA" data-p="Requirement Agents">BA</span><span class="nd" data-l="UX designer" data-p="AI-assisted UX Designer">UX designer</span><span class="nd" data-l="Architect" data-p="AI-assisted Architect">Architect</span><span class="nd" data-l="Tech lead" data-p="AI-assisted Tech Lead">Tech lead</span><span class="nd" data-l="Developer" data-p="SDD Engineer,Semantic layer engineer">Developer</span><span class="nd" data-l="QA" data-p="Automation agents">QA</span><span class="nd" data-l="DevOps" data-p="DevOps agents">DevOps</span><span class="nd" data-l="SRE" data-p="AI Reliability Engineer">SRE</span><span class="nd" data-l="Scrum Maser" data-p="AI scrum master">Scrum Maser</span><span class="nd" data-l="ITSO" data-p="AI-assisted ITSO">ITSO</span><span class="nd" data-l="Release Engineer" data-p="AI-assisted release engineer">Release Engineer</span></div>
+<div class="midbar">Transition - AI empowerd, Effective Productivity Index (EPI) monitored</div>
+<div class="mono" style="font-size:11px;color:var(--muted)">FUTURE FORCE</div>
+<div class="frow"><span class="nd" data-l="Requirement Agents" data-p="BA">Requirement Agents</span><span class="nd" data-l="AI-assisted UX Designer" data-p="UX designer">AI-assisted UX Designer</span><span class="nd" data-l="AI-assisted Architect" data-p="Architect">AI-assisted Architect</span><span class="nd" data-l="AI-assisted Tech Lead" data-p="Tech lead">AI-assisted Tech Lead</span><span class="nd" data-l="SDD Engineer" data-p="Developer">SDD Engineer</span><span class="nd" data-l="Semantic layer engineer" data-p="Developer">Semantic layer engineer</span><span class="nd" data-l="Automation agents" data-p="QA">Automation agents</span><span class="nd" data-l="DevOps agents" data-p="DevOps">DevOps agents</span><span class="nd" data-l="AI Reliability Engineer" data-p="SRE">AI Reliability Engineer</span><span class="nd" data-l="AI scrum master" data-p="Scrum Maser">AI scrum master</span><span class="nd" data-l="AI-assisted ITSO" data-p="ITSO">AI-assisted ITSO</span><span class="nd" data-l="AI-assisted release engineer" data-p="Release Engineer">AI-assisted release engineer</span></div>
+<div id="pl">Hover a role to see its transition</div></div>
+<table class="tbl hide" id="lv"><thead><tr><th>Current force</th><th>Future force</th></tr></thead><tbody>
+<tr><td>BA</td><td>Requirement Agents</td></tr><tr><td>UX designer</td><td>AI-assisted UX Designer</td></tr><tr><td>Architect</td><td>AI-assisted Architect</td></tr><tr><td>Tech lead</td><td>AI-assisted Tech Lead</td></tr><tr><td>Developer</td><td>SDD Engineer and Semantic layer engineer</td></tr><tr><td>QA</td><td>Automation agents</td></tr><tr><td>DevOps</td><td>DevOps agents</td></tr><tr><td>SRE</td><td>AI Reliability Engineer</td></tr><tr><td>Scrum Maser</td><td>AI scrum master</td></tr><tr><td>ITSO</td><td>AI-assisted ITSO</td></tr><tr><td>Release Engineer</td><td>AI-assisted release engineer</td></tr></tbody></table>
+<div class="hd" style="margin-top:44px"><div><h2 class="hsec">Link to OKR</h2><p class="sub">role transition should be aligned with our OKRs with clear objectives and measurable key results</p></div></div>
+<div><span class="pill" style="background:var(--wash);color:var(--ink);border-color:var(--line)">Increase engineering effectiveness &amp; productivity</span><span class="pill">On track</span><span class="pill g">4 key metrics</span></div>
+<div class="okr">
+<div class="hrow"><span>METRIC</span><span>Target</span><span>Baseline</span><span>Current</span><span>PROGRESS</span></div>
+<div class="orow"><div><div class="nm">% of Apex POD operating with AI agent</div><div class="is">PODs actively operating with an AI agent model</div></div><span class="box">90%</span><span class="box">0%</span><span class="box cur">80%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,7" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="7" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of Apex POD operates as 70% human + 30% Agent</div><div class="is">Target operating model mix across PODs</div></div><span class="box">100%</span><span class="box">0%</span><span class="box cur">60%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,10" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="10" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of Apex POD has skill-enabled scrum master</div><div class="is">Coverage of skill-enabled scrum masters across PODs</div></div><span class="box">100%</span><span class="box">0%</span><span class="box cur">90%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,5" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="5" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of people contributing on Apex</div><div class="is">India organisation ready with Apex skills</div></div><span class="box">70%</span><span class="box">0%</span><span class="box cur">30%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,14" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="14" r="2.4" fill="#DB0011"></circle></svg></div>
+<p class="sub" style="text-align:right">India upskilling initiative.</p></div>
+<div class="an">Role transition became a hover-linked pairing view with a list alternative — Developer maps to two roles. OKR values are graphed in source order.</div>
+<div class="pager"><button data-go="c4">← Previous</button><button data-go="c6">Next</button></div></section>
+<section class="ch rv" id="c6"><div class="hd"><div><div class="eyebrow">CHAPTER 06</div><h2>Apex Agent Inventory</h2><p class="enh">Agent inventory</p><p class="sub">It includes both Agents (implemented) and AI initiatives (planed)</p></div><span class="chip">≈ 1.5 min</span></div>
+<div class="fbar"><input id="sq" placeholder="Search agents…   ( / )" style="font:inherit;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:2px;min-width:280px"><span id="lf" style="display:flex;gap:8px;flex-wrap:wrap"><button class="on" data-l="">All</button><button data-l="Discover">Discover</button><button data-l="Validate">Validate</button><button data-l="Launch">Launch</button><button data-l="Retire &amp; Sunset">Retire &amp; Sunset</button></span></div>
+<p class="hint" id="cn">17 Agents · showing 17</p>
+<div class="acc" style="margin-top:14px">
+<div class="ac open" data-l="Discover" data-n="Conversation Workspace"><button class="ac-h"><b>Conversation Workspace</b><i>Run guided analysis around requirements and keep the context alive over multiple rounds.</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Run guided analysis around requirements and keep the context alive over multiple rounds.</p></div></div></div>
+<div class="ac" data-l="Discover,Validate" data-n="SKILL based Rule of Five"><button class="ac-h"><b>SKILL based Rule of Five</b><i>"Rule of Five" is to turn business goals and constraints into a structured framework of engineering decisions aligned to:</i><span class="tg">Discover</span><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>"Rule of Five" is to turn business goals and constraints into a structured framework of engineering decisions aligned to:</p><ul><li>Build for Business Agility</li><li>Design for Resilience</li><li>Prefer Reuse Over Reinvention</li><li>Deliver a Consistent Customer Experience</li><li>Meet the Definition of Done (production-ready from day one)</li></ul></div></div></div>
+<div class="ac" data-l="Discover" data-n="Ticket Assessment Desk"><button class="ac-h"><b>Ticket Assessment Desk</b><i>Review Jira tickets through the lens of testability and delivery readiness.</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Review Jira tickets through the lens of testability and delivery readiness.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Cucumber Scenario Builder"><button class="ac-h"><b>Cucumber Scenario Builder</b><i>Converts requirements into structured Cucumber scenarios and acceptance tests to improve coverage and consistency.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>Converts requirements into structured Cucumber scenarios and acceptance tests to improve coverage and consistency.</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="Release Notes Studio"><button class="ac-h"><b>Release Notes Studio</b><i>Prepare release communication and production change materials in one place.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Prepare release communication and production change materials in one place.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI Assist in Performance Test Reporting"><button class="ac-h"><b>AI Assist in Performance Test Reporting</b><i>Analyses performance-test results and suggesting coding change after using AI to Analyse UI performance report</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>Analyses performance-test results and suggesting coding change after using AI to Analyse UI performance report</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="CR Builder &amp; Validator"><button class="ac-h"><b>CR Builder &amp; Validator</b><i>1-click generate CR based on summary of all PRs and Validate release artefact, implementation plan and CR evidence for approval</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>1-click generate CR based on summary of all PRs and Validate release artefact, implementation plan and CR evidence for approval</p></div></div></div>
+<div class="ac" data-l="Discover" data-n="AI Powered UX Design validator"><button class="ac-h"><b>AI Powered UX Design validator</b><i>Validate the UX design in Figma against its UI implementation on DEV/SIT</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Validate the UX design in Figma against its UI implementation on DEV/SIT</p></div></div></div>
+<div class="ac" data-l="Discover" data-n="AI User Behaviour Analysis on UX"><button class="ac-h"><b>AI User Behaviour Analysis on UX</b><i>Reviews UI designs against UX and customer needs to ensure usability principles and improve customer experience</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Reviews UI designs against UX and customer needs to ensure usability principles and improve customer experience</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI Scrum Master Agent"><button class="ac-h"><b>AI Scrum Master Agent</b><i>An AI Scrum Master Agent is an intelligent, automated assistant that streamlines Agile workflows and freeing human Scrum Masters to focus on team coaching and culture.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>An AI Scrum Master Agent is an intelligent, automated assistant that streamlines Agile workflows and freeing human Scrum Masters to focus on team coaching and culture. It integrates with platforms like Jira and Zoom to monitor backlogs, analyze team risk, draft sprint goals, record stand-up notes, and track team metrics automatically</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Auto code re-builder with CVE fix"><button class="ac-h"><b>Auto code re-builder with CVE fix</b><i>Track historic pattern and suggest correct fix for CVE, and generate auto-complete code and package</i><span class="tg">validate</span></button><div class="ac-b"><div class="in"><p>Track historic pattern and suggest correct fix for CVE, and generate auto-complete code and package</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI-assisted Contract Test Generator with Pac"><button class="ac-h"><b>AI-assisted Contract Test Generator with Pac</b><i>Generates consumer-driven contract tests with Pact to validate that service integrations remain compatible.</i><span class="tg">validate</span></button><div class="ac-b"><div class="in"><p>Generates consumer-driven contract tests with Pact to validate that service integrations remain compatible.</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="Incident Analysis with AI"><button class="ac-h"><b>Incident Analysis with AI</b><i>Analyses incident data, symptoms and history to accelerate root-cause identification and defect learning.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Analyses incident data, symptoms and history to accelerate root-cause identification and defect learning.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI operability score for early-warning"><button class="ac-h"><b>AI operability score for early-warning</b><i>The operability score provides an AI orchestration with agent in 6 main areas.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>The operability score provides an AI orchestration with agent in 6 main areas. And it concentrates on identifying the risk at early stage. It also includes the risk the AI brings in during the daily development</p><ul><li>Quality (rather than test result, this area includes what quality check we should have if code is generated by AI)</li><li>Operational overhead</li><li>Deployability</li><li>Dependency clarity</li><li>Observability</li><li>Resilience</li></ul></div></div></div>
+<div class="ac" data-l="Retire &amp; Sunset" data-n="Intelligent Dependency &amp; Blast Radius Analysis"><button class="ac-h"><b>Intelligent Dependency &amp; Blast Radius Analysis</b><i>Identifies dependencies and estimates the potential blast radius of changes to support safer implementation and closure.</i><span class="tg">Retire &amp; Sunset</span></button><div class="ac-b"><div class="in"><p>Identifies dependencies and estimates the potential blast radius of changes to support safer implementation and closure.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Service Map"><button class="ac-h"><b>Service Map</b><i>generate real deployed microservice architecture and monitor the metrics and logging from end-to-end</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>generate real deployed microservice architecture and monitor the metrics and logging from end-to-end to identify not just one service's issue but more on what upstream has impacted and what downstream could be impacted</p><ul><li>Create a continuously updated view of the real deployed microservice architecture by combining release-branch repo analysis (service-to-service and service-to-database dependencies) with OpenTelemetry telemetry.</li><li>Use this end-to-end service graph to correlate metrics, logs, and traces across the full request path.</li><li>Enable faster incident diagnosis by pinpointing upstream causes and predicting downstream impact (blast radius), not just the failing service.</li></ul></div></div></div>
+<div class="ac" data-l="Launch" data-n="AI-assisted SRE Adviser"><button class="ac-h"><b>AI-assisted SRE Adviser</b><i>Provides reliability guidance by identifying operational risks and recommending improvements to resilience and supportability.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Provides reliability guidance by identifying operational risks and recommending improvements to resilience and supportability.</p></div></div></div>
+</div>
+<div class="an">A 17-row table became a collapsible, searchable list — open only the row you are asked about.</div>
+<div class="pager"><button data-go="c5">← Previous</button><button data-go="c7">Next</button></div></section>
+<section class="ch rv" id="c7"><div class="hd"><div><div class="eyebrow">CHAPTER 07</div><h2>Apex AI Governance &amp; guardrails</h2><p class="enh">Governance &amp; guardrails</p><p class="sub">Positioning, principles and non-negotiable guardrails</p></div><span class="chip">≈ 1.5 min</span></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em">Group A · positioning and boundaries</div>
+<div class="cc open" style="margin-top:10px"><button class="cc-h">Apex AI Objective</button><div class="cc-b"><div class="in"><div class="micro">OBJECTIVE</div><p>Build AI into Apex Platform at all levels.</p><p>Incorporate AI into the platform to enhance productivity, insight generation, and decision-making—without compromising governance, controls, or the integrity of financial results..</p></div></div></div>
+<div class="cc"><button class="cc-h">Role of AI in the Platform</button><div class="cc-b"><div class="in"><div class="micro">AI WILL</div><p>Orchestrate workflows.</p><p>Assist with analysis and interpretation.</p><p>Improve how users interact with data and models.</p><div class="micro">AI WILL NOT</div><p>Replace core financial calculations</p><p>Bypass controls or governance</p></div></div></div>
+<div class="cc"><button class="cc-h">Non-goal definition of AI</button><div class="cc-b"><div class="in"><div class="micro">OUTPUTS</div><p>No AI-generated postings, valuations, P&amp;L, or regulatory numbers</p><p>No autonomous changes to reference data, limits, curves, mappings, or model parameters.</p><p>No direct execution of privileged actions (prod deploys, data deletes, entitlement changes) without human approval.</p></div></div></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em;margin-top:26px">Group B · principles and use cases</div>
+<div class="cc" style="margin-top:10px"><button class="cc-h">Core Principle</button><div class="cc-b"><div class="in"><div class="micro">ALL FINANCIAL LOGIC REMAINS</div><p>Deterministic · Governed · Reproducible</p><div class="q" style="font-size:15px">AI enhances how we use the platform—it does not change how results are calculated.</div></div></div></div>
+<div class="cc"><button class="cc-h">Initial Use Cases (Design Focus)</button><div class="cc-b"><div class="in"><div class="micro">TEAMS SHOULD FOCUS ON PRACTICAL, HIGH-VALUE USE CASES</div><p>Natural language interaction (e.g., “Explain IRR movement this week”)</p><p>Scenario orchestration (e.g., run and compare multiple scenarios automatically)</p><p>Insight generation (summarise key drivers, anomalies, and trends)</p><p>Productivity acceleration (assist with queries, debugging, and data exploration)</p></div></div></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em;margin-top:26px">Group C · architecture and guardrails</div>
+<div class="cc" style="margin-top:10px"><button class="cc-h">Architecture Expectations · Guardrails (Non-Negotiable)</button><div class="cc-b"><div class="in"><div class="two"><div><div class="micro">AI SHOULD</div><p>Auditable (inputs, outputs, and decisions tracked)</p><p>Explainable (no black-box decisions for financial outcomes)</p><p>Bounded (no uncontrolled actions or direct system changes)</p><p>Secure (respect data access and security controls)</p></div>
+<div><div class="micro">AI-ENABLED FUNCTIONALITY MUST BE</div><p>Auditable (inputs, outputs, and decisions tracked)</p><p>Explainable (no black-box decisions for financial outcomes)</p><p>Bounded (no uncontrolled actions or direct system changes)</p><p>Secure (respect data access and security controls)</p></div></div>
+<div class="two" style="margin-top:20px"><div><div class="micro">DESIGN FOR</div><p>Incorrect or incomplete AI outputs</p><p>Service/tool failures</p><p>Fallback to deterministic processes</p></div>
+<div><div class="micro">AI OUTPUTS MUST:</div><p>Be clearly distinguishable from system-calculated results</p><p>Not be treated as authoritative without validation</p></div></div>
+<div class="micro">START SIMPLE AND CONTROLLED</div><p>Assistive → Guided → Automated (over time)</p><p>We should not attempt full automation upfront</p></div></div></div>
+<div class="an">Nine long cards grouped into three; the identical Architecture and Guardrails lists merged into one side-by-side pair.</div>
+<div class="pager"><button data-go="c6">← Previous</button></div></section>
+<footer><h3>Sources and basis</h3><p>All content is taken from the Apex 2026 Road Map document, both embedded exhibits included. Nothing external has been added.</p><p>Original spellings (Blask / opertional / fondamental / Maser / empowerd) are kept as in the source document.</p><p></p><p></p></footer>
+</main>
+<aside id="notes" aria-label="Speaker notes"><div class="nb"><h3>Cover · three questions</h3><span class="mono">≈ 0.5 min</span><p>This document answers three questions: what changes, how it changes, and where the limits are.</p><p>Seven chapters, roughly 13 minutes — jump to any chapter on request.</p></div><div class="nb"><h3>The outcome</h3><span class="mono">≈ 1.5 min</span><p>All three priorities remove the same three non-productive costs: coordination, translation and waiting.</p><p>Each one carries a concrete example — Scrum Master agent, AI requirement clarification, Rule of Five.</p><p>This is an operating-model change, not a tool list.</p></div><div class="nb"><h3>Principles and standards</h3><span class="mono">≈ 1.5 min</span><p>Autonomy needs shared expectations — that is what the six principles provide.</p><p>First three are platform and mechanism; last three are people, customer and measurement.</p><p>Two are enough to land: Rule of Five and Integrated platform (Golden Path).</p></div><div class="nb"><h3>Agentic SDLC</h3><span class="mono">≈ 2.5 min</span><p>Every stage keeps its human purpose; agents take away the repetitive work.</p><p>Colour = involvement level: new capability, AI-assisted, more autonomous. Filter by clicking it.</p><p>Validate is the densest stage (8 items) — that is where translation and waiting are removed.</p></div><div class="nb"><h3>Engagement &amp; roadmap</h3><span class="mono">≈ 2.5 min</span><p>Engagement model in one line: fewer hand-offs, more shared ownership.</p><p>Read the roadmap bottom-up: Q1 completes the six Apex Agent foundations, Q2–Q3 scale quality and experience, Q4 covers dependency and entitlement.</p><p>Colour splits two kinds of work: dark = agent build, amber = operational risk.</p><p>Statuses are done, DEV/PoC in flight, and plan.</p></div><div class="nb"><h3>Roles &amp; OKR</h3><span class="mono">≈ 2.5 min</span><p>This is role upgrade, not headcount reduction: 11 traditional roles → 12 AI-enhanced roles.</p><p>Hover any role to see where it goes; the list view shows the same mapping.</p><p>Transition is monitored by EPI (Effective Productivity Index) and linked to the OKRs.</p><p>All four metrics are On track.</p></div><div class="nb"><h3>Inventory</h3><span class="mono">≈ 1.5 min</span><p>The list holds implemented agents and planned initiatives together — no need to read every row.</p><p>Three samples are enough: Conversation Workspace, CR Builder &amp; Validator, Service Map.</p><p>Use search or the lifecycle filter if coverage is questioned.</p></div><div class="nb"><h3>Governance</h3><span class="mono">≈ 1.5 min</span><p>This chapter answers why we can trust it: AI enhances how we use the platform, not how results are calculated.</p><p>Two sentences to remember: AI produces no financial numbers and bypasses no governance; every AI feature must be auditable, explainable, bounded and secure.</p><p>Adoption runs Assistive → Guided → Automated, not full automation upfront.</p></div></aside>
+<button id="ex">Exit present (Esc)</button>
+<script>
+var Q=function(s){return document.querySelector(s)},QA=function(s){return [].slice.call(document.querySelectorAll(s))};
+function dim(el,on,v){if(el)el.style.opacity=on?(v||'.2'):''}
+function hide(el,on){if(el)el.style.display=on?'none':''}
+
+addEventListener('scroll',function(){var h=document.documentElement;Q('#prog').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%'},{passive:true});
+
+var secs=QA('.ch'),navBtns=QA('#nav button,#rail button');
+try{
+ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:0.01,rootMargin:'0px 0px -5% 0px'});
+ QA('.rv').forEach(function(e){io.observe(e)});
+ var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)navBtns.forEach(function(a){a.classList.toggle('on',a.dataset.go===e.target.id)})})},{rootMargin:'-45% 0px -50% 0px'});
+ secs.forEach(function(s){io2.observe(s)});
+ setTimeout(function(){QA('.rv').forEach(function(e){if(!e.classList.contains('in')&&e.getBoundingClientRect().top<innerHeight*1.3)e.classList.add('in')})},1600);
+}catch(e){QA('.rv').forEach(function(e){e.classList.add('in')})}
+
+function go(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+navBtns.concat(QA('.pager button')).forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+
+function tg(sel,cls){var b=Q(sel);b.onclick=function(){document.body.classList.toggle(cls);b.setAttribute('aria-pressed',document.body.classList.contains(cls))}}
+tg('#bD','demo');tg('#bN','notes');tg('#bC','chg');
+Q('#ex').onclick=function(){document.body.classList.remove('demo');Q('#bD').setAttribute('aria-pressed','false')};
+addEventListener('keydown',function(e){
+ if(e.key==='Escape'){document.body.classList.remove('demo','notes','chg');['#bD','#bN','#bC'].forEach(function(s){Q(s).setAttribute('aria-pressed','false')})}
+ else if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();Q('#sq').focus()}
+ else if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&e.target.tagName!=='INPUT'){var i=secs.findIndex(function(s){return s.getBoundingClientRect().top>-40});if(i<0)i=secs.length-1;var n=Math.min(secs.length-1,Math.max(0,i+(e.key==='ArrowRight'?1:-1)));go(secs[n].id)}});
+
+QA('.ex').forEach(function(b){b.onclick=function(){var o=b.parentNode.classList.toggle('open');b.textContent=o?'Hide example':'Example'}});
+QA('.cc-h').forEach(function(b){b.onclick=function(){var p=b.parentNode,o=p.classList.contains('open');QA('.cc').forEach(function(x){x.classList.remove('open')});if(!o)p.classList.add('open')}});
+QA('.ac-h').forEach(function(b){b.onclick=function(){var p=b.parentNode,o=p.classList.contains('open');QA('.ac').forEach(function(x){x.classList.remove('open')});if(!o)p.classList.add('open')}});
+
+var TY={a:'New agent capability',b:'AI-assisted work',c:'More autonomous support'};
+var KS=QA('#stages .k');
+KS.forEach(function(k){k.onclick=function(){
+ if(k.classList.toggle('open')){
+  var st=k.closest('.stg').querySelector('.sh'),ty=k.classList.contains('d')?'Not colour-coded in source':(k.classList.contains('a')?TY.a:(k.classList.contains('b')?TY.b:TY.c));
+  if(!k.querySelector('.m')){var sp=document.createElement('span');sp.className='m';sp.textContent='Stage: '+st.dataset.st+' · Type: '+ty;k.appendChild(sp)}}
+ else{var m=k.querySelector('.m');if(m)m.remove()}}});
+
+var LG=QA('.lg'),STGS=QA('.stg');
+LG.forEach(function(c){c.onclick=function(){
+ STGS.forEach(function(s){dim(s,false)});
+ var on=c.classList.contains('on');LG.forEach(function(x){x.classList.remove('on')});if(!on)c.classList.add('on');
+ var f=on?'':c.dataset.f;
+ KS.forEach(function(k){dim(k,!!f&&!k.classList.contains(f))});
+ var n=f?KS.filter(function(k){return k.classList.contains(f)}).length:KS.length;
+ Q('#cnt').textContent=f?('Filtered: '+n+' / '+KS.length+' capabilities · 6 stages'):(KS.length+' capabilities · 6 stages')}});
+
+QA('.sh').forEach(function(h){h.onclick=function(){
+ var p=h.parentNode,wasOn=STGS.some(function(s){return s!==p&&s.style.opacity});
+ STGS.forEach(function(s){dim(s,false)});
+ if(!wasOn)STGS.forEach(function(s){if(s!==p)dim(s,true,'.24')})}});
+
+var PL=QA('.pl2');
+PL.forEach(function(p){p.onclick=function(){var on=p.classList.contains('on');PL.forEach(function(x){x.classList.remove('on');dim(x,false)});if(!on){p.classList.add('on');PL.forEach(function(x){if(x!==p)dim(x,true,'.34')})}}});
+
+var QBS=QA('.qb'),TKS=QA('.tk'),QIS=QA('.qi'),_hov='',_fq='';
+function qpaint(){var q=_hov||_fq;
+ QBS.forEach(function(x){var o=!!q&&x.dataset.q===q;x.classList.toggle('on',o);dim(x,!!q&&!o,'.26')});
+ TKS.forEach(function(t){t.classList.toggle('on',!!q&&t.dataset.q===q)})}
+TKS.concat(QBS).forEach(function(el){
+ el.addEventListener('mouseenter',function(){_hov=el.dataset.q;qpaint()});
+ el.addEventListener('mouseleave',function(){_hov='';qpaint()})});
+QA('[data-qf]').forEach(function(b){b.onclick=function(){QA('[data-qf]').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');_fq=b.dataset.qf;qpaint()}});
+QA('[data-sf]').forEach(function(b){b.onclick=function(){QA('[data-sf]').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');var f=b.dataset.sf;QIS.forEach(function(i){dim(i,!!f&&i.dataset.st!==f)})}});
+
+QA('.nd').forEach(function(n){
+ var on=function(){var ks=n.dataset.p.split(',');
+  QA('.nd').forEach(function(x){var m=x.dataset.l===n.dataset.l||ks.indexOf(x.dataset.l)>-1;x.classList.toggle('on',m);dim(x,!m)});
+  Q('#pl').textContent=n.dataset.l+' → '+n.dataset.p.split(',').join(' + ')};
+ var off=function(){QA('.nd').forEach(function(x){x.classList.remove('on');dim(x,false)});Q('#pl').textContent='Hover a role to see its transition'};
+ n.addEventListener('mouseenter',on);n.addEventListener('focus',on);n.addEventListener('click',on);
+ n.addEventListener('mouseleave',off);n.addEventListener('blur',off)});
+
+var FV=Q('#fv'),LV=Q('#lv');
+function showFig(f){FV.className=FV.className.replace(/\s*hide/g,'');LV.className=LV.className.replace(/\s*hide/g,'');FV.classList.remove('h');LV.classList.remove('h');
+ hide(FV,!f);hide(LV,f);if(f)LV.classList.add('h');else FV.classList.add('h');
+ Q('#vt').textContent=f?'List view':'Graph view'}
+Q('#vt').onclick=function(){showFig(Q('#vt').textContent==='List view')};
+if(LV.classList.contains('hide'))showFig(true);
+
+var rows=QA('.ac');
+function filt(){var t=Q('#sq').value.toLowerCase(),lb=Q('#lf button.on'),lf=lb?lb.dataset.l:'',v=0;
+ rows.forEach(function(r){var body=r.querySelector('.ac-b'),txt=(r.dataset.n+' '+(body?body.textContent:'')).toLowerCase();
+  var ok=(!lf||r.dataset.l.indexOf(lf)>-1)&&(!t||txt.indexOf(t)>-1);
+  hide(r,!ok);if(ok)v++});
+ Q('#cn').textContent='17 Agents · showing '+v}
+Q('#sq').oninput=filt;
+QA('#lf button').forEach(function(b){b.onclick=function(){var on=b.classList.contains('on');QA('#lf button').forEach(function(x){x.classList.remove('on')});if(!on)b.classList.add('on');filt()}});
+
+var ICO={
+ nodes:'<circle cx="6" cy="7" r="2.4"/><circle cx="18" cy="7" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.7 8.6 11 15.4M16.3 8.6 13 15.4M8.4 7h7.2"/>',
+ msg:'<path d="M4 6.5h16v10H9.5L4 19.5z"/><path d="M8 10.5h8M8 13.5h5"/>',
+ clock:'<circle cx="12" cy="12" r="8"/><path d="M12 7.6V12l3 2"/>',
+ star:'<path d="M12 3.6 14.6 9l5.4.8-3.9 3.8.9 5.4-5-2.6-5 2.6.9-5.4L3.9 9.8 9.3 9z"/>',
+ five:'<circle cx="6.4" cy="12" r="1.3"/><circle cx="10.1" cy="12" r="1.3"/><circle cx="13.9" cy="12" r="1.3"/><circle cx="17.6" cy="12" r="1.3"/><path d="M4 7.6h16M4 16.4h16"/>',
+ layers:'<path d="M12 4 3.6 8.4 12 12.8l8.4-4.4z"/><path d="M3.6 13 12 17.4 20.4 13"/>',
+ user:'<circle cx="12" cy="8.5" r="3.4"/><path d="M5.6 19.4c1-3.4 3.5-5 6.4-5s5.4 1.6 6.4 5"/>',
+ route:'<circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/><path d="M9 6.5h5.5a3 3 0 0 1 3 3v5.5"/>',
+ chart:'<path d="M4 19V5M4 19h16"/><path d="M8 19v-6M12.5 19v-9M17 19v-4"/>',
+ search:'<circle cx="10.5" cy="10.5" r="5.5"/><path d="M14.6 14.6 20 20"/>',
+ check:'<circle cx="12" cy="12" r="8"/><path d="M8.4 12.3l2.5 2.5 4.7-5"/>',
+ rocket:'<path d="M12 3c3.4 1.6 5.5 5 5.5 8.6L12 16 6.5 11.6C6.5 8 8.6 4.6 12 3z"/><path d="M9.4 15.6 8 20l2.6-1.2M14.6 15.6 16 20l-2.6-1.2"/>',
+ trend:'<path d="M4 17.5 9.5 11l3.6 3.2L20 6.5"/><path d="M15.4 6.5H20v4.6"/>',
+ award:'<circle cx="12" cy="9.5" r="5"/><path d="M9 14 7.6 20l4.4-2.4L16.4 20 15 14"/>',
+ archive:'<path d="M4 8h16v11H4z"/><path d="M3 4.5h18V8H3M9.6 12.6h4.8"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M12 3.6v2.2M12 18.2v2.2M4.5 12H6.7M17.3 12h2.2M6.7 6.7l1.6 1.6M15.7 15.7l1.6 1.6M17.3 6.7l-1.6 1.6M8.3 15.7l-1.6 1.6"/>',
+ handoff:'<path d="M4 8h12l-3-3M20 16H8l3 3"/>',
+ timer:'<circle cx="12" cy="13" r="7"/><path d="M12 9.6V13l2.6 1.8M9.6 3.6h4.8"/>',
+ compass:'<circle cx="12" cy="12" r="8"/><path d="M14.6 9.4 13 13l-3.6 1.6L11 11z"/>',
+ cpu:'<rect x="6.6" y="6.6" width="10.8" height="10.8" rx="2.6"/><path d="M10 3.6v3M14 3.6v3M10 17.4v3M14 17.4v3M3.6 10h3M3.6 14h3M17.4 10h3M17.4 14h3"/>',
+ spark:'<path d="M12 3.6 13.7 9l5.4 1.7-5.4 1.7L12 20l-1.7-5.6L4.9 12.7 10.3 11z"/>',
+ shield:'<path d="M12 3.6 19 6v6c0 4.2-3 7.2-7 8.4-4-1.2-7-4.2-7-8.4V6z"/><path d="M9.4 12.2l1.9 1.9 3.5-3.9"/>',
+ alert:'<path d="M12 4.4 20.4 19H3.6z"/><path d="M12 9.6v4.2M12 16.6v.2"/>',
+ target:'<circle cx="12" cy="12" r="7.4"/><circle cx="12" cy="12" r="3.2"/><path d="M12 2.6v2.6M12 18.8v2.6M2.6 12h2.6M18.8 12h2.6"/>',
+ balance:'<path d="M12 4.4V19M7 19h10M4.6 9h14.8"/><path d="M4.6 9 7.4 14H1.8zM19.4 9l2.8 5h-5.6z"/>',
+ flow:'<rect x="3.6" y="4.4" width="6.4" height="5" rx="1.8"/><rect x="14" y="4.4" width="6.4" height="5" rx="1.8"/><rect x="8.6" y="14.6" width="6.8" height="5" rx="1.8"/><path d="M7 9.4v2.2h10V9.4M12 11.6v3"/>',
+ bolt:'<path d="M13.4 3.6 6.6 13.4h4.6L10 20.4l7-10h-4.6z"/>',
+ flask:'<path d="M9.4 3.6h5.2M10.4 3.6v5L6.4 17.4a2 2 0 0 0 1.8 3h7.6a2 2 0 0 0 1.8-3l-4-8.8v-5"/><path d="M7.6 14.6h8.8"/>',
+ calendar:'<rect x="4" y="5.6" width="16" height="14.4" rx="3"/><path d="M4 10h16M8.4 3.6v3.6M15.6 3.6v3.6"/>',
+ doc:'<path d="M6.4 3.6h7L18 8.2v12.2H6.4z"/><path d="M13.2 3.6v5h4.8M9.4 13h5.2M9.4 16.4h5.2"/>',
+ grid:'<rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/>',
+ link:'<path d="M10 14a3.6 3.6 0 0 0 5.1 0l3-3a3.6 3.6 0 0 0-5.1-5.1l-1 1"/><path d="M14 10a3.6 3.6 0 0 0-5.1 0l-3 3A3.6 3.6 0 0 0 11 18.1l1-1"/>',
+ info:'<circle cx="12" cy="12" r="8"/><path d="M12 11.2v5.2M12 7.8v.2"/>',
+ people:'<circle cx="9" cy="9" r="3"/><path d="M3.6 19c.8-3 2.9-4.4 5.4-4.4S13.6 16 14.4 19"/><path d="M15.4 7.2a2.8 2.8 0 0 1 0 5.4M17 14.8c1.6.6 2.7 1.9 3.2 4.2"/>',
+ chev:'<path d="M6 9.5 12 15.5l6-6"/>',
+ eye:'<path d="M2.8 12S6 6.6 12 6.6 21.2 12 21.2 12 18 17.4 12 17.4 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.8"/>',
+ scale:'<path d="M5 20V9.4M5 9.4h14M19 20V9.4M12 5v4.4"/><path d="M9.4 20h5.2"/>'
+};
+var each=function(sl,fn){QA(sl).forEach(fn)};
+function ic(n,c){if(!ICO[n])return null;var e=document.createElementNS('http://www.w3.org/2000/svg','svg');e.setAttribute('viewBox','0 0 24 24');e.setAttribute('class','ic '+(c||''));e.setAttribute('aria-hidden','true');e.innerHTML=ICO[n];return e}
+function tile(n,c){var d=document.createElement('span');d.className='iT '+(c||'');var e=ic(n);if(e)d.appendChild(e);return d}
+function wrap(el,cls){var d=document.createElement('div');d.className=cls;while(el.firstChild)d.appendChild(el.firstChild);el.appendChild(d);return d}
+function lead(sel,n,c,i){var e=QA(sel)[i||0];if(!e)return;var t=tile(n,c);e.insertBefore(t,e.firstChild)}
+function inline(sel,n,i){var e=QA(sel)[i||0];if(!e)return;var s=ic(n,'sm');if(s)e.insertBefore(s,e.firstChild)}
+
+/* cover: what changed / how / guardrails */
+lead('#c0 .g3 .c','bolt','rd',0);lead('#c0 .g3 .c','flow','bl',1);lead('#c0 .g3 .c','shield','gr',2);
+each('#c0 .row .chip',function(c,i){var m=['doc','grid','clock','link'][i];var s=ic(m,'sm');if(s)c.insertBefore(s,c.firstChild)});
+/* 01 priorities */
+lead('#c1 .g3 .c','nodes','pu',0);lead('#c1 .g3 .c','msg','bl',1);lead('#c1 .g3 .c','clock','gr',2);
+each('#c1 .g3 .c',function(c,i){var l=c.querySelector('.num');if(l)l.textContent='PRIORITY 0'+(i+1)});
+/* 02 principles */
+each('#c2 .g3 .c',function(c,i){
+ var icn=['star','five','layers','user','route','chart'][i],cols=['pu','gr','bl','pl','am','gr'][i];
+ c.insertBefore(tile(icn,cols),c.firstChild);
+ var l=document.createElement('span');l.className='num';l.textContent='PRINCIPLE 0'+(i+1);c.insertBefore(l,c.children[1]||null);
+ var s=ic('check','xs');if(s)c.querySelector('h3').appendChild(s);
+});
+/* 03 lifecycle legend + stage heads */
+each('.lg',function(c,i){var m=['spark','cpu','check'][i];var s=ic(m,'sm');if(s)c.insertBefore(s,c.firstChild)});
+each('.sh',function(h,i){
+ var m=['search','flask','rocket','trend','award','archive'][i],cols=['bl','pu','gr','am','bl','nv'][i];
+ h.insertBefore(tile(m,cols),h.firstChild);
+ wrap(h,'shTxt');
+});
+each('#stages .k',function(k,i){var s=ic(k.classList.contains('d')?'doc':'check','xs');if(s)k.insertBefore(s,k.firstChild)});
+/* 04 pills */
+each('.pl2',function(p,i){var m=['gear','handoff','timer','compass','people','spark'][i],cols=['pu','gr','bl','am','nv','pl'][i];p.insertBefore(tile(m,cols),p.firstChild)});
+/* 04 tracks */
+each('.tk',function(t,i){var m=['flow','shield','bolt'][i],cols=['st','am','nv'][i];t.insertBefore(tile(m,cols),t.firstChild);wrap(t,'tkIn')});
+/* 04 filters */
+each('[data-qf]',function(b,i){var m=['grid','calendar','calendar','calendar','calendar'][i];var s=ic(m,'sm');if(s)b.insertBefore(s,b.firstChild)});
+each('[data-sf]',function(b,i){var m=['grid','check','cpu','flask','calendar'][i];var s=ic(m,'sm');if(s)b.insertBefore(s,b.firstChild)});
+/* 04 source-track label from data-n */
+each('.qb',function(q){var m=q.querySelector('.m');if(m&&!m.textContent)m.textContent=q.dataset.n||''});
+/* 05 role diagram: label the two ends + EPI bar */
+each('#fv .mono',function(m,i){var s=ic(i===0?'user':'cpu','xs');if(s)m.insertBefore(s,m.firstChild)});
+(function(){var mb=Q('.midbar');if(mb){var s=ic('link','sm');if(s)mb.insertBefore(s,mb.firstChild)}})();
+/* 05 OKR header labels */
+each('.pill',function(p,i){var s=ic(i===1?'check':'chart','sm');if(s)p.insertBefore(s,p.firstChild)});
+/* 06 inventory filters, search and rows */
+each('#lf button',function(b,i){var m=['grid','search','check','rocket','archive'][i];var s=ic(m,'sm');if(s)b.insertBefore(s,b.firstChild)});
+(function(){var i0=Q('#sq');if(!i0)return;var w=document.createElement('span');w.style.cssText='position:relative;display:inline-flex;align-items:center';
+ var s=ic('search','sm');if(s){s.style.cssText='position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted)';w.appendChild(s)}
+ i0.parentNode.insertBefore(w,i0);w.appendChild(i0);i0.style.paddingLeft='38px'})();
+each('#cn',function(c){var s=ic('info','sm');if(s)c.insertBefore(s,c.firstChild);c.style.display='inline-flex';c.style.alignItems='center';c.style.gap='7px'});
+each('.ac-h',function(h,i){
+ var l=(h.parentNode.dataset.l||'').split(',')[0].trim();
+ var m=l==='Discover'?'search':l==='Validate'?'check':l==='Launch'?'rocket':'archive';
+ var c=l==='Discover'?'bl':l==='Validate'?'pu':l==='Launch'?'gr':'am';
+ var s=tile(m,c);s.className='iT sm '+c;h.insertBefore(s,h.firstChild);
+ var ch=ic('chev','sm');if(ch){ch.style.marginLeft='4px';h.appendChild(ch)}
+});
+/* 05 OKR: current vs target progress bars */
+each('.orow',function(r){var b=r.querySelectorAll('.box'),svg=r.querySelector('svg');if(b.length<3||!svg)return;
+ var t=parseFloat(b[0].textContent)||0,c=parseFloat(b[2].textContent)||0;
+ var sp=document.createElement('span');sp.className='mbar';sp.title='Current '+c+'% of target '+t+'%';
+ sp.innerHTML='<i style="width:'+Math.min(100,c)+'%"></i><b style="left:'+Math.min(100,t)+'%"></b>';
+ svg.parentNode.replaceChild(sp,svg)});
+/* 07 governance groups + cards */
+each('#c7 > .mono',function(g,i){g.classList.add('grp');var s=ic(['target','balance','shield'][i]||'target','sm');if(s)g.insertBefore(s,g.firstChild)});
+each('.cc-h',function(h,i){
+ var m=['target','cpu','alert','balance','spark','shield'][i];
+ var c=['(function(){})'];var cols=['rd','nv','am','pu','bl','gr'][i];
+ h.insertBefore(tile(m,cols),h.firstChild);
+ var ch=ic('chev','sm');ch.className='ic sm chev';h.appendChild(ch);
+});
+each('.micro',function(m){var s=ic('link','xs');if(s){s.style.color='var(--red)';m.insertBefore(s,m.firstChild)}});
+each('.nb h3',function(h){var s=ic('timer','sm');if(s){s.style.color='var(--red)';h.insertBefore(s,h.firstChild)}});
+each('footer h3',function(h){var s=ic('info','sm');if(s){s.style.color='var(--red)';h.insertBefore(s,h.firstChild)}});
+each('.bk',function(b){var s=ic('doc','sm');if(s){s.style.color='var(--red)';b.insertBefore(s,b.firstChild)}});
+each('h3',function(h){if(h.parentNode.classList.contains('bk'))return;if(h.closest('.hd'))return});
+</script></body></html>
