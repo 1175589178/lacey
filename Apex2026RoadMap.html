@@ -1,0 +1,373 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apex 2026 Road Map · 汇报版</title><style>
+:root{--red:#DB0011;--ink:#15120E;--ink2:#3D3A36;--muted:#6E6A64;--paper:#fff;--wash:#F7F5F3;--wash2:#EFEBE7;--line:#E4DFD9;--navy:#3A3F6B;--steel:#17607A;--purple:#6C4CB0;--blue:#1E5FA8;--green:#1B7A5E;--amber:#C97A12;--plum:#8A2F4E;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--ink);font:15px/1.62 "Helvetica Neue",Inter,"Segoe UI",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+.eyebrow,.chip,.mono,.num,.m,.tag,.bg,.ln,#nav button,#rail b,h1,h2{font-family:var(--mono)}
+#top{position:fixed;top:0;left:0;right:0;height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;padding:0 20px;z-index:50}
+.sq{width:14px;height:14px;background:var(--red)}
+.brand{font-weight:700;letter-spacing:.08em;font-size:14px}
+#nav{display:flex;gap:2px;margin-left:10px}
+#nav button{font-size:12px;color:var(--muted);background:none;border:0;border-bottom:2px solid transparent;padding:4px 5px;cursor:pointer}
+#nav button.on{color:var(--ink);border-bottom-color:var(--red)}
+#tools{margin-left:auto;display:flex;gap:8px}
+#tools button,.pager button,#ex{font:inherit;font-size:13px;background:#fff;border:1px solid var(--line);border-radius:2px;padding:6px 11px;cursor:pointer;color:var(--ink2)}
+#tools button[aria-pressed=true]{border-color:var(--red);color:var(--red)}
+#prog{position:fixed;top:0;left:0;height:2px;background:var(--red);width:0;z-index:60}
+#rail{position:fixed;top:60px;left:0;bottom:0;width:220px;border-right:1px solid var(--line);padding:22px 16px;overflow:auto}
+#rail button{display:flex;gap:10px;align-items:baseline;width:100%;background:none;border:0;padding:7px 0;text-align:left;cursor:pointer;color:var(--muted);font:inherit;font-size:13px}
+#rail b{font-size:30px;line-height:1;color:var(--wash2);font-weight:400}
+#rail button.on{color:var(--ink)}
+#rail button.on b{color:var(--red)}
+main{margin-left:220px;max-width:1180px;padding:96px 48px 100px}
+.ch{border-top:1px solid var(--line);padding:34px 0 26px}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;border-bottom:1px solid var(--line);padding-bottom:14px;position:relative;margin-bottom:22px}
+.hd:after{content:"";position:absolute;left:0;bottom:-1px;width:72px;height:3px;background:var(--red)}
+.eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:40px;margin:8px 0 4px}
+h2{font-size:30px;margin:10px 0 4px;line-height:1.18;font-family:inherit}
+h3{font-size:16px;margin:0 0 6px}
+.enh{font-size:15.5px;color:var(--ink2);margin:0}
+.sub{color:var(--muted);font-size:13.5px;margin:6px 0 0}
+.chip{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:2px;padding:3px 8px;white-space:nowrap;display:inline-block}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.grid{display:grid;gap:14px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.c{background:#fff;border:1px solid var(--line);border-top:3px solid var(--navy);border-radius:2px;padding:22px;transition:transform .18s}
+.c:hover{transform:translateY(-2px)}
+.c p{margin:6px 0 0;color:var(--ink2);font-size:14px}
+.pu{border-top-color:var(--purple)}.gr{border-top-color:var(--green)}.bl{border-top-color:var(--blue)}.pl{border-top-color:var(--plum)}.am{border-top-color:var(--amber)}
+.num{font-size:12px;color:var(--red);letter-spacing:.1em}
+.lead{font-size:17px;margin:0 0 12px}
+.q{border-left:3px solid var(--red);padding:4px 0 4px 14px;font-size:17px;color:var(--ink2);margin:16px 0}
+.bk{background:var(--wash);border:1px solid var(--line);border-radius:2px;padding:14px 16px;margin:16px 0}
+.bk p{margin:4px 0 0;color:var(--ink2);font-size:14px}
+.ex,.vt{margin-top:10px;font:inherit;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:2px;padding:3px 9px;cursor:pointer;color:var(--muted)}
+.exp{display:none}.c.open .exp{display:block}
+.an{display:none;border:1px dotted var(--red);color:var(--red);font-size:12.5px;padding:8px 10px;margin-top:16px;border-radius:2px}
+body.chg .an{display:block}
+.pager{display:flex;gap:8px;margin-top:22px}
+.strip{overflow-x:auto;padding-bottom:6px}
+.hint{font-size:12px;color:var(--muted)}
+.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;min-width:960px}
+.stg.dim{opacity:.24}.dim{opacity:.2}.dim2{opacity:.26}.dim3{opacity:.34}.hide{display:none}
+.sh{background:var(--blue);color:#fff;padding:10px 12px;border-radius:2px;cursor:pointer;margin-bottom:10px}
+.sh b{display:block;font-size:16px}.sh i{font-size:11.5px;opacity:.85}
+.k{display:block;width:100%;text-align:left;background:#F2EEFA;border:0;border-left:2px solid var(--purple);border-radius:2px;padding:10px 12px;margin-bottom:8px;cursor:pointer;font:inherit;transition:opacity .18s}
+.k.b{background:#ECF2FA;border-left-color:var(--blue)}
+.k.c{background:#EAF4F0;border-left-color:var(--green)}
+.k.d{background:#fff;border-left-color:var(--line)}
+.k b{display:block;font-size:11px;letter-spacing:.03em}
+.k i{display:block;font-size:11.5px;color:var(--ink2)}
+.m{display:block;font-size:10.5px;color:var(--muted);margin-top:6px}
+.lg{font:inherit;font-size:12.5px;background:#fff;border:1px solid var(--line);border-radius:2px;padding:5px 10px;cursor:pointer;color:var(--ink2)}
+.lg.on{outline:2px solid var(--red);outline-offset:-2px}
+.lgd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+.pl2{border:1px solid var(--line);border-radius:2px;padding:14px;font-size:14px;cursor:pointer;background:#F2EEFA;transition:opacity .18s}
+.pl2:nth-child(2){background:#EAF4F0}.pl2:nth-child(3){background:#ECF2FA}.pl2:nth-child(4){background:#F7F5F3}.pl2:nth-child(5){background:#FBF2E4}.pl2:nth-child(6){background:#FAEEF2}
+.pl2.on{outline:2px solid var(--red);outline-offset:-2px}
+.fbar{display:flex;gap:8px;align-items:center;margin:14px 0;flex-wrap:wrap}
+.fbar button{font:inherit;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:2px;padding:4px 9px;cursor:pointer;color:var(--ink2)}
+.fbar button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.dg{display:grid;grid-template-columns:240px 1fr 1fr 1fr 1fr;gap:12px;min-width:1000px}
+.tk{background:var(--wash);border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:2px;padding:12px;margin-bottom:12px}
+.tk.a{border-left-color:var(--purple)}.tk.b{border-left-color:var(--blue)}.tk.c{border-left-color:var(--green)}
+.tk.on{outline:2px solid var(--red);outline-offset:-2px}
+.tk h3{margin:8px 0 0}.tk p{margin:2px 0;font-size:12.5px;color:var(--muted)}
+.tag{border:1px solid var(--red);color:var(--red);font-size:10.5px;padding:2px 5px;display:inline-block;margin-top:6px;border-radius:2px}
+.ln{font-size:11px;color:var(--muted);display:block;margin-top:8px}
+.qb{border:1px dashed var(--line);border-radius:2px;padding:10px}
+.qb.on{outline:2px dashed var(--red);outline-offset:-2px}
+.qh{text-align:center;font-family:var(--mono);font-size:13px;padding:5px;border-radius:2px;background:var(--navy);color:#fff;margin-bottom:8px}
+.qh.steel{background:var(--steel)}
+.qi{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:4px 0;border-bottom:1px solid var(--wash2);transition:opacity .18s}
+.qi .o{color:var(--amber)}
+.bg{font-size:10px;border:1px solid var(--line);border-radius:2px;padding:1px 5px;color:var(--muted)}
+.qf{border:1px dashed var(--line);text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);padding:4px;margin-top:8px;border-radius:2px}
+.qb .m{display:none}.qb.on .m{display:block;color:var(--red)}
+.frow{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 14px}
+.nd{position:relative;border:1px solid var(--line);background:var(--wash);border-radius:2px;padding:6px 10px;font-size:12.5px;transition:opacity .18s}
+.nd:before,.nd:after{content:"";position:absolute;left:50%;height:9px;border-left:1px dashed var(--line)}
+.nd:before{top:-10px}.nd:after{bottom:-10px}
+.nd.on{outline:2px solid var(--red);outline-offset:-2px;background:#fff}
+.midbar{border:1px solid var(--line);background:var(--wash2);font-family:var(--mono);font-size:12px;padding:8px 12px;margin:20px 0;border-radius:2px}
+#pl{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:26px}
+.tbl{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+.tbl th,.tbl td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.tbl th{background:var(--wash);font-size:12px}
+.okr{border:1px solid var(--line);border-top:3px solid var(--green);border-radius:2px;padding:18px;margin-top:12px}
+.hrow{display:grid;grid-template-columns:1.8fr 90px 90px 90px 90px;gap:10px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:8px;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
+.orow{display:grid;grid-template-columns:1.8fr 90px 90px 90px 90px;gap:10px;align-items:center;padding:14px 0;border-bottom:1px solid var(--wash2)}
+.orow .nm{font-weight:600;font-size:13.5px}
+.orow .is{font-style:italic;color:var(--muted);font-size:12.5px}
+.box{border:1px solid var(--line);border-radius:2px;padding:5px 8px;font-family:var(--mono);font-size:13px;text-align:center}
+.box.cur{border-color:var(--red);color:var(--red);font-weight:700}
+.pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:2px;background:#EAF4F0;color:var(--green);border:1px solid #cbe2d9;margin-right:8px}
+.pill.g{background:var(--wash);color:var(--muted);border-color:var(--line)}
+.ac{border:1px solid var(--line);border-radius:2px;margin-bottom:8px}
+.ac-h{display:flex;gap:12px;align-items:center;width:100%;background:#fff;border:0;padding:12px 14px;cursor:pointer;text-align:left;font:inherit;border-radius:2px}
+.ac-h b{font-size:14px;white-space:nowrap}
+.ac-h i{font-style:normal;color:var(--muted);font-size:12.5px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ac-h .tg{font-family:var(--mono);font-size:10px;border:1px solid var(--line);border-radius:2px;padding:2px 6px;color:var(--muted);white-space:nowrap}
+.ac-b{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.ac.open .ac-b{max-height:900px}
+.ac-b .in{padding:0 14px 14px}
+.ac-b p{margin:0;color:var(--ink2);font-size:13.5px}
+.ac-b ul{margin:8px 0 0 18px;padding:0;color:var(--ink2);font-size:13.5px}
+.cc{border:1px solid var(--line);border-radius:2px;border-top:3px solid var(--navy);margin-bottom:12px}
+.cc-h{display:block;width:100%;background:none;border:0;text-align:left;font:inherit;font-size:16px;font-weight:600;padding:16px 20px;cursor:pointer}
+.cc-b{max-height:0;overflow:hidden;transition:max-height .28s ease}
+.cc.open .cc-b{max-height:700px}
+.cc-b .in{padding:0 20px 18px}
+.cc-b p{margin:0 0 8px;color:var(--ink2);font-size:14px}
+.micro{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);margin:12px 0 6px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+#notes{position:fixed;top:60px;right:0;bottom:0;width:344px;background:var(--wash);border-left:1px solid var(--line);overflow:auto;padding:20px;display:none}
+body.notes #notes{display:block}
+.nb{border-bottom:1px solid var(--line);padding:12px 0}
+.nb h3{margin:0 0 2px}.nb p{margin:6px 0 0;font-size:13px;color:var(--ink2)}
+.nb .mono{font-size:11px;color:var(--red)}
+#ex{display:none;position:fixed;right:18px;bottom:16px;z-index:60;font-family:var(--mono);font-size:12px;background:var(--ink);color:#fff;border-color:var(--ink)}
+body.demo #rail,body.demo #nav,body.demo .pager{display:none}
+body.demo main{margin-left:0;max-width:none;padding-left:64px}
+body.demo #ex{display:block}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:13px}
+footer p{margin:4px 0}
+.rv{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.rv.in{opacity:1;transform:none}
+@media(min-width:1401px){body.notes main{padding-right:392px}}
+@media(max-width:1100px){#rail{display:none}main{margin-left:0}}
+@media(max-width:900px){.g3,.pills,.two{grid-template-columns:1fr}main{padding:90px 22px 80px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+@media print{#top,#rail,#prog,#ex,#notes{display:none}main{margin:0;padding:0}.rv{opacity:1;transform:none}.ac-b,.cc-b{max-height:none!important}.an{display:block}body{background:#fff}}
+</style></head><body>
+<div id="prog"></div>
+<header id="top"><span class="sq"></span><span class="brand">APEX 2026</span>
+<nav id="nav"><button data-go="c0" class="on">00</button><button data-go="c1">01</button><button data-go="c2">02</button><button data-go="c3">03</button><button data-go="c4">04</button><button data-go="c5">05</button><button data-go="c6">06</button><button data-go="c7">07</button></nav>
+<div id="tools"><button id="bD" aria-pressed="false">演示模式</button><button id="bN" aria-pressed="false">讲稿</button><button id="bC" aria-pressed="false">改版说明</button></div></header>
+<aside id="rail"><button data-go="c0" class="on"><b>00</b><span>封面</span></button><button data-go="c1"><b>01</b><span>目标与三大优先</span></button><button data-go="c2"><b>02</b><span>原则与标准</span></button><button data-go="c3"><b>03</b><span>Agentic SDLC</span></button><button data-go="c4"><b>04</b><span>参与模式与路线图</span></button><button data-go="c5"><b>05</b><span>未来组织与 OKR</span></button><button data-go="c6"><b>06</b><span>Agent 清单</span></button><button data-go="c7"><b>07</b><span>AI 治理与护栏</span></button></aside>
+<main>
+<section class="ch rv" id="c0"><div class="hd"><div><div class="eyebrow">第 00 章 / 00</div><h1>Apex 2026 Road Map</h1><p class="enh">HSBC · APEX 2026</p><p class="sub">AI 角色演进与平台路线 · 汇报版</p></div><span class="chip">约 0.5 分钟</span></div>
+<div class="row"><span class="chip">原始文档：长滚动单页</span><span class="chip">本版：7 章交互式汇报页</span><span class="chip">建议时长：10–15 分钟</span><span class="chip">来源：Apex 2026 Road Map（截图）</span></div>
+<h3 style="margin:26px 0 12px">汇报要点</h3>
+<div class="grid g3"><div class="c pu"><div class="num">01 · 改了什么</div><h3>优先级与角色</h3><p>优先级从“交付”转为客户价值与团队自主：Remove coordination / translation / waiting；11 个传统角色演进为 12 个 AI 增强角色；协作从 hand-off 转向 shared ownership。</p></div>
+<div class="c bl"><div class="num">02 · 怎么改</div><h3>节奏与度量</h3><p>Agent 嵌入产品生命周期 6 个阶段；18 项能力按 2026 Q1–Q4 排布（done → DEV/PoC → plan）；以 4 项 OKR 指标衡量，均为 On track。</p></div>
+<div class="c gr"><div class="num">03 · 底线在哪</div><h3>治理与护栏</h3><p>财务逻辑保持 Deterministic / Governed / Reproducible；AI 不绕过控制与治理；四项不可谈判护栏 Auditable / Explainable / Bounded / Secure；从 Assistive → Guided → Automated 渐进。</p></div></div>
+<p class="sub" style="margin-top:18px">向下滚动开始 ↓</p>
+<div class="an">原文档是长滚动单页，需要一直滚；本版拆成 7 章，每章一屏讲完，可任意跳转。</div>
+<div class="pager"><button data-go="c1">下一章 →</button></div></section>
+<section class="ch rv" id="c1"><div class="hd"><div><div class="eyebrow">第 01 章 / 01</div><h2>目标与三大优先</h2><p class="enh">The outcome</p><p class="sub">我们为什么用 AI 重排工作方式</p></div><span class="chip">约 1.5 分钟</span></div>
+<p class="lead">Organise technology around customer and give teams real autonomy to solve problem</p>
+<div class="q">“Technology becomes something teams use to create competitive advantage, not simply something they deliver.”</div>
+<div class="bk"><b>Three priorities</b><p>Use AI and technology to get closer to customers, give teams more decision-making power, and deliver value faster</p></div>
+<div class="grid g3"><div class="c pu"><div class="num">01</div><h3>Remove coordination</h3><p>Simplify the operating model. Teams spend less energy arranging work and more energy solving it.</p><button class="ex">Example</button><p class="exp">Example: Scrum Master agent -&gt; more self-orchestration team</p></div>
+<div class="c bl"><div class="num">02</div><h3>Remove translation</h3><p>Bring engineers closer to customers and business context, so the need is understood before a requirement is built.</p><button class="ex">Example</button><p class="exp">Example: AI agent chats with user -&gt; understands and clarifies needs, translates it into an executable test</p></div>
+<div class="c gr"><div class="num">03</div><h3>Remove waiting</h3><p>Put clear guardrails into the flow of work, enabling safe decisions without unnecessary approval queues.</p><button class="ex">Example</button><p class="exp">Example: Rule of Five + encoding controls -&gt; make the right decision without waiting for governance</p></div></div>
+<div class="an">“Example” 默认折叠，讲的时候先给结论句，被追问再展开——避免第一屏就是密集文字。</div>
+<div class="pager"><button data-go="c0">← 上一章</button><button data-go="c2">下一章 →</button></div></section>
+<section class="ch rv" id="c2"><div class="hd"><div><div class="eyebrow">第 02 章 / 02</div><h2>原则与标准</h2><p class="enh">Principles and standards</p><p class="sub">The shared expectations that keep autonomy safe and useful.</p></div><span class="chip">约 1.5 分钟</span></div>
+<div class="grid g3"><div class="c pu"><h3>V2MOM &amp; North Star</h3><p>Keep teams focused on customer value and outcomes.</p></div>
+<div class="c gr"><h3>Rule of Five</h3><p>Maintain business agility, resilience, reuse, customer and operability with simple controls</p></div>
+<div class="c bl"><h3>Integrated platform</h3><p>Share services, data, security and AI capabilities as Golden Path so teams can move faster</p></div>
+<div class="c pl"><h3>High-quality engineers</h3><p>Use AI-skill ready, full-stack engineers who understand the business</p></div>
+<div class="c am"><h3>Customer journey</h3><p>Deep understand customer behaviors and better serve the customer needs</p></div>
+<div class="c gr"><h3>Measure what matters</h3><p>Track customer journeys, NPS, usage and quality—not just activity</p></div></div>
+<div class="an">六条原则原来是两行卡片、第二行被截断；改为一行网格 + 悬停抬升，一屏看全。</div>
+<div class="pager"><button data-go="c1">← 上一章</button><button data-go="c3">下一章 →</button></div></section>
+<section class="ch rv" id="c3"><div class="hd"><div><div class="eyebrow">第 03 章 / 03</div><h2>产品生命周期：Agentic SDLC</h2><p class="enh">AI Agentic Product lifecycle - SDLC</p><p class="sub">六个阶段的能力落位与介入程度</p></div><span class="chip">约 2.5 分钟</span></div>
+<div class="bk"><b>Product lifecycle, supported by agents</b><p>Each stage keeps its human purpose. Agents reduce repetitive work, improve visibility and help teams make better calls.</p></div>
+<div class="lgd"><button class="lg" data-f="a">New agent capability · 新能力</button><button class="lg" data-f="b">AI-assisted work · AI 辅助</button><button class="lg" data-f="c">More autonomous support · 更自主支持</button><span class="chip" id="cnt" style="margin-left:auto">20 项能力 · 6 个阶段</span></div>
+<p class="hint">← 拖动查看全部 6 个阶段 →</p>
+<div class="strip"><div class="stages" id="stages">
+<div class="stg"><div class="sh" data-st="01 Discover"><span class="mono">STAGE 01</span><b>Discover</b><i>Problem fit</i></div>
+<button class="k a"><b>SKILL-BASED RULE OF FIVE</b><i>Delivery Guardrails</i></button>
+<button class="k b"><b>CONVERSATION SPACE</b><i>Requirement Analysis</i></button>
+<button class="k b"><b>TASK ASSESSMENT DESK</b><i>Requirement evolution</i></button>
+<button class="k c"><b>AI-POWERED UX DESIGN VALIDATOR</b><i>Understand Customer requirement</i></button></div>
+<div class="stg"><div class="sh" data-st="02 Validate"><span class="mono">STAGE 02</span><b>Validate</b><i>Solution fit / MVP</i></div>
+<button class="k a"><b>AI-ASSISTED RULE OF FIVE</b><i>Governance</i></button>
+<button class="k b"><b>AI OPERABILITY SCORE FOR EARLY WARNING</b><i>Reduce opertional risk</i></button>
+<button class="k b"><b>AI SCRUM MASTER</b><i>Efficient team flow</i></button>
+<button class="k d"><b>SERVICE MAP</b><i>Architecture</i></button>
+<button class="k d"><b>CUCUMBER SCENARIO BUILDER</b><i>Quality assurance</i></button>
+<button class="k d"><b>AI-ASSISTED CONTRACT TEST GENERATOR WITH PACT</b><i>Quality assurance</i></button>
+<button class="k d"><b>AI ASSIST IN PERFORMANCE TEST REPORT</b><i>Quality assurance</i></button>
+<button class="k d"><b>AUTO CODE REBUILDER WITH CVE FIX</b><i>Security</i></button></div>
+<div class="stg"><div class="sh" data-st="03 Launch"><span class="mono">STAGE 03</span><b>Launch</b><i>Release / adoption fit</i></div>
+<button class="k c"><b>RELEASE NOTE STUDIO</b><i>Release operations</i></button>
+<button class="k b"><b>INCIDENT ANALYSIS WITH AI</b><i>Defect analysis</i></button>
+<button class="k d"><b>CR BUILDER &amp; VALIDATOR</b><i>Change readiness</i></button>
+<button class="k d"><b>AI-ASSISTED SRE ADVISER</b><i>Reliability</i></button></div>
+<div class="stg"><div class="sh" data-st="04 Grow"><span class="mono">STAGE 04</span><b>Grow</b><i>Scale / value fit</i></div>
+<button class="k b"><b>AI USER BEHAVIOUR ANALYSIS WITH UX METRICS</b><i>Customer behaviour</i></button>
+<button class="k b"><b>AI AGENT FOR ENTITLEMENT ADVISER</b><i>Decision support</i></button></div>
+<div class="stg"><div class="sh" data-st="05 Maturity"><span class="mono">STAGE 05</span><b>Maturity</b><i>Value optimisation &amp; trust fit</i></div>
+<button class="k c"><b>UI GENERATOR FOR SEMANTIC LAYER MODEL</b><i>Experience design</i></button></div>
+<div class="stg"><div class="sh" data-st="06 Retire / Sunset"><span class="mono">STAGE 06</span><b>Retire / Sunset</b><i>Decommission fit</i></div>
+<button class="k c"><b>INTELLIGENT DEPENDENCY &amp; BLAST RADIUS ANALYSIS</b><i>Risk and closure</i></button></div>
+</div></div>
+<div class="an">原为静态大图；重建为交互式六阶段图：可按颜色筛选、按阶段聚焦、卡片可展开。密集的 Validate 阶段（8 项）在原图中最容易被读漏。</div>
+<div class="pager"><button data-go="c2">← 上一章</button><button data-go="c4">下一章 →</button></div></section>
+<section class="ch rv" id="c4"><div class="hd"><div><div class="eyebrow">第 04 章 / 04</div><h2>参与模式的改变 与 2026 路线图</h2><p class="enh">What changes for engaging model with stakeholders</p><p class="sub">更少交接、更多共担；能力按季度落位</p></div><span class="chip">约 2.5 分钟</span></div>
+<h3>Less hand-off. More shared ownership.</h3>
+<div class="pills"><div class="pl2">Operating model: simplify the process</div><div class="pl2">Ways of working: fewer handoffs</div><div class="pl2">Time to value: less meeting time</div><div class="pl2">Decision making: continuous and closer to the work</div><div class="pl2">Teamwork: human + AI collaboration</div><div class="pl2">Learning: continuous productivity improvement</div></div>
+<div class="hd" style="margin-top:40px"><div><h2 style="font-size:24px">RoadMap Overview</h2><p class="sub">左侧为三条季度轨道，右侧为 2026 四个季度的能力落位；悬停轨道或季度可点亮连线。</p></div></div>
+<div class="fbar"><span class="mono">QUARTER</span><button data-qf="" aria-pressed="true">全部</button><button data-qf="Q1" aria-pressed="false">Q1</button><button data-qf="Q2" aria-pressed="false">Q2</button><button data-qf="Q3" aria-pressed="false">Q3</button><button data-qf="Q4" aria-pressed="false">Q4</button></div>
+<div class="fbar"><span class="mono">STATUS</span><button data-sf="" aria-pressed="true">全部</button><button data-sf="done" aria-pressed="false">done</button><button data-sf="dev" aria-pressed="false">DEV</button><button data-sf="poc" aria-pressed="false">PoC</button><button data-sf="plan" aria-pressed="false">plan</button></div>
+<p class="hint">← 拖动查看全部四个季度 →</p>
+<div class="strip"><div class="dg">
+<div><div class="tk a" data-q="Q4"><span class="chip">Q4</span><h3>Orchestrate Workflow</h3><p>Production</p><span class="tag">Assist with analysis and Interpretation</span><span class="ln">→ 2026 Q4</span></div>
+<div class="tk b" data-q="Q3"><span class="chip">Q3</span><h3>Prevent and Mitigate</h3><p>SDLC - operation risk</p><span class="tag">Reduce problem at operational time</span><span class="ln">→ 2026 Q3</span></div>
+<div class="tk c" data-q="Q1"><span class="chip">Q1</span><h3>Amplify Productivity</h3><p>SDLC - fondamental</p><span class="tag">Simplify the Intent-to-Code-to-delivery</span><span class="ln">→ 2026 Q1</span></div></div>
+<div class="qb" data-q="Q1" data-n="来源轨道：Q1 · SDLC - fondamental"><div class="qh">2026 Q1</div>
+<div class="qi" data-st="done"><span>Conversation Space</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Ticket Assessment Desk</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Cucumber Scenario Builder</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>AI Assist In Perf Test Report</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>CR builder &amp; Validator</span><span class="bg">done</span></div>
+<div class="qi" data-st="done"><span>Release Note Studio</span><span class="bg">done</span></div>
+<div class="qf">Apex Agent</div><span class="m"></span></div>
+<div class="qb" data-q="Q2" data-n="来源轨道：Q1 · SDLC - fondamental"><div class="qh">2026 Q2</div>
+<div class="qi" data-st="dev"><span>AI Powered UX design validator</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>AI-assisted Contract Test Generator with PAC</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>Auto code reBuilder with CVE fix</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="dev"><span>Skill-based Rule of 5 Validation</span><span class="bg">Dev</span></div>
+<div class="qi" data-st=""><span class="o">AI assisted SRE advisor</span></div>
+<span class="m"></span></div>
+<div class="qb" data-q="Q3" data-n="来源轨道：Q3 · SDLC - operation risk"><div class="qh">2026 Q3</div>
+<div class="qi" data-st="poc"><span>UI generator for semantic layer model</span><span class="bg">PoC</span></div>
+<div class="qi" data-st=""><span>AI Scrum master</span></div>
+<div class="qi" data-st="dev"><span>Incident Analysis with AI</span><span class="bg">DEV</span></div>
+<div class="qi" data-st="plan"><span class="o">AI User Behaviour Analysis with UX</span><span class="bg">plan</span></div>
+<div class="qi" data-st="plan"><span class="o">Service Map with AI</span><span class="bg">plan</span></div>
+<span class="m"></span></div>
+<div class="qb" data-q="Q4" data-n="来源轨道：Q4 · Production"><div class="qh steel">2026 Q4</div>
+<div class="qi" data-st="dev"><span>Intelligent Dependency &amp; Blask Radius Analysis</span><span class="bg">Dev</span></div>
+<div class="qi" data-st="dev"><span>AI Agent for Apex entitlement</span><span class="bg">Dev</span></div>
+<span class="m"></span></div>
+</div></div>
+<div class="an">原图信息密度高、虚线交叉；保留三条轨道与四季度分组，轨道与季度的连线关系改为悬停/聚焦时点亮并注明来源，降低阅读负担；状态可筛选。</div>
+<div class="pager"><button data-go="c3">← 上一章</button><button data-go="c5">下一章 →</button></div></section>
+<section class="ch rv" id="c5"><div class="hd"><div><div class="eyebrow">第 05 章 / 05</div><h2>未来组织与 OKR</h2><p class="enh">Future Force Transition</p><p class="sub">角色升级与四项度量</p></div><span class="chip">约 2.5 分钟</span></div>
+<p class="lead">Future force: engineers must embrace AI, reinvent themselves and adapt to changing roles. While some traditional roles may disappear, new opportunities and responsibilities will emerge</p>
+<button class="vt" id="vt">列表视图</button>
+<div id="fv">
+<div class="mono" style="font-size:11px;color:var(--muted);margin-top:18px">CURRENT FORCE</div>
+<div class="frow"><span class="nd" data-l="BA" data-p="Requirement Agents">BA</span><span class="nd" data-l="UX designer" data-p="AI-assisted UX Designer">UX designer</span><span class="nd" data-l="Architect" data-p="AI-assisted Architect">Architect</span><span class="nd" data-l="Tech lead" data-p="AI-assisted Tech Lead">Tech lead</span><span class="nd" data-l="Developer" data-p="SDD Engineer,Semantic layer engineer">Developer</span><span class="nd" data-l="QA" data-p="Automation agents">QA</span><span class="nd" data-l="DevOps" data-p="DevOps agents">DevOps</span><span class="nd" data-l="SRE" data-p="AI Reliability Engineer">SRE</span><span class="nd" data-l="Scrum Maser" data-p="AI scrum master">Scrum Maser</span><span class="nd" data-l="ITSO" data-p="AI-assisted ITSO">ITSO</span><span class="nd" data-l="Release Engineer" data-p="AI-assisted release engineer">Release Engineer</span></div>
+<div class="midbar">Transition - AI empowerd, Effective Productivity Index (EPI) monitored</div>
+<div class="mono" style="font-size:11px;color:var(--muted)">FUTURE FORCE</div>
+<div class="frow"><span class="nd" data-l="Requirement Agents" data-p="BA">Requirement Agents</span><span class="nd" data-l="AI-assisted UX Designer" data-p="UX designer">AI-assisted UX Designer</span><span class="nd" data-l="AI-assisted Architect" data-p="Architect">AI-assisted Architect</span><span class="nd" data-l="AI-assisted Tech Lead" data-p="Tech lead">AI-assisted Tech Lead</span><span class="nd" data-l="SDD Engineer" data-p="Developer">SDD Engineer</span><span class="nd" data-l="Semantic layer engineer" data-p="Developer">Semantic layer engineer</span><span class="nd" data-l="Automation agents" data-p="QA">Automation agents</span><span class="nd" data-l="DevOps agents" data-p="DevOps">DevOps agents</span><span class="nd" data-l="AI Reliability Engineer" data-p="SRE">AI Reliability Engineer</span><span class="nd" data-l="AI scrum master" data-p="Scrum Maser">AI scrum master</span><span class="nd" data-l="AI-assisted ITSO" data-p="ITSO">AI-assisted ITSO</span><span class="nd" data-l="AI-assisted release engineer" data-p="Release Engineer">AI-assisted release engineer</span></div>
+<div id="pl">悬停任意角色，查看其配对关系</div></div>
+<table class="tbl hide" id="lv"><thead><tr><th>当前角色 / Current force</th><th>未来角色 / Future force</th></tr></thead><tbody>
+<tr><td>BA</td><td>Requirement Agents</td></tr><tr><td>UX designer</td><td>AI-assisted UX Designer</td></tr><tr><td>Architect</td><td>AI-assisted Architect</td></tr><tr><td>Tech lead</td><td>AI-assisted Tech Lead</td></tr><tr><td>Developer</td><td>SDD Engineer and Semantic layer engineer</td></tr><tr><td>QA</td><td>Automation agents</td></tr><tr><td>DevOps</td><td>DevOps agents</td></tr><tr><td>SRE</td><td>AI Reliability Engineer</td></tr><tr><td>Scrum Maser</td><td>AI scrum master</td></tr><tr><td>ITSO</td><td>AI-assisted ITSO</td></tr><tr><td>Release Engineer</td><td>AI-assisted release engineer</td></tr></tbody></table>
+<div class="hd" style="margin-top:44px"><div><h2 style="font-size:24px">Link to OKR</h2><p class="sub">role transition should be aligned with our OKRs with clear objectives and measurable key results</p></div></div>
+<div><span class="pill" style="background:var(--wash);color:var(--ink);border-color:var(--line)">Increase engineering effectiveness &amp; productivity</span><span class="pill">On track</span><span class="pill g">4 key metrics</span></div>
+<div class="okr">
+<div class="hrow"><span>METRIC</span><span>目标</span><span>起点</span><span>当前</span><span>TREND</span></div>
+<div class="orow"><div><div class="nm">% of Apex POD operating with AI agent</div><div class="is">PODs actively operating with an AI agent model</div></div><span class="box">90%</span><span class="box">0%</span><span class="box cur">80%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,7" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="7" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of Apex POD operates as 70% human + 30% Agent</div><div class="is">Target operating model mix across PODs</div></div><span class="box">100%</span><span class="box">0%</span><span class="box cur">60%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,10" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="10" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of Apex POD has skill-enabled scrum master</div><div class="is">Coverage of skill-enabled scrum masters across PODs</div></div><span class="box">100%</span><span class="box">0%</span><span class="box cur">90%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,5" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="5" r="2.4" fill="#DB0011"></circle></svg></div>
+<div class="orow"><div><div class="nm">% of people contributing on Apex</div><div class="is">India organisation ready with Apex skills</div></div><span class="box">70%</span><span class="box">0%</span><span class="box cur">30%</span><svg width="60" height="20" viewBox="0 0 60 20" aria-hidden="true"><polyline points="3,17 42,14" fill="none" stroke="#DB0011" stroke-width="2"></polyline><circle cx="42" cy="14" r="2.4" fill="#DB0011"></circle></svg></div>
+<p class="sub" style="text-align:right">数值：目标 · 起点 · 当前（按原文档列示，原文档未标注列名） · India upskilling initiative.</p></div>
+<div class="an">角色迁移由静态图改为可悬停高亮的配对图，并补了列表视图；连线按原图角色位置还原（Developer 对应两个新角色，原图为多对多）。OKR 三个数值按原文档顺序图形化呈现，未做解读。</div>
+<div class="pager"><button data-go="c4">← 上一章</button><button data-go="c6">下一章 →</button></div></section>
+<section class="ch rv" id="c6"><div class="hd"><div><div class="eyebrow">第 06 章 / 06</div><h2>Agent 清单</h2><p class="enh">Apex Agent Inventory</p><p class="sub">It includes both Agents (implemented) and AI initiatives (planed)</p></div><span class="chip">约 1.5 分钟</span></div>
+<div class="fbar"><input id="sq" placeholder="筛选或搜索 Agent…（按 / 聚焦）" style="font:inherit;font-size:13px;padding:6px 10px;border:1px solid var(--line);border-radius:2px;min-width:280px"><span id="lf" style="display:flex;gap:8px;flex-wrap:wrap"><button class="on" data-l="">全部</button><button data-l="Discover">Discover</button><button data-l="Validate">Validate</button><button data-l="Launch">Launch</button><button data-l="Retire &amp; Sunset">Retire &amp; Sunset</button></span></div>
+<p class="hint" id="cn">17 个 Agent（含规划中）/ 已显示 17</p>
+<div class="acc" style="margin-top:14px">
+<div class="ac open" data-l="Discover" data-n="Conversation Workspace"><button class="ac-h"><b>Conversation Workspace</b><i>Run guided analysis around requirements and keep the context alive over multiple rounds.</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Run guided analysis around requirements and keep the context alive over multiple rounds.</p></div></div></div>
+<div class="ac" data-l="Discover,Validate" data-n="SKILL based Rule of Five"><button class="ac-h"><b>SKILL based Rule of Five</b><i>"Rule of Five" is to turn business goals and constraints into a structured framework of engineering decisions aligned to:</i><span class="tg">Discover</span><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>"Rule of Five" is to turn business goals and constraints into a structured framework of engineering decisions aligned to:</p><ul><li>Build for Business Agility</li><li>Design for Resilience</li><li>Prefer Reuse Over Reinvention</li><li>Deliver a Consistent Customer Experience</li><li>Meet the Definition of Done (production-ready from day one)</li></ul></div></div></div>
+<div class="ac" data-l="Discover" data-n="Ticket Assessment Desk"><button class="ac-h"><b>Ticket Assessment Desk</b><i>Review Jira tickets through the lens of testability and delivery readiness.</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Review Jira tickets through the lens of testability and delivery readiness.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Cucumber Scenario Builder"><button class="ac-h"><b>Cucumber Scenario Builder</b><i>Converts requirements into structured Cucumber scenarios and acceptance tests to improve coverage and consistency.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>Converts requirements into structured Cucumber scenarios and acceptance tests to improve coverage and consistency.</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="Release Notes Studio"><button class="ac-h"><b>Release Notes Studio</b><i>Prepare release communication and production change materials in one place.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Prepare release communication and production change materials in one place.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI Assist in Performance Test Reporting"><button class="ac-h"><b>AI Assist in Performance Test Reporting</b><i>Analyses performance-test results and suggesting coding change after using AI to Analyse UI performance report</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>Analyses performance-test results and suggesting coding change after using AI to Analyse UI performance report</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="CR Builder &amp; Validator"><button class="ac-h"><b>CR Builder &amp; Validator</b><i>1-click generate CR based on summary of all PRs and Validate release artefact, implementation plan and CR evidence for approval</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>1-click generate CR based on summary of all PRs and Validate release artefact, implementation plan and CR evidence for approval</p></div></div></div>
+<div class="ac" data-l="Discover" data-n="AI Powered UX Design validator"><button class="ac-h"><b>AI Powered UX Design validator</b><i>Validate the UX design in Figma against its UI implementation on DEV/SIT</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Validate the UX design in Figma against its UI implementation on DEV/SIT</p></div></div></div>
+<div class="ac" data-l="Discover" data-n="AI User Behaviour Analysis on UX"><button class="ac-h"><b>AI User Behaviour Analysis on UX</b><i>Reviews UI designs against UX and customer needs to ensure usability principles and improve customer experience</i><span class="tg">Discover</span></button><div class="ac-b"><div class="in"><p>Reviews UI designs against UX and customer needs to ensure usability principles and improve customer experience</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI Scrum Master Agent"><button class="ac-h"><b>AI Scrum Master Agent</b><i>An AI Scrum Master Agent is an intelligent, automated assistant that streamlines Agile workflows and freeing human Scrum Masters to focus on team coaching and culture.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>An AI Scrum Master Agent is an intelligent, automated assistant that streamlines Agile workflows and freeing human Scrum Masters to focus on team coaching and culture. It integrates with platforms like Jira and Zoom to monitor backlogs, analyze team risk, draft sprint goals, record stand-up notes, and track team metrics automatically</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Auto code re-builder with CVE fix"><button class="ac-h"><b>Auto code re-builder with CVE fix</b><i>Track historic pattern and suggest correct fix for CVE, and generate auto-complete code and package</i><span class="tg">validate</span></button><div class="ac-b"><div class="in"><p>Track historic pattern and suggest correct fix for CVE, and generate auto-complete code and package</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI-assisted Contract Test Generator with Pac"><button class="ac-h"><b>AI-assisted Contract Test Generator with Pac</b><i>Generates consumer-driven contract tests with Pact to validate that service integrations remain compatible.</i><span class="tg">validate</span></button><div class="ac-b"><div class="in"><p>Generates consumer-driven contract tests with Pact to validate that service integrations remain compatible.</p></div></div></div>
+<div class="ac" data-l="Launch" data-n="Incident Analysis with AI"><button class="ac-h"><b>Incident Analysis with AI</b><i>Analyses incident data, symptoms and history to accelerate root-cause identification and defect learning.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Analyses incident data, symptoms and history to accelerate root-cause identification and defect learning.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="AI operability score for early-warning"><button class="ac-h"><b>AI operability score for early-warning</b><i>The operability score provides an AI orchestration with agent in 6 main areas.</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>The operability score provides an AI orchestration with agent in 6 main areas. And it concentrates on identifying the risk at early stage. It also includes the risk the AI brings in during the daily development</p><ul><li>Quality (rather than test result, this area includes what quality check we should have if code is generated by AI)</li><li>Operational overhead</li><li>Deployability</li><li>Dependency clarity</li><li>Observability</li><li>Resilience</li></ul></div></div></div>
+<div class="ac" data-l="Retire &amp; Sunset" data-n="Intelligent Dependency &amp; Blast Radius Analysis"><button class="ac-h"><b>Intelligent Dependency &amp; Blast Radius Analysis</b><i>Identifies dependencies and estimates the potential blast radius of changes to support safer implementation and closure.</i><span class="tg">Retire &amp; Sunset</span></button><div class="ac-b"><div class="in"><p>Identifies dependencies and estimates the potential blast radius of changes to support safer implementation and closure.</p></div></div></div>
+<div class="ac" data-l="Validate" data-n="Service Map"><button class="ac-h"><b>Service Map</b><i>generate real deployed microservice architecture and monitor the metrics and logging from end-to-end</i><span class="tg">Validate</span></button><div class="ac-b"><div class="in"><p>generate real deployed microservice architecture and monitor the metrics and logging from end-to-end to identify not just one service's issue but more on what upstream has impacted and what downstream could be impacted</p><ul><li>Create a continuously updated view of the real deployed microservice architecture by combining release-branch repo analysis (service-to-service and service-to-database dependencies) with OpenTelemetry telemetry.</li><li>Use this end-to-end service graph to correlate metrics, logs, and traces across the full request path.</li><li>Enable faster incident diagnosis by pinpointing upstream causes and predicting downstream impact (blast radius), not just the failing service.</li></ul></div></div></div>
+<div class="ac" data-l="Launch" data-n="AI-assisted SRE Adviser"><button class="ac-h"><b>AI-assisted SRE Adviser</b><i>Provides reliability guidance by identifying operational risks and recommending improvements to resilience and supportability.</i><span class="tg">Launch</span></button><div class="ac-b"><div class="in"><p>Provides reliability guidance by identifying operational risks and recommending improvements to resilience and supportability.</p></div></div></div>
+</div>
+<div class="an">17 行长表格折叠为可展开清单，支持搜索与按生命周期阶段筛选，汇报时只展开被问到的那一条。</div>
+<div class="pager"><button data-go="c5">← 上一章</button><button data-go="c7">下一章 →</button></div></section>
+<section class="ch rv" id="c7"><div class="hd"><div><div class="eyebrow">第 07 章 / 07</div><h2>Apex AI 治理与护栏</h2><p class="enh">Apex AI Governance and Guardrails</p><p class="sub">定位、原则与不可谈判的护栏</p></div><span class="chip">约 1.5 分钟</span></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em">A 组 · 定位与边界</div>
+<div class="cc open" style="margin-top:10px"><button class="cc-h">Apex AI Objective</button><div class="cc-b"><div class="in"><div class="micro">OBJECTIVE</div><p>Build AI into Apex Platform at all levels.</p><p>Incorporate AI into the platform to enhance productivity, insight generation, and decision-making—without compromising governance, controls, or the integrity of financial results..</p></div></div></div>
+<div class="cc"><button class="cc-h">Role of AI in the Platform</button><div class="cc-b"><div class="in"><div class="micro">AI WILL</div><p>Orchestrate workflows.</p><p>Assist with analysis and interpretation.</p><p>Improve how users interact with data and models.</p><div class="micro">AI WILL NOT</div><p>Replace core financial calculations</p><p>Bypass controls or governance</p></div></div></div>
+<div class="cc"><button class="cc-h">Non-goal definition of AI</button><div class="cc-b"><div class="in"><div class="micro">OUTPUTS</div><p>No AI-generated postings, valuations, P&amp;L, or regulatory numbers</p><p>No autonomous changes to reference data, limits, curves, mappings, or model parameters.</p><p>No direct execution of privileged actions (prod deploys, data deletes, entitlement changes) without human approval.</p></div></div></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em;margin-top:26px">B 组 · 原则与用例</div>
+<div class="cc" style="margin-top:10px"><button class="cc-h">Core Principle</button><div class="cc-b"><div class="in"><div class="micro">ALL FINANCIAL LOGIC REMAINS</div><p>Deterministic · Governed · Reproducible</p><div class="q" style="font-size:15px">AI enhances how we use the platform—it does not change how results are calculated.</div></div></div></div>
+<div class="cc"><button class="cc-h">Initial Use Cases (Design Focus)</button><div class="cc-b"><div class="in"><div class="micro">TEAMS SHOULD FOCUS ON PRACTICAL, HIGH-VALUE USE CASES</div><p>Natural language interaction (e.g., “Explain IRR movement this week”)</p><p>Scenario orchestration (e.g., run and compare multiple scenarios automatically)</p><p>Insight generation (summarise key drivers, anomalies, and trends)</p><p>Productivity acceleration (assist with queries, debugging, and data exploration)</p></div></div></div>
+<div class="mono" style="font-size:12px;color:var(--red);letter-spacing:.12em;margin-top:26px">C 组 · 架构与护栏</div>
+<div class="cc" style="margin-top:10px"><button class="cc-h">Architecture Expectations · Guardrails (Non-Negotiable)</button><div class="cc-b"><div class="in"><div class="two"><div><div class="micro">AI SHOULD</div><p>Auditable (inputs, outputs, and decisions tracked)</p><p>Explainable (no black-box decisions for financial outcomes)</p><p>Bounded (no uncontrolled actions or direct system changes)</p><p>Secure (respect data access and security controls)</p></div>
+<div><div class="micro">AI-ENABLED FUNCTIONALITY MUST BE</div><p>Auditable (inputs, outputs, and decisions tracked)</p><p>Explainable (no black-box decisions for financial outcomes)</p><p>Bounded (no uncontrolled actions or direct system changes)</p><p>Secure (respect data access and security controls)</p></div></div>
+<div class="two" style="margin-top:20px"><div><div class="micro">DESIGN FOR</div><p>Incorrect or incomplete AI outputs</p><p>Service/tool failures</p><p>Fallback to deterministic processes</p></div>
+<div><div class="micro">AI OUTPUTS MUST:</div><p>Be clearly distinguishable from system-calculated results</p><p>Not be treated as authoritative without validation</p></div></div>
+<div class="micro">START SIMPLE AND CONTROLLED</div><p>Assistive → Guided → Automated (over time)</p><p>We should not attempt full automation upfront</p></div></div></div>
+<div class="an">9 个长卡片归为三组；Architecture Expectations 与 Guardrails 四点内容完全相同，合并为并排对照，不再重复出现两次。</div>
+<div class="pager"><button data-go="c6">← 上一章</button></div></section>
+<footer><h3>来源与口径</h3><p>本页内容全部来自 Apex 2026 Road Map 文档截图（含两张嵌入图），未增补任何外部信息。</p><p>图中的原始拼写（Blask / opertional / fondamental / Maser / empowerd）按原文档保留。</p><p>OKR 三个数值按原文档顺序列示，原文档未标注列名，本页不做解读。</p><p>中文部分为汇报用的说明与讲稿，非文档原文。</p></footer>
+</main>
+<aside id="notes">
+<div class="nb"><h3>封面：三个问题</h3><span class="mono">约 0.5 分钟</span><p>开场一句话：这份文档回答三个问题——改什么、怎么改、底线在哪。</p><p>说明节奏：后面 7 章，约 13 分钟，可随时跳到任意一章。</p><p>口径提醒：正文保留英文原文，中文是汇报说明与讲稿。</p></div>
+<div class="nb"><h3>目标与三大优先</h3><span class="mono">约 1.5 分钟</span><p>三大优先共同指向一件事：把协调、翻译、等待这三种非生产性成本从流程里拿掉。</p><p>每一项都配了具体例子（Scrum Master agent / AI agent 澄清需求 / Rule of Five）。</p><p>这不是工具清单，而是运营模式的改变——先讲这一句，后面所有图都是它的证据。</p></div>
+<div class="nb"><h3>原则与标准</h3><span class="mono">约 1.5 分钟</span><p>六条原则是自主权的配套约束：有自主，就要有共享预期。</p><p>前三条是平台与机制，后三条是人、客户与度量。</p><p>只讲两条就够：Rule of Five（用简单控制换敏捷）与 Integrated platform（Golden Path）。</p></div>
+<div class="nb"><h3>产品生命周期：Agentic SDLC</h3><span class="mono">约 2.5 分钟</span><p>六个阶段都保留人的目的，Agent 只是把重复劳动拿走。</p><p>颜色代表三种介入程度：新能力 / AI 辅助 / 更自主支持——点色块即可只看一类。</p><p>最密集的是 Validate 阶段（8 项），这正是“翻译与等待”被拿掉的地方。</p><p>先讲主线：Discover 的需求理解 → Launch 的交付准备。</p></div>
+<div class="nb"><h3>参与模式的改变 与 2026 路线图</h3><span class="mono">约 2.5 分钟</span><p>参与模式一句话：更少交接、更多共担。</p><p>路线图的读法是“先底座、后能力”：Q1 先完成 Apex Agent 的六个基础件，Q2–Q3 铺开质量与体验，Q4 做依赖与权限。</p><p>颜色只区分两类：深色是 Agent 本体，橙色是运营风险相关。</p><p>状态只讲三种：done 已交付、DEV/PoC 在研、plan 规划中；左侧三条轨道对应三个季度目标。</p></div>
+<div class="nb"><h3>未来组织与 OKR</h3><span class="mono">约 2.5 分钟</span><p>角色的变化不是裁员故事，是角色升级：11 个传统岗位 → 12 个 AI 增强角色。</p><p>每个传统角色都有对应去向，悬停即可看到配对关系，也可以切列表视图。</p><p>迁移由 EPI（Effective Productivity Index）监控，并与 OKR 挂钩。</p><p>四个指标都 On track，其中 skill-enabled scrum master 覆盖率最高。</p></div>
+<div class="nb"><h3>Agent 清单</h3><span class="mono">约 1.5 分钟</span><p>清单把“已实现”与“规划中”放在一起，细节不必逐条念。</p><p>只讲三个样本：Conversation Workspace（需求）、CR Builder &amp; Validator（交付）、Service Map（运行时）。</p><p>被问到覆盖度时，用搜索框或生命周期筛选项直接给出答案。</p></div>
+<div class="nb"><h3>Apex AI 治理与护栏</h3><span class="mono">约 1.5 分钟</span><p>这一章回答“我们凭什么放心”：AI 增强使用方式，不改变结果如何计算。</p><p>两句话记住：AI 不产生财务数字、不绕过治理；AI 功能必须可审计、可解释、有边界、安全。</p><p>落地节奏是 Assistive → Guided → Automated，不追求一步到位的全自动。</p></div>
+</aside>
+<button id="ex">退出演示 (Esc)</button>
+<script>
+var Q=function(s){return document.querySelector(s)},QA=function(s){return [].slice.call(document.querySelectorAll(s))};
+addEventListener('scroll',function(){var h=document.documentElement;Q('#prog').style.width=h.scrollTop/(h.scrollHeight-h.clientHeight)*100+'%'},{passive:true});
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+QA('.rv').forEach(function(e){io.observe(e)});
+var secs=QA('.ch'),navBtns=QA('#nav button,#rail button');
+var io2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)navBtns.forEach(function(a){a.classList.toggle('on',a.dataset.go===e.target.id)})})},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(function(s){io2.observe(s)});
+function go(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+navBtns.concat(QA('.pager button')).forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+function tg(sel,cls){var b=Q(sel);b.onclick=function(){document.body.classList.toggle(cls);b.setAttribute('aria-pressed',document.body.classList.contains(cls))}}
+tg('#bD','demo');tg('#bN','notes');tg('#bC','chg');
+Q('#ex').onclick=function(){document.body.classList.remove('demo');Q('#bD').setAttribute('aria-pressed','false')};
+addEventListener('keydown',function(e){
+if(e.key==='Escape'){document.body.classList.remove('demo','notes','chg');Q('#bD').setAttribute('aria-pressed','false');Q('#bN').setAttribute('aria-pressed','false');Q('#bC').setAttribute('aria-pressed','false')}
+else if(e.key==='/'&&e.target.tagName!=='INPUT'){e.preventDefault();Q('#sq').focus()}
+else if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&e.target.tagName!=='INPUT'){var i=secs.findIndex(function(s){return s.getBoundingClientRect().top>-40});if(i<0)i=secs.length-1;var n=Math.min(secs.length-1,Math.max(0,i+(e.key==='ArrowRight'?1:-1)));go(secs[n].id)}});
+QA('.ex').forEach(function(b){b.onclick=function(){b.parentNode.classList.toggle('open')}});
+QA('.cc-h').forEach(function(b){b.onclick=function(){b.parentNode.classList.toggle('open')}});
+QA('.ac-h').forEach(function(b){b.onclick=function(){var p=b.parentNode,o=p.classList.contains('open');QA('.ac').forEach(function(x){x.classList.remove('open')});if(!o)p.classList.add('open')}});
+var TY={a:'New agent capability · 新能力',b:'AI-assisted work · AI 辅助',c:'More autonomous support · 更自主支持'};
+QA('#stages .k').forEach(function(k){k.onclick=function(){
+if(k.classList.toggle('open')){var h=k.closest('.stg').querySelector('.sh'),ty='原图未标注颜色';['a','b','c'].forEach(function(c){if(k.classList.contains(c))ty=TY[c]});
+var s=document.createElement('span');s.className='m';s.textContent='阶段：'+h.dataset.st+' · 类型：'+ty;k.appendChild(s)}
+else{var m=k.querySelector('.m');if(m)m.remove()}}});
+QA('#stages .lg').forEach(function(c){c.onclick=function(){
+var on=c.classList.contains('on');QA('#stages .lg').forEach(function(x){x.classList.remove('on')});if(!on)c.classList.add('on');
+var f=on?'':c.dataset.f;QA('#stages .k').forEach(function(k){k.classList.toggle('dim',!!f&&!k.classList.contains(f))});
+var n=f?QA('#stages .k').filter(function(k){return k.classList.contains(f)}).length:20;
+Q('#cnt').textContent=f?'筛选：'+n+' / 20 项能力 · 6 个阶段':'20 项能力 · 6 个阶段'}});
+QA('.sh').forEach(function(h){h.onclick=function(){var on=h.parentNode.classList.contains('dim');QA('.stg').forEach(function(s){s.classList.remove('dim')});if(!on)h.parentNode.classList.add('dim')}});
+QA('.pl2').forEach(function(p){p.onclick=function(){var on=p.classList.contains('on');QA('.pl2').forEach(function(x){x.classList.remove('on','dim3')});if(!on){p.classList.add('on');QA('.pl2').forEach(function(x){if(x!==p)x.classList.add('dim3')})}}});
+function qset(q){QA('.qb').forEach(function(x){var o=q&&x.dataset.q===q;x.classList.toggle('on',!!o);x.classList.toggle('dim2',!!q&&!o)});QA('.tk').forEach(function(t){t.classList.toggle('on',t.dataset.q===q)})}
+QA('.tk,.qb').forEach(function(el){el.addEventListener('mouseenter',function(){qset(el.dataset.q)})});
+QA('[data-qf]').forEach(function(b){b.onclick=function(){QA('[data-qf]').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');qset(b.dataset.qf)}});
+QA('[data-sf]').forEach(function(b){b.onclick=function(){QA('[data-sf]').forEach(function(x){x.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');var f=b.dataset.sf;QA('.qi').forEach(function(i){i.classList.toggle('dim',!!f&&i.dataset.st!==f)})}});
+QA('.nd').forEach(function(n){var h=function(){var ks=n.dataset.p.split(',');QA('.nd').forEach(function(x){var m=x.dataset.l===n.dataset.l||ks.indexOf(x.dataset.l)>-1;x.classList.toggle('on',m);x.classList.toggle('dim',!m)});Q('#pl').textContent=n.dataset.l+' → '+n.dataset.p.split(',').join('、')};
+n.addEventListener('mouseenter',h);n.addEventListener('focus',h);
+n.addEventListener('mouseleave',function(){QA('.nd').forEach(function(x){x.classList.remove('on','dim')});Q('#pl').textContent='悬停任意角色，查看其配对关系'})});
+Q('#vt').onclick=function(){var l=Q('#fv').classList.toggle('hide');Q('#lv').classList.toggle('hide',!l);Q('#vt').textContent=l?'图形视图':'列表视图'};
+var rows=QA('.ac');
+function filt(){var t=Q('#sq').value.toLowerCase(),lb=Q('#lf button.on'),lf=lb?lb.dataset.l:'',v=0;
+rows.forEach(function(r){var ok=(!lf||r.dataset.l.indexOf(lf)>-1)&&(!t||r.dataset.n.toLowerCase().indexOf(t)>-1);r.classList.toggle('hide',!ok);if(ok)v++});
+Q('#cn').textContent='17 个 Agent（含规划中）/ 已显示 '+v}
+Q('#sq').oninput=filt;
+QA('#lf button').forEach(function(b){b.onclick=function(){var on=b.classList.contains('on');QA('#lf button').forEach(function(x){x.classList.remove('on')});if(!on)b.classList.add('on');filt()}});
+</script></body></html>
